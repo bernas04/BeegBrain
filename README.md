@@ -13,9 +13,13 @@
 
 ## Architecture
 
-### Diagram
+### Architecture Diagram
 
 ![architecture](schemas/architecture.png)
+
+### DER Diagram
+
+![Der](schemas/bd.jpg)
 
 ### Frontend
 
