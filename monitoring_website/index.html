@@ -18,6 +18,8 @@
         <link href="css/styles.css" rel="stylesheet" />
         <!-- jquery-->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <!-- Sweet alert-->
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body id="page-top">
         <!-- Navigation-->
@@ -175,6 +177,8 @@
                         </p>
                         <div style="margin-left:80px">
                             <a class="btn btn-dark btn-social mx-2" href="https://github.com/bernas04"><i class="fab fa-github"></i></a>
+                            <a class="btn btn-dark btn-social mx-2" onclick="alert_sweet()" href="#"><i class="fab fa-linkedin-in"></i></a>
+
                         </div>
                     </div>
 
@@ -251,6 +255,11 @@
         </div>
 
 
+        <script>
+            function alert_sweet(){
+                Swal.fire('Nã temos');
+            }
+        </script>
         <!-- Email script-->
         <script src="https://smtpjs.com/v3/smtp.js"></script>  
         <!-- My script-->
