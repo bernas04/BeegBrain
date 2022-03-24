@@ -16,7 +16,6 @@
         <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
         <!-- Core theme CSS (includes Bootstrap)-->
         <link href="css/styles.css" rel="stylesheet" />
-        <link href="css/style.scss" rel="stylesheet" />
         <!-- Sweet alert -->
         <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
@@ -31,6 +30,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto">
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#details">Details</a></li>
                         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#portfolio">Guiding teachers</a></li>
                         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#about">About our Team</a></li>
                     </ul>
@@ -75,6 +75,40 @@
                 </a>
             </div>
         </header>
+
+        <!-- Portfolio Section-->
+        <section class="page-section mb-0" id="details">
+            <div class="container">
+                <!-- Portfolio Section Heading-->
+                <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Guiding teachers</h2>
+                <!-- Icon Divider-->
+                <div class="divider-custom">
+                    <div class="divider-custom-line"></div>
+                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                    <div class="divider-custom-line"></div>
+                </div>
+                <!-- Portfolio Grid Items-->
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4">
+                        <div class="team-member" style="text-align: center;">
+                            <img class="mx-auto rounded-circle" src="assets/img/portfolio/lb.jpg" alt="..." />
+                            <h4 style="margin-top:20px">Luís Bastião</h4>
+                            <p class="text-muted">Teacher</p>
+                            <span> <i class="fas fa-envelope" style="margin-right:5px"></i> bastiao@ua.pt </span>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="team-member" style="text-align: center;">
+                            <img class="mx-auto rounded-circle" src="assets/img/portfolio/cc.jpg" alt="..." />
+                            <h4 style="margin-top:20px">Carlos Costa</h4>
+                            <p class="text-muted">Teacher</p>
+                            <span> <i class="fas fa-envelope" style="margin-right:5px"></i> carlos.costa@ua.pt </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
         <!-- Portfolio Section-->
         <section class="page-section mb-0" id="portfolio">
             <div class="container">
@@ -164,25 +198,18 @@
                         </div>
                     </div>
                     <div class="col-sm-3">
-                        <label id="card-user" class="pure-toggle" for="pure-toggle">
-                            <div class="header">
-                            </div>
-                            <div class="avatar">
-                              <img src="assets/img/portfolio/bernas.jpg" alt="...">
-                            </div>
-                            <div class="text">
-                              <h3>João Farias</h3>
-                              <p>Tasks</p>
-                            </div>
-                            
-                            <div class="social">
-                              <i class="fa fa-codepen" alt="codepen" title="codepen"></i>
-                              <i class="fa fa-facebook" alt="facebook" title="facebook"></i>
-                              <i class="fa fa-google" alt="google" title="google"></i>
-                              <i class="fa fa-twitter" alt="twitter" title="twitter"></i>
-                              <i class="fa fa-youtube" alt="youtube" title="youtube"></i>
-                            </div>
-                          </div>
+                        <img class="img-fluid" src="assets/img/portfolio/bernas.jpg" alt="..." />
+                        <p class="text-center"  style="margin-top:10px; font-size: 25px">
+                            <b> João Farias </b>
+                        </p>
+
+                        <p class="text-center">
+                            <span> <i class="fas fa-envelope" style="margin-right:5px"></i> joaobernardo0@ua.pt </span>
+                        </p>
+                        <div style="margin-left:80px">
+                            <a class="btn btn-dark btn-social mx-2" href="https://github.com/bernas04"><i class="fab fa-github"></i></a>
+                            <a class="btn btn-dark btn-social mx-2" onclick="s_alert()" href="#"><i class="fab fa-linkedin-in"></i></a>
+                        </div>
                     </div>
 
                 </div>
