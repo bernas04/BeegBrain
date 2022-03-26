@@ -7772,7 +7772,7 @@ textarea.form-control-lg {
 
 .text-muted {
   --bs-text-opacity: 1;
-  color: #6c757d !important;
+  color: white !important;
 }
 
 .text-black-50 {
@@ -11507,7 +11507,3 @@ html {
 .copyright {
   background-color: #1a252f;
 }
-
-
-
-
