@@ -18,6 +18,8 @@
         <link href="css/styles.css" rel="stylesheet" />
         <!-- jquery-->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <!-- Sweet alert-->
+        <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body id="page-top">
         <!-- Navigation-->
@@ -30,8 +32,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#details">Details</a></li>
-                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#portfolio">Guiding teachers</a></li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#details">Our Goals</a></li>
                         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#about">About our Team</a></li>
                         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#contact">Contact Us</a></li>
 
@@ -41,12 +42,11 @@
         </nav>
         <!-- Masthead-->
         <header class="masthead bg-primary text-white text-center">
-            <div class="container d-flex align-items-center flex-column">
+            <div class="container d-flex align-items-center flex-column" style="margin-bottom:70px;">
                 <!-- Masthead Avatar Image-->
                 <img class="masthead-avatar mb-5" src="assets/img/brain-in-profile2.svg" alt="..." />
-                <img  src="assets/img/eeg.png" alt="..." />
                 <!-- Masthead Heading-->
-                <h1 class="masthead-heading text-uppercase mb-0">BEEGBRAIN</h1>
+                <h1 class="masthead-heading text-uppercase mb-0"> *algum slogan top* </h1>
                 <!-- Icon Divider-->
                 <div class="divider-custom divider-light">
                     <div class="divider-custom-line"></div>
@@ -55,10 +55,10 @@
                 </div>
                 <!-- Masthead Subheading-->
                 <p class="masthead-subheading font-weight-light mb-0">
-                    A web platform capable of manage and view electroencephalogram exams
+                    A web platform capable of manage and view electroencephalogram exams in different formats
                 </p>
             </div>
-            <div class="text-center mt-4">
+            <div class="text-center mt-4" >
                 <a class="btn btn-xl btn-outline-light" style="width:12em" href="assets/02-PI.pdf" download>
                     <i class="fas fa-download me-2"></i>
                     Download PDF
@@ -80,7 +80,7 @@
         <section class="page-section mb-0" id="details">
             <div class="container">
                 <!-- Portfolio Section Heading-->
-                <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Details</h2>
+                <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">OUR GOALS</h2>
                 <!-- Icon Divider-->
                 <div class="divider-custom">
                     <div class="divider-custom-line"></div>
@@ -88,58 +88,36 @@
                     <div class="divider-custom-line"></div>
                 </div>
                 <!-- Portfolio Grid Items-->
-                <div class="row">
-                    <div class="col-md-2"></div>
-                    <div class="col-md-4">
-                        <div class="team-member" style="text-align: center;">
-                            <img class="mx-auto rounded-circle" src="assets/img/portfolio/lb.jpg" alt="..." />
-                            <h4 style="margin-top:20px">Luís Bastião</h4>
-                            <p class="text-muted">Teacher</p>
-                            <span> <i class="fas fa-envelope" style="margin-right:5px"></i> bastiao@ua.pt </span>
-                        </div>
+            
+                <div class="row" style="margin-bottom: 150px;text-align: left;">
+                    <div class="col-12 col-sm-12 col-lg-6">
+                      <!-- <img  src="assets/img/eeg_1.png" alt="" style="margin-bottom: 70px;"> -->
+                      <img src="assets/img/eeg_1.png" class="img-fluid" alt="Responsive image">
+                      
                     </div>
-                    <div class="col-md-4">
-                        <div class="team-member" style="text-align: center;">
-                            <img class="mx-auto rounded-circle" src="assets/img/portfolio/cc.jpg" alt="..." />
-                            <h4 style="margin-top:20px">Carlos Costa</h4>
-                            <p class="text-muted">Teacher</p>
-                            <span> <i class="fas fa-envelope" style="margin-right:5px"></i> carlos.costa@ua.pt </span>
+                    <div class="col-12 col-sm-12 col-lg-6" style=" margin-top:50px;">
+
+                        <div style="display:flex">
+                            <img  src="assets/img/web.png" alt="" style="width:4em; height: 4em; margin-right: 2em; margin-top: 0.5em">
+                            <h2 style=" color: #2C3E50;font-size: 1.75rem">A Web platform to<br> visualize EEG</h2>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <!-- Portfolio Section-->
-        <section class="page-section mb-0" id="portfolio">
-            <div class="container">
-                <!-- Portfolio Section Heading-->
-                <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Guiding teachers</h2>
-                <!-- Icon Divider-->
-                <div class="divider-custom">
-                    <div class="divider-custom-line"></div>
-                    <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
-                    <div class="divider-custom-line"></div>
-                </div>
-                <!-- Portfolio Grid Items-->
-                <div class="row">
-                    <div class="col-md-2"></div>
-                    <div class="col-md-4">
-                        <div class="team-member" style="text-align: center;">
-                            <img class="mx-auto rounded-circle" src="assets/img/portfolio/lb.jpg" alt="..." />
-                            <h4 style="margin-top:20px">Luís Bastião</h4>
-                            <p class="text-muted">Teacher</p>
-                            <span> <i class="fas fa-envelope" style="margin-right:5px"></i> bastiao@ua.pt </span>
+                        <p style=" margin-bottom: 50px; margin-left: 6rem">We help you on tracking and monitoring your EEGs exams.</p>
+
+                        <div style="display:flex">
+                            <img  src="assets/img/file.png" alt="" style="width:4em; height: 4em; margin-right: 2em; margin-top: 0.5em">
+                            <h2 style=" color: #2C3E50;font-size: 1.75rem"> Standardization of <br> EDF Service</h2>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="team-member" style="text-align: center;">
-                            <img class="mx-auto rounded-circle" src="assets/img/portfolio/cc.jpg" alt="..." />
-                            <h4 style="margin-top:20px">Carlos Costa</h4>
-                            <p class="text-muted">Teacher</p>
-                            <span> <i class="fas fa-envelope" style="margin-right:5px"></i> carlos.costa@ua.pt </span>
+                        <p style=" margin-bottom: 50px; margin-left: 6rem">Combining different formats of EEG archives? It's no more a problem anymore!</p>
+
+
+                        <div style="display:flex">
+                            <img  src="assets/img/sharing.png" alt="" style="width:4em; height: 4em; margin-right: 2em; margin-top: 0.5em">
+                            <h2 style=" color: #2C3E50;font-size: 1.75rem; margin-top: 1.25rem;"> Sharing is key</h2>
                         </div>
+                        <p style="margin-left: 6rem">Collaboration will be so easy, you can view and keep track of exams in another institutions.</p>
+
                     </div>
-                </div>
+                  </div>
             </div>
         </section>
         <!-- About Section-->
@@ -155,60 +133,87 @@
                 </div>
                 <!-- About Section Content-->
                 <div class="row">
-                    <div class="col-sm-3" >
-                        <img class="img-fluid" src="assets/img/portfolio/mary_xanel.jpg" alt="..." />
-                        <p class="text-center" style="margin-top:10px; font-size: 25px">
-                            <b> Mariana Rosa </b>
-                        </p>
+                    <div class="row" style="margin-bottom: 20px;">
 
-                        <p class="text-center" >
-                            <span> <i class="fas fa-envelope" style="margin-right:5px"></i> marianarosa@ua.pt </span>
-                        </p>
+                        <div class="col-md-2"></div>
 
+                        <div class="col-md-4">
+                            <div class="team-member" style="text-align: center;">
+                                <img class="mx-auto rounded-circle" src="assets/img/portfolio/lb.jpg" alt="..."  style="width:12em; height:12em; border: 5px solid white;"/>
+                                <h4 style="margin-top:20px">Luís Bastião</h4>
+                                <p class="text-muted">Advisor</p>
+                                <!-- <span> <i class="fas fa-envelope" style="margin-right:5px"></i> bastiao@ua.pt </span> -->
+                            </div>
+                        </div>
+
+                        <div class="col-md-4">
+                            <div class="team-member" style="text-align: center;">
+                                <img class="mx-auto rounded-circle" src="assets/img/portfolio/cc.jpg" alt="..."  style="width:12em; height:12em;  border: 5px solid white;"/>
+                                <h4 style="margin-top:20px">Carlos Costa</h4>
+                                <p class="text-muted">Advisor</p>
+                                <!-- <span> <i class="fas fa-envelope" style="margin-right:5px"></i> carlos.costa@ua.pt </span> -->
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="col-sm-3">
+
+                        <div class="team-member" style="text-align: center;">
+                            <img class="mx-auto rounded-circle" src="assets/img/portfolio/mary_xanel.jpg" alt="..." style="width:12em; height:12em; border: 5px solid white;"/>
+                            <h4 style="margin-top:20px; margin-bottom: 10px;" >Mariana Rosa</h4>
+                            <p class="text-muted">Product Owner</p>
+                        </div>
+                
                         <div style="margin-left:80px">
                             <a class="btn btn-dark btn-social mx-2" href="https://github.com/marianarosa01"><i class="fab fa-github"></i></a>
                             <a class="btn btn-dark btn-social mx-2" href="https://www.linkedin.com/in/mariana-rosa-b75bba1a1/"><i class="fab fa-linkedin-in"></i></a>
                         </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <img class="img-fluid" src="assets/img/portfolio/reis.jpg" alt="..." />
-                        <p class="text-center"  style="margin-top:10px; font-size: 25px">
-                            <b> João Reis </b>
-                        </p>
 
-                        <p class="text-center">
-                            <span> <i class="fas fa-envelope" style="margin-right:5px"></i> joaoreis16@ua.pt </span>
-                        </p>
+                    </div>
+
+                    <div class="col-sm-3">
+
+                        <div class="team-member" style="text-align: center;">
+                            <img class="mx-auto rounded-circle" src="assets/img/portfolio/reis.jpg" alt="..."  style="width:12em; height:12em; border: 5px solid white;"/>
+                            <h4 style="margin-top:20px">João Reis</h4>
+                            <p class="text-muted" >Team Manager</p>
+                            <!-- <span> <i class="fas fa-envelope" style="margin-right:5px"></i> joaoreis16@ua.pt </span> -->
+                        </div>
+
                         <div style="margin-left:80px">
                             <a class="btn btn-dark btn-social mx-2" href="https://github.com/joaoreis16"><i class="fab fa-github"></i></a>
                             <a class="btn btn-dark btn-social mx-2" href="https://www.linkedin.com/in/joaoreis16/"><i class="fab fa-linkedin-in"></i></a>
                         </div>
                     </div>
+
                     <div class="col-sm-3" >
-                        <img class="img-fluid" src="assets/img/portfolio/the_faizers.jpg" alt="..." />
-                        <p class="text-center"  style="margin-top:10px; font-size: 25px">
-                            <b> Ricardo Rodriguez </b>
-                        </p>
-                        <p class="text-center">
-                            <span> <i class="fas fa-envelope" style="margin-right:5px"></i> ricardorodriguez@ua.pt </span>
-                        </p>
+
+                        <div class="team-member" style="text-align: center;">
+                            <img class="mx-auto rounded-circle" src="assets/img/portfolio/the_faizers.jpg" alt="..." style="width:12em; height:12em; border: 5px solid white;"/>
+                            <h4 style="margin-top:20px">Ricardo Rodriguez</h4>
+                            <p class="text-muted">DevOps Master</p>
+                            <!-- <span> <i class="fas fa-envelope" style="margin-right:5px"></i> ricardorodriguez@ua.pt </span> -->
+                        </div>
+
                         <div style="margin-left:80px">
                             <a class="btn btn-dark btn-social mx-2" href="https://github.com/ricardombrodriguez"><i class="fab fa-github"></i></a>
                             <a class="btn btn-dark btn-social mx-2" href="https://www.linkedin.com/in/ricardorodriguez23/"><i class="fab fa-linkedin-in"></i></a>
                         </div>
                     </div>
                     <div class="col-sm-3">
-                        <img class="img-fluid" src="assets/img/portfolio/bernas.jpg" alt="..." />
-                        <p class="text-center"  style="margin-top:10px; font-size: 25px">
-                            <b> João Farias </b>
-                        </p>
 
-                        <p class="text-center">
-                            <span> <i class="fas fa-envelope" style="margin-right:5px"></i> joaobernardo0@ua.pt </span>
-                        </p>
+                        <div class="team-member" style="text-align: center;">
+                            <img class="mx-auto rounded-circle" src="assets/img/portfolio/bernas.jpg" alt="..." style="width:12em; height:12em;  border: 5px solid white;"/>
+                            <h4 style="margin-top:20px">João Farias </h4>
+                            <p class="text-muted">Software Architect</p>
+                            <!-- <span> <i class="fas fa-envelope" style="margin-right:5px"></i> joaobernardo0@ua.pt  </span> -->
+                        </div>
+
                         <div style="margin-left:80px">
                             <a class="btn btn-dark btn-social mx-2" href="https://github.com/bernas04"><i class="fab fa-github"></i></a>
-                            <a class="btn btn-dark btn-social mx-2" onclick="s_alert()" href="#"><i class="fab fa-linkedin-in"></i></a>
+                            <a class="btn btn-dark btn-social mx-2" onclick="alert_sweet()" href="#"><i class="fab fa-linkedin-in"></i></a>
                         </div>
                     </div>
 
@@ -271,7 +276,7 @@
                             <!-- an error submitting the form-->
                             <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
                             <!-- Submit Button-->
-                            <button class="btn btn-primary btn-xl disabled" id="submitButton" type="submit">Send</button>
+                            <button class="btn btn-primary btn-xl disabled" id="submitButton" type="submit" sytel="">Send</button>
                         </form>
                     </div>
                 </div>
@@ -285,6 +290,11 @@
         </div>
 
 
+        <script>
+            function alert_sweet(){
+                Swal.fire('Nã temos');
+            }
+        </script>
         <!-- Email script-->
         <script src="https://smtpjs.com/v3/smtp.js"></script>  
         <!-- My script-->
@@ -298,14 +308,5 @@
         <!-- * * Activate your form at https://startbootstrap.com/solution/contact-forms * *-->
         <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *-->
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
-        <script>
-            function s_alert(){
-                Swal.fire(
-                'Sorry!',
-                'Nã temos :(',
-                'error'
-                )
-            }
-        </script>
     </body>
 </html>
