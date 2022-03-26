@@ -15,11 +15,11 @@
 
 ### Architecture Diagram
 
-![architecture](schemas/DER.jpg)
+![architecture](schemas/architecture.jpg)
 
 ### DER Diagram
 
-![Der](schemas/bd.jpg)
+![Der](schemas/DER.jpg)
 
 ### Frontend
 
