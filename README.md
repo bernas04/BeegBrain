@@ -19,7 +19,7 @@
 
 ### DER Diagram
 
-![Der](schemas/bd.jpg)
+![Der](schemas/DER.jpg)
 
 ### Frontend
 
