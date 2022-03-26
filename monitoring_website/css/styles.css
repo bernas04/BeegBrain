@@ -11294,7 +11294,7 @@ html {
 }
 
 .page-section {
-  padding: 6rem 0;
+  padding: 6rem 0rem;
 }
 .page-section .page-section-heading {
   font-size: 2.25rem;
@@ -11508,4 +11508,3 @@ html {
 .copyright {
   background-color: #1a252f;
 }
-
