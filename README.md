@@ -15,7 +15,7 @@
 
 ### Architecture Diagram
 
-![architecture](schemas/architecture.jpg)
+![architecture](schemas/architecture.png)
 
 ### DER Diagram
 
