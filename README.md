@@ -33,4 +33,4 @@ The service layer of our web-app is a **Django** based REST API.
 
 ### Database
 
-We store all our data on a **mySQL**  database.
+We store all our data on a **mySQL** database.
