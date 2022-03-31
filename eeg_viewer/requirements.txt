@@ -1,2 +1,4 @@
 pyEDFlib
 matplotlib
+numpy
+tk
