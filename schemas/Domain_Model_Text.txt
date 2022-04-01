@@ -1,0 +1,92 @@
+Table Institution as inst {
+  id int [pk, increment] // auto-increment
+  name varchar
+  email varchar
+  address varchar
+  telephone varchar
+}
+
+Table Providence as prov {
+  id int [pk, ref: > inst.id]
+}
+
+Table RevisionCenter as rev {
+  id int [pk, ref: > inst.id]
+}
+
+Table Contract as contract {
+  id int [pk, increment]
+  providence int [ref: > prov.id]
+  revisioncenter int [ref: > rev.id]
+  initial_timestamp timestamp
+  final_timestamp timestamp
+}
+
+
+Table Person as p {
+  sns int [pk]
+  name varchar
+  email varchar
+  telephone varchar
+  address varchar
+  gender varchar
+  birthday date
+ }
+ 
+Table Patient as patient {
+  sns int [pk, ref: > p.sns]
+  medical_info varchar
+}
+
+Table Doctor as doctor {
+  sns int [pk, ref: > p.sns]
+  password password
+  medical_number int 
+}
+
+Table Operator as operator {
+  sns int [pk, ref: > p.sns]
+  password password
+  operator_number int 
+  providence int [ref: > prov.id]
+}
+
+Table DoctorRevisionCenter as rev {
+  doctor int [pk, ref: > doctor.sns]
+  revisioncenter int [pk, ref: > rev.id]
+}
+ 
+Table Report as report {
+  id int [pk, increment]
+  filename varchar
+  content varchar
+  timestamp timestamp
+  doctor int [ref: > doctor.sns] 
+}
+ 
+ 
+Table EEG as eeg {
+  id int [pk, increment] // auto-increment
+  filename varchar
+  filetype varchar
+  file file
+  status varchar
+  timestamp timestamp
+  report int [ref: > report.id]
+  operator int [ref: > operator.sns]
+  patient id [ref: > patient.sns]
+}
+
+Table AccessEEG as access {
+  person int [pk, ref: > p.sns]
+  eeg int [pk, ref: > eeg.id]
+}
+
+Table Event as event {
+  id int [pk, increment]
+  type varchar
+  timestamp timestamp
+  person int [ref: > p.sns] 
+  eeg int [ref: > eeg.id]
+}
+ 
