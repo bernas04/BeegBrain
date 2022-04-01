@@ -21,6 +21,10 @@
 
 ![Der](schemas/DER.jpg)
 
+### Use cases Diagram 
+![UseCases](schemas/beeg_brain_use_cases.png)
+
+This diagram is a draft.
 ### Frontend
 
 Our frontend will be developed using Angular.
