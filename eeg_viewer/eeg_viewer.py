@@ -30,7 +30,7 @@ print(f.getPhysicalMaximum(10))
 # Tempo de início do EEG
 print(f.getStartdatetime())
 
-# Tempo de duração
+# Tempo de duração  
 print(f.getFileDuration())
 
 # Técnico e paciente (algo que podemos usar no projeto)

@@ -21,6 +21,12 @@
 
 ![Der](schemas/DER.jpg)
 
+### ER Diagram
+![ER](schemas/ER.png)
+
+### Domain Model Diagram
+![DomainModel](schemas/Domain_Model.png)
+
 ### Use cases Diagram 
 ![UseCases](schemas/beeg_brain_use_cases.png)
 
