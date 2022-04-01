@@ -18,18 +18,22 @@ export class AppComponent {
 
     let document = {  
       header: 'EEG Report',  
-      table: {
-				body: [
-					['Operator', 'Doctor', 'Patient'],
-					['Rachel Solando', 'Alice Torres', 'Andrew Laedis']
-				]
-			},
       content: 
       [
+        {
+          style: 'tableExample',
+          table: {
+            body: [
+              ['Operator', 'Doctor', 'Patient'],
+              ['Rachel Solando', 'Alice Torres', 'Andrew Laedis']
+            ]
+          }
+        },
         'The patient has Alzheimer\'s, since the report demonstrated X, Y and Z.'  ,
       ],
     };  
    
     pdfMake.createPdf(document).open();  
+    //pdfMake.createPdf(document).download();  
   }  
 }
