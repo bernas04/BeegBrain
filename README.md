@@ -17,6 +17,8 @@
 
 ![architecture](schemas/architecture.png)
 
+## DataBase Model
+
 ### DER Diagram
 
 ![Der](schemas/DER.jpg)
