@@ -17,10 +17,22 @@
 
 ![architecture](schemas/architecture.png)
 
+## DataBase Model
+
 ### DER Diagram
 
 ![Der](schemas/DER.jpg)
 
+### ER Diagram
+![ER](schemas/ER.png)
+
+### Domain Model Diagram
+![DomainModel](schemas/Domain_Model.png)
+
+### Use cases Diagram 
+![UseCases](schemas/beeg_brain_use_cases.png)
+
+This diagram is a draft.
 ### Frontend
 
 Our frontend will be developed using Angular.
