@@ -1,4 +1,9 @@
 import { Component } from '@angular/core';
+// @ts-ignore
+import pdfMake from "pdfmake/build/pdfmake";  
+// @ts-ignore
+import pdfFonts from "pdfmake/build/vfs_fonts";  
+pdfMake.vfs = pdfFonts.pdfMake.vfs;  
 
 @Component({
   selector: 'app-root',
@@ -6,5 +11,29 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'beegbrain';
+
+  title = 'BEEGBRAIN';
+
+  generatePDF() {  
+
+    let document = {  
+      header: 'EEG Report',  
+      content: 
+      [
+        {
+          style: 'tableExample',
+          table: {
+            body: [
+              ['Operator', 'Doctor', 'Patient'],
+              ['Rachel Solando', 'Alice Torres', 'Andrew Laedis']
+            ]
+          }
+        },
+        'The patient has Alzheimer\'s, since the report demonstrated X, Y and Z.'  ,
+      ],
+    };  
+   
+    pdfMake.createPdf(document).open();  
+    //pdfMake.createPdf(document).download();  
+  }  
 }
