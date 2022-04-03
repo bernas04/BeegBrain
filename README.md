@@ -32,6 +32,9 @@
 ### Use cases Diagram 
 ![UseCases](schemas/beeg_brain_use_cases.png)
 
+### Deployment Diagram 
+![UseCases](schemas/deployment_diagram.png)
+
 This diagram is a draft.
 ### Frontend
 
