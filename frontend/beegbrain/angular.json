@@ -1,14 +1,17 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "cli": {
-    "analytics": "627386c9-d7d8-45f7-9429-cd4015df3d70"
+    "analytics": "f88fe365-ce0a-46b4-9560-3e1896208212"
   },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "beegbrain": {
+    "ample-admin-angular": {
       "projectType": "application",
       "schematics": {
+        "@schematics/angular:component": {
+          "style": "scss"
+        },
         "@schematics/angular:application": {
           "strict": true
         }
@@ -20,17 +23,19 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/beegbrain",
+            "outputPath": "dist/ample-admin-angular",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.app.json",
+            "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/assets/scss/style.scss",
+              "src/styles.scss"
             ],
             "scripts": []
           },
@@ -39,8 +44,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "500kb",
-                  "maximumError": "1mb"
+                  "maximumWarning": "5mb",
+                  "maximumError": "5mb"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -71,10 +76,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "beegbrain:build:production"
+              "browserTarget": "ample-admin-angular:build:production"
             },
             "development": {
-              "browserTarget": "beegbrain:build:development"
+              "browserTarget": "ample-admin-angular:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -82,7 +87,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "beegbrain:build"
+            "browserTarget": "ample-admin-angular:build"
           }
         },
         "test": {
@@ -92,12 +97,13 @@
             "polyfills": "src/polyfills.ts",
             "tsConfig": "tsconfig.spec.json",
             "karmaConfig": "karma.conf.js",
+            "inlineStyleLanguage": "scss",
             "assets": [
               "src/favicon.ico",
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.scss"
             ],
             "scripts": []
           }
@@ -105,5 +111,5 @@
       }
     }
   },
-  "defaultProject": "beegbrain"
+  "defaultProject": "ample-admin-angular"
 }
