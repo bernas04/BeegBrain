@@ -12,7 +12,7 @@ export const Approutes: Routes = [
       { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
       {
         path: 'dashboard',
-        loadChildren: () => import('./layouts/dashboard/dashboard.module').then(m => m.DashboardModule)
+        loadChildren: () => import('./layouts/dashboard.module').then(m => m.DashboardModule)
       },
       {
         path: 'workspace', children: [
