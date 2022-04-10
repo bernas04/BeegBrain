@@ -25,6 +25,8 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 import { PERFECT_SCROLLBAR_CONFIG } from 'ngx-perfect-scrollbar';
 import { PerfectScrollbarConfigInterface } from 'ngx-perfect-scrollbar';
 import { WorkspaceComponent } from './layouts/workspace/workspace.component';
+import { FiltersComponent } from './components/dashboard-components/filters/filters.component';
+import { DashboardModule } from './layouts/dashboard.module';
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -39,7 +41,8 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     SpinnerComponent,
     FullComponent,
     NavigationComponent,
-    SidebarComponent
+    SidebarComponent,
+    FiltersComponent
   ],
   imports: [
     CommonModule,
@@ -51,6 +54,7 @@ const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
     NgbModule,
     RouterModule.forRoot(Approutes, { useHash: false, relativeLinkResolution: 'legacy' }),
     PerfectScrollbarModule,
+    DashboardModule
   ],
   providers: [
     {

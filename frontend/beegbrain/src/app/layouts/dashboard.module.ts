@@ -10,6 +10,8 @@ import { TopSellingComponent } from "../components/dashboard-components/top-sell
 import { TopCardsComponent } from "../components/dashboard-components/top-cards/top-cards.component";
 import { BlogCardsComponent } from "../components/dashboard-components/blog-cards/blog-cards.component";
 import { WorkspaceComponent } from "./workspace/workspace.component";
+import { ExamDetailsComponent } from './exam-details/exam-details.component';
+import { FiltersComponent } from "../components/dashboard-components/filters/filters.component";
 
 
 const routes: Routes = [
@@ -38,7 +40,9 @@ const routes: Routes = [
     TopSellingComponent,
     TopCardsComponent,
     BlogCardsComponent,
-    WorkspaceComponent
+    WorkspaceComponent,
+    ExamDetailsComponent,
+    FiltersComponent
   ],
 })
 export class DashboardModule {}
