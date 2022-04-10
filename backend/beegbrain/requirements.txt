@@ -1,5 +1,5 @@
-rest_framework
-requests
+djangorestframework
+requests==2.24.0
 markdown
 django-filter
 django-cors-headers
