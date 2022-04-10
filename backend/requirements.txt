@@ -1,0 +1,5 @@
+rest_framework
+requests
+markdown
+django-filter
+django-cors-headers
