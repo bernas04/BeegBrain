@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
 import { FullComponent } from './layouts/full/full.component';
+import { WorkspaceComponent } from './layouts/workspace/workspace.component';
 
 export const Approutes: Routes = [
   {
@@ -11,7 +12,12 @@ export const Approutes: Routes = [
       { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
       {
         path: 'dashboard',
-        loadChildren: () => import('./dashboard/dashboard.module').then(m => m.DashboardModule)
+        loadChildren: () => import('./layouts/dashboard.module').then(m => m.DashboardModule)
+      },
+      {
+        path: 'workspace', children: [
+          { path: '', component: WorkspaceComponent }
+        ]
       },
       {
         path: 'about',
