@@ -61,9 +61,10 @@ class Operator(models.Model):
     
 # DoctorRevisionCenter -> Defines what Revision Centers Doctors work on and vice versa.
 class DoctorRevisionCenter(models.Model):
-
-    doctor = models.ForeignKey(Doctor, verbose_name=('doctor'), primary_key=True, on_delete=models.CASCADE)
-    revision_center = models.ForeignKey(RevisionCenter, verbose_name=('revision_center'), primary_key=True, on_delete=models.CASCADE)
+    class Meta:
+        unique_together = (('doctor', 'revision_center'),)
+    doctor = models.ForeignKey(Doctor, verbose_name=('doctor'), on_delete=models.CASCADE)
+    revision_center = models.ForeignKey(RevisionCenter, verbose_name=('revision_center'), on_delete=models.CASCADE)
 
 # Report -> Content written by a Doctor related to a EEG.
 class Report(models.Model):
