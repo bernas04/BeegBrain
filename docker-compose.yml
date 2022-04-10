@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+
+  django:
+    build: ./backend/beegbrain
+    command: python manage.py runserver 0.0.0.0:8080
+    volumes:
+      - /backend:/backend
+    ports:
+      - "8080:8080"
+    image: django
+    container_name: backend-django
+    restart: unless-stopped
+
+  angular:
+      build: ./frontend/beegbrain
+      image: angular
+      container_name: frontend-angular
+      restart: unless-stopped
+      depends_on:
+        - django
