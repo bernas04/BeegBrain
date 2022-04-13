@@ -1,3 +1,4 @@
+import { PatientsComponent } from './layouts/patients/patients.component';
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
@@ -17,6 +18,11 @@ export const Approutes: Routes = [
       {
         path: 'workspace', children: [
           { path: '', component: WorkspaceComponent }
+        ]
+      },
+      {
+        path: 'patients', children: [
+          { path: '', component: PatientsComponent }
         ]
       },
       {
