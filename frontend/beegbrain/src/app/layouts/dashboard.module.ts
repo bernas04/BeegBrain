@@ -1,3 +1,4 @@
+import { PatientsComponent } from './patients/patients.component';
 import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
@@ -30,6 +31,7 @@ const routes: Routes = [
     CommonModule,
     RouterModule.forChild(routes),
     NgApexchartsModule,
+
   ],
   declarations: [
     DashboardComponent,
@@ -38,7 +40,8 @@ const routes: Routes = [
     TopSellingComponent,
     TopCardsComponent,
     BlogCardsComponent,
-    WorkspaceComponent
+    WorkspaceComponent,
+    PatientsComponent,
   ],
 })
 export class DashboardModule {}
