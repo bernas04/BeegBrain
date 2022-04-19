@@ -12,7 +12,6 @@ class Institution(models.Model):
 
 # Providence -> Institution responsible for producing EEG exams, made by Operators
 class Providence(models.Model):
-
     id = models.ForeignKey(Institution, verbose_name=('id'), primary_key=True, on_delete=models.CASCADE)
 
 # Revision Center -> Institution responsible for reviewing and creating reports for EEG exams, made by Doctors
