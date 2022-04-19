@@ -1,0 +1,8 @@
+#search {
+    width: auto;
+}
+
+#search input {
+    width: 50%;
+    background-color: blue;
+}
