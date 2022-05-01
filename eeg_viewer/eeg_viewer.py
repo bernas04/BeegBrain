@@ -3,7 +3,7 @@ import pyedflib
 import matplotlib.pyplot as plt
 
 
-f = pyedflib.EdfReader("./eeg.edf")
+f = pyedflib.EdfReader("./edf_file.edf")
 
 n = f.signals_in_file # isto vai buscar os sinais e descarta o resto da informação 
 
@@ -25,7 +25,7 @@ print(f.getTransducer(0))
 print(f.getPhysicalMinimum(0))
 
 # Máximos para o canal 10 - Se não tiver parâmetro retorna uma lista com os máximos de todos os canais numa matriz
-print(f.getPhysicalMaximum(10))
+print(f.getPhysicalMaximum(0))
 
 # Tempo de início do EEG
 print(f.getStartdatetime())
@@ -45,8 +45,16 @@ for annot in f.readAnnotations():
 for i in np.arange(n):
     """o 'i' é um inteiro"""
     sigbufs[i, :] = f.readSignal(i) # o parâmetro passado aqui dentro tem a ver com o channel!
+    print("channel: " + signal_labels[i])
     ax.plot(f.readSignal(i))        # pelos vistos ele está a ler o conteúdo de todos os channels
     plt.show()                      # neste caso em concreto existem 129 channels
                                     # quanto aos plots é semelhante a matlab
+
+
+# [canal, range]
+print(sigbufs[0,:10])
+print(sigbufs[1,:10])
+
+#sigbufs - matriz bidensional com n colunas (numero de canais) e x sinais (frequencia)
 
 f.close()
