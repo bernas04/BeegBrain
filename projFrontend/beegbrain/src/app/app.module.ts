@@ -13,6 +13,9 @@ import { EegComponent } from './pages/eeg/eeg.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { EegTableComponent } from './components/eeg-table/eeg-table.component';
 import { EegFiltersComponent } from './components/eeg-filters/eeg-filters.component';
+import { UploadComponent } from './pages/upload/upload.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -26,11 +29,15 @@ import { EegFiltersComponent } from './components/eeg-filters/eeg-filters.compon
     EegComponent,
     ProfileComponent,
     EegTableComponent,
-    EegFiltersComponent
+    EegFiltersComponent,
+    UploadComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClient,
   ],
   providers: [],
   bootstrap: [AppComponent]

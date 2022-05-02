@@ -1,0 +1,45 @@
+<app-navbar></app-navbar>
+
+<div class="card w-100">
+
+    <div class="content card-body">
+
+        <div class="card">
+            <div class="card-header">
+                <h2>Upload an EEG</h2>
+            </div>
+            <div class="card-body">
+                <form (ngSubmit)="submitEEG()">
+                    <div class="patient row">
+                        <div class="col-4">
+                            <label for="patient">Patient ID:</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="patient" name="patient" required>
+                        </div>
+                    </div>
+                    <div class="operator row">
+                        <div class="col-4">
+                            <label for="operator">Operator ID:</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="text" id="operator" name="operator" required>
+                        </div>
+                    </div>
+                    <div class="file row">
+                        <div class="col-4">
+                            <label for="file">Select a file:</label>
+                        </div>
+                        <div class="col-8">
+                            <input type="file" id="file" name="file" accept=".edf" required>
+                        </div>
+                    </div>
+                    <div class="submit">
+                        <button type="submit" id="submit" value="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+    </div>
+</div>
