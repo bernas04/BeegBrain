@@ -2,3 +2,4 @@ pyEDFlib
 matplotlib
 numpy
 tk
+pyflac
