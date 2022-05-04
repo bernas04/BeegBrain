@@ -12,12 +12,12 @@ class Institution(models.Model):
     telephone = models.CharField(max_length=20)
 
 # Providence -> Institution responsible for producing EEG exams, made by Operators
-class Providence(models.Model):
+class Providence(Institution):
     institution = models.OneToOneField(Institution, on_delete=models.CASCADE, primary_key=True)
     #id = models.ForeignKey(Institution, verbose_name=('id'), primary_key=True, on_delete=models.CASCADE)
 
 # Revision Center -> Institution responsible for reviewing and creating reports for EEG exams, made by Doctors
-class RevisionCenter(models.Model):
+class RevisionCenter(Institution):
     institution = models.OneToOneField(Institution, on_delete=models.CASCADE, primary_key=True)
 
     #id = models.ForeignKey(Institution, verbose_name=('id'), primary_key=True, on_delete=models.CASCADE)
@@ -31,7 +31,7 @@ class Contract(models.Model):
 
 # Person -> A person can be divided in three different entities: Patient, Doctor and Operator
 class Person(models.Model):
-    health_number = models.CharField(max_length=20, primary_key=True)
+    health_number = models.CharField(max_length=20, unique=True)
     name = models.CharField(max_length=100)
     email = models.EmailField()
     address = models.CharField(max_length=300)
@@ -39,9 +39,6 @@ class Person(models.Model):
     birthday = models.DateField()
     GENDERS = [("M","Male"),("F","Female")]
     gender = models.CharField(max_length=1, choices=GENDERS)
-
-    class Meta:
-        abstract = True
 
 # Patient -> Entity that doesn't have access to the application, receiving the EEG reports via email.
 class Patient(Person):
@@ -94,7 +91,7 @@ class EEG(models.Model):
 # AccessEEG -> Table responsible for defining what Persons have access to a specific EEG
 class AccessEEG(models.Model):
 
-    patient = models.ForeignKey(Patient, verbose_name=('patient'), on_delete=models.CASCADE)
+    patient = models.ForeignKey(Patient, verbose_name=('patient'), on_delete=models.CASCADE, null=True)
     eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE)
 
 # Event -> Entity responsible for monitoring the life-cycle of an EEG (examples: UPLOAD, DELETE, GENERATE_PDF, etc...).
