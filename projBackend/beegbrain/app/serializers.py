@@ -1,80 +1,87 @@
 from dataclasses import field, fields
 from pyexpat import model
 from rest_framework import serializers
-from app import models
+from app.models import *
 
 class InstitutionSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Institution
+        model = Institution
         fields = "__all__"
 
 class ProvidenceSerializer(serializers.ModelSerializer):
     parent_model = InstitutionSerializer(many=False, read_only=True)
     class Meta:
-        model = models.Providence
+        model = Providence
         fields = "__all__"
 
 class RevisionCenterSerializer(serializers.ModelSerializer):
     parent_institution = InstitutionSerializer(many=False, read_only=True)
     class Meta:
-        model = models.RevisionCenter
+        model = RevisionCenter
         fields = "__all__"
 
 class ContractSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Contract
+        model = Contract
         fields = "__all__"
 
 class PersonSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Person
+        model = Person
         fields = "__all__"
 
 class PatientSerializer(serializers.ModelSerializer):
     parent_person = PersonSerializer(many=False, read_only = True)
     class Meta:
-        model = models.Patient
+        model = Patient
         fields = "__all__"
 
 
 class DoctorSerializer(serializers.ModelSerializer):
     parent_person = PersonSerializer(many=False, read_only = True)
     class Meta:
-        model = models.Doctor
+        model = Doctor
         fields = "__all__"
 
 class OperatorSerializer(serializers.ModelSerializer):
     parent_person = PersonSerializer(many=False, read_only = True)
     class Meta:
-        model = models.Operator
+        model = Operator
         fields = "__all__"
 
 class DoctorRevisionCenterSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.DoctorRevisionCenter
+        model = DoctorRevisionCenter
         fields = "__all__"
 
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:
-        model = models.Report
+        model = Report
         fields = "__all__"
 
 class EEGSerializer(serializers.ModelSerializer):
     class Meta: 
-        model = models.EEG
-        fields = "__all__"
+        model = EEG
+        fields = ('id','file','status', 'timestamp', 'priority','report','operator','patient')
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['report'] = ReportSerializer(Report.objects.get(id=data['report'])).data
+        data['operator'] = OperatorSerializer(Operator.objects.get(id=data['operator'])).data
+        data['patient'] = PatientSerializer(Patient.objects.get(id=data['patient'])).data
+        return data
 
 class AccessEEGSerializer(serializers.ModelSerializer):
     class Meta:
-        models = models.AccessEEG
+        models = AccessEEG
         fields = "__all__"
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
-        models = models.Event
+        models = Event
         fields = "__all__"
 
 class SharedFolderSerializer(serializers.ModelSerializer):
     class Meta: 
-        models = models.SharedFolder
+        models = SharedFolder
         fields = "__all__"

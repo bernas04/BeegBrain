@@ -21,6 +21,7 @@ export class UploadComponent implements OnInit {
 
   submitEEG() {
     console.log("Submitting EEG")
+    console.log(this.patientID)
     this.eegService.submitEEG(this.patientID,this.operatorID,this.file).subscribe((eeg) => {
       this.router.navigate(['/eeg/' + eeg.id])
     });

@@ -47,7 +47,7 @@ urlpatterns = [
     path('api/report', views.getReportById),
 
     path('api/eegs', views.getEeg),
-    path('api/createEeg', views.createEEG),
+    path('api/createEEG', views.createEEG),
     path('api/eeg', views.getEegById),
 
     path('api/events', views.getEvent),
