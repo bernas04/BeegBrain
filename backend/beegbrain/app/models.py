@@ -1,4 +1,3 @@
-from pickle import TRUE
 from django.db import models
 
 # Create your models here.
@@ -51,6 +50,9 @@ class Doctor(Person):
     #person = models.OneToOneField(Person, on_delete=models.CASCADE, primary_key=True)
     #health_number = models.ForeignKey(Person, verbose_name=('health_number'), primary_key=True, on_delete=models.CASCADE)
     medical_number = models.CharField(max_length=20)
+
+    def get_birthday(self):
+        return super().birthday
 
 # Operator -> An operator only works in one Providence. He's responsible for producing EEGs (outside the application) and uploading them
 # into the platform to be seen by the Revision Center that holds a contract with his Providence.
