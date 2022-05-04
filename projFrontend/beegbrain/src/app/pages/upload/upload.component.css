@@ -24,3 +24,9 @@ button {
     margin: 0 auto;
     display: block;
 }
+
+.upload {
+    border-style: dotted;
+    border-width: 5px;
+    height: 200px;
+}
