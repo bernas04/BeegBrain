@@ -26,13 +26,11 @@
                             <input type="text" id="operator" name="operator" required>
                         </div>
                     </div>
-                    <div class="file row">
-                        <div class="col-4">
-                            <label for="file">Select a file:</label>
-                        </div>
-                        <div class="col-8">
-                            <input type="file" id="file" name="file" accept=".edf" required>
-                        </div>
+                    <div class="upload row">
+                        <h4>Drag and drop the file</h4>
+                        <h4>or</h4>
+                        <label for="file">Upload file</label>
+                        <input type="file" id="file" name="file" accept=".edf" required multiple>
                     </div>
                     <div class="submit">
                         <button type="submit" id="submit" value="submit">Submit</button>
