@@ -1,6 +1,9 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { EEG } from '../classes/eeg';
+import { EEG } from '../classes/EEG';
+import { Operator } from '../classes/Operator';
+import { Patient } from '../classes/Patient';
+import { Report } from '../classes/Report';
 
 @Injectable({
   providedIn: 'root'
@@ -11,26 +14,24 @@ export class EEGService {
 
   constructor(private http: HttpClient) { }
 
-  submitEEG(patient: Patient, opetator: Operator, file: File) {
+  submitEEG(patientID: string, operatorID: string, file: File) {
 
-    let eeg : EEG = new EEG;
-    eeg.patientID = 
-
-    return this.http.post<EEG>(this.BASE_URL + 'createEEG', eeg,  { 
+    let parameters = { 
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-      }),
-    });
+    })};
+
+    let eeg = new EEG;
+    let patient = new Patient;
+    let operator = new Operator;
+    operator.healthNumber = operatorID;
+    patient.healthNumber = patientID;
+    eeg.patient = patient;
+    eeg.operator = operator;
+    eeg.file = file;
+    
+    return this.http.post<any>(this.BASE_URL + 'createEEG', eeg, parameters);
 
   }
-/* 
-  DEPOIS, UMA VEZ QUE OS POSTS E GETS VÃO TER TOKENS DE AUTORIZAÇÃO, VAI FICAR ASSIM:
-  return this.http.post<EEG>(this.BASE_URL + 'createEEG', eeg,  { 
-    headers: new HttpHeaders({
-      'Authorization': 'Token ' + token,
-      'Content-Type': 'application/json',
-    }),
-  });
- */
 
 }
