@@ -25,7 +25,7 @@ raw.plot(n_channels=64, duration=5, scalings={"eeg": 75e-6}, start=10)
 """
 
 
-# ISTO INSTALA UMA MERDA COM 1.5GB, GANDA SHOTLESS
+# ISTO INSTALA UMA CENA COM 1.5GB, GANDA SHOTLESS
 """ 
 sample_data_folder = mne.datasets.sample.data_path()
 sample_data_raw_file = os.path.join(sample_data_folder, 'MEG', 'sample', 'eeg.edf') 
@@ -53,11 +53,11 @@ raw.plot(duration=5, n_channels=30)
 ica = mne.preprocessing.ICA(n_components=30, random_state=97, max_iter=50)
 ica.fit(raw)
 
-print(ica.info["ch_names"])
+""" print(ica.info["ch_names"]) """
 
-ica.exclude = ["C1"] # details on how we picked these are omitted here
-print()
-print(ica.info["ch_names"])
+ica.exclude = [1,2] # details on how we picked these are omitted here
+""" print()
+print(ica.info["ch_names"]) """
 ica.plot_properties(raw, picks=ica.exclude)
 
 orig_raw = raw.copy()
