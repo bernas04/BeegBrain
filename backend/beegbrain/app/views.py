@@ -140,6 +140,39 @@ def getPatientByNss(request):
     return Response(serializer.data)
 
 
+# ############################### Operators ###############################
+@api_view(['GET'])
+def getOperators(request):
+    """GET de todos os Operators"""
+    operators = Operator.objects.all()
+    serializer = serializers.OperatorSerializer(operators, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+def createOperator(request):
+    """POST de um Operator"""
+    serializer = serializers.OperatorSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def getOperatorById(request):
+    """GET de um operator pelo seu id"""
+    op_id = int(request.GET['id'])
+    try:
+        ret = Operator.objects.get(health_number=op_id)
+    except Operator.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = serializers.OperatorSerializer(ret)
+    return Response(serializer.data)
+
+
 # ############################### DOCTORS ###############################
 @api_view(['GET'])
 def getDoctors(request):

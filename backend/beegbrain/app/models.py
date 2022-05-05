@@ -11,7 +11,7 @@ class Institution(models.Model):
     telephone = models.CharField(max_length=20)
 
     def __str__(self) -> str:
-        return f'{self.name}'
+        return f'{self.institution_id} {self.name}'
 
 # Providence -> Institution responsible for producing EEG exams, made by Operators
 class Providence(Institution):
@@ -35,6 +35,9 @@ class Contract(models.Model):
     providence = models.ForeignKey(Providence, verbose_name=('providence'), on_delete=models.CASCADE)
     revision_center = models.ForeignKey(RevisionCenter, verbose_name=('revision_center'), on_delete=models.CASCADE)
 
+    def __str__(self) -> str:
+        return f'Providence: ' + self.providence.name + ' RevisionCenter: ' + self.revision_center.name
+
 # Person -> A person can be divided in three different entities: Patient, Doctor and Operator
 class Person(models.Model):
     health_number = models.CharField(max_length=20, unique=True)
@@ -47,7 +50,7 @@ class Person(models.Model):
     gender = models.CharField(max_length=1, choices=GENDERS)
 
     def __str__(self) -> str:
-        return (f'{self.name}') 
+        return f'{self.id} {self.name}'
 
 # Patient -> Entity that doesn't have access to the application, receiving the EEG reports via email.
 class Patient(Person):
