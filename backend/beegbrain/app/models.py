@@ -10,15 +10,22 @@ class Institution(models.Model):
     address = models.CharField(max_length=300)
     telephone = models.CharField(max_length=20)
 
+    def __str__(self) -> str:
+        return f'{self.name}'
+
 # Providence -> Institution responsible for producing EEG exams, made by Operators
 class Providence(Institution):
     institution = models.OneToOneField(Institution, on_delete=models.CASCADE, primary_key=True)
     #id = models.ForeignKey(Institution, verbose_name=('id'), primary_key=True, on_delete=models.CASCADE)
+    def __str__(self) -> str:
+        return 'Providence: ' + super().__str__()
 
 # Revision Center -> Institution responsible for reviewing and creating reports for EEG exams, made by Doctors
 class RevisionCenter(Institution):
     institution = models.OneToOneField(Institution, on_delete=models.CASCADE, primary_key=True)
 
+    def __str__(self) -> str:
+        return 'Revision Center: ' + super().__str__()
     #id = models.ForeignKey(Institution, verbose_name=('id'), primary_key=True, on_delete=models.CASCADE)
 
 # Contract -> Exclusive contract between a Providence and a RevisionCenter (1:1 relation). 
@@ -39,11 +46,17 @@ class Person(models.Model):
     GENDERS = [("M","Male"),("F","Female")]
     gender = models.CharField(max_length=1, choices=GENDERS)
 
+    def __str__(self) -> str:
+        return (f'{self.name}') 
+
 # Patient -> Entity that doesn't have access to the application, receiving the EEG reports via email.
 class Patient(Person):
     #person = models.OneToOneField(Person, on_delete=models.CASCADE, primary_key=True)
     #health_number = models.ForeignKey(Person, verbose_name=('health_number'), primary_key=True, on_delete=models.CASCADE)
     medical_info = models.TextField()
+
+    def __str__(self) -> str:
+        return 'Patient: ' + super().__str__() + f' {self.health_number}'
 
 # Doctor -> A Doctor can work in more than one Revision Center. He's responsible for visualizing, monitoring and reporting an EEG exam.
 class Doctor(Person):
@@ -51,8 +64,8 @@ class Doctor(Person):
     #health_number = models.ForeignKey(Person, verbose_name=('health_number'), primary_key=True, on_delete=models.CASCADE)
     medical_number = models.CharField(max_length=20)
 
-    def get_birthday(self):
-        return super().birthday
+    def __str__(self) -> str:
+        return 'Doctor: ' + super().__str__() + f' {self.medical_number}'
 
 # Operator -> An operator only works in one Providence. He's responsible for producing EEGs (outside the application) and uploading them
 # into the platform to be seen by the Revision Center that holds a contract with his Providence.
@@ -62,13 +75,16 @@ class Operator(Person):
     #health_number = models.ForeignKey(Person, verbose_name=('health_number'), primary_key=True, on_delete=models.CASCADE)
     operator_number = models.CharField(max_length=20)
     providence = models.ForeignKey(Providence, verbose_name=('providence'), on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return 'Operator: ' + super().__str__() + f' {self.health_number}'
     
 # DoctorRevisionCenter -> Defines what Revision Centers Doctors work on and vice versa.
 class DoctorRevisionCenter(models.Model):
     class Meta:
         unique_together = (('doctor', 'revision_center'),)
     doctor = models.ForeignKey(Doctor, verbose_name=('doctor'), on_delete=models.CASCADE)
-    revision_center = models.ForeignKey(RevisionCenter, verbose_name=('revision_center'), on_delete=models.CASCADE)
+    revision_center = models.ForeignKey(RevisionCenter, verbose_name=('revision center'), on_delete=models.CASCADE)
 
 # Report -> Content written by a Doctor related to a EEG.
 class Report(models.Model):
@@ -108,6 +124,6 @@ class Event(models.Model):
 
 # SharedFolder -> Table responsible for defining the EEG exams that an institution (and its workers) is allowed to access.  
 class SharedFolder(models.Model):
-    
+    path = models.CharField(max_length=300, null=True)
     institution = models.ForeignKey(Institution, verbose_name=('institution'), on_delete=models.CASCADE)
     eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE)
