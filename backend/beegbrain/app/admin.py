@@ -3,6 +3,7 @@ from app.models import *
 
 # Register your models here.
 admin.site.register(Institution)
+admin.site.register(Person)
 admin.site.register(Providence)
 admin.site.register(RevisionCenter)
 admin.site.register(Contract)

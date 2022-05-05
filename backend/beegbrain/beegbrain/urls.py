@@ -18,6 +18,16 @@ from django.urls import path
 
 from app import views
 
+# NOTA MUITO IMPORTANTE PARA QUANDO ESTIVERMOS A ADICIONAR CENAS UM MODEL QUE TENHA UM FIELD
+# QUE É OUTRO MODEL, TEMOS QUE ADICIONAR A CHAVE PRIMÁRIA DO MODEL QUE É PASSADO COMO FIELD
+#
+# EX: http://127.0.0.1:8000/api/createOperator
+# {"name": "Alfred", "email": "alfred@gmail.com", "address": "Austin Street", "telephone": "965087101", 
+# "birthday": "1966-11-29", "health_number": "985041310", "gender": "F", "operator_number": "293792027", "providence":"asd"} 
+#
+# A providence TEM QUE SER UM INTEIRO PORQUE A CHAVE PRIMÁRIA DE providence É O ID
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -25,6 +35,10 @@ urlpatterns = [
     path('api/patients', views.getPatients),
     path('api/createPatient', views.createPatient),
     path('api/patient', views.getPatientByNss),
+
+    path('api/operators', views.getOperators),
+    path('api/createOperator', views.createOperator),
+    path('api/operator', views.getOperatorById),
     
     path('api/doctors', views.getDoctors),
     path('api/createDoctor', views.createDoctor),
