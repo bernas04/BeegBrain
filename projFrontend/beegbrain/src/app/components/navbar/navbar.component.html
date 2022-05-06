@@ -1,6 +1,10 @@
+<script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
+
     <a class="navbar-brand" href="#">
-      <img src="../../../assets/beegbrain.png" width="150" height="40" alt="">
+        <img src="../../../assets/beegbrain.png" width="150" height="40" alt="">
     </a>
     <ul class="navbar-nav mr-auto">
         <li class="nav-item active">
@@ -10,10 +14,20 @@
             <a class="nav-link" routerLink="/workspace">Workspace</a>
         </li>
         <li class="nav-item">
+
             <a class="nav-link" routerLink="/patients">Patients</a>
         </li>
     </ul>
     <form class="form-inline">
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Log/Profile</button>
+        <button class="btn-lg" style=" background-color: Transparent; background-repeat:no-repeat; border: none; cursor:pointer; overflow: hidden; outline:none; color: white; " type="submit">
+            <i  class="bi bi-person-circle"></i>
+        </button>
     </form>
+    <form class="form-inline">
+        <button class="btn-lg" style="background-color: Transparent; background-repeat:no-repeat; border: none; cursor:pointer; overflow: hidden; outline:none; color: white; " type="submit">
+            <i class="glyphicon glyphicon-log-out"></i>
+        </button>
+    </form>
+
+
 </nav>
