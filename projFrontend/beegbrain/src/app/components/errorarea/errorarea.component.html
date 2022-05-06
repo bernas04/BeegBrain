@@ -1,9 +1,10 @@
 <div class="card">
     <div class="card-body">
         <!-- title -->
-                <h4 class="card-title"><strong>   EEG Exams </strong></h4>
-                <h5 class="card-subtitle mt-1">Overview of the projects</h5>
-            
+                <h4 class="card-title"> <strong> Error Area </strong> </h4>
+                <h5 class="card-subtitle mt-1">Check which exams are with some issues </h5>
+              
+
         <!-- title -->
         <div class="table-responsive">
             <table class="table align-middle">
@@ -12,31 +13,35 @@
                         <th class="text-dark font-medium fs-4">Exam ID</th>
                         <th class="text-dark font-medium fs-4">Pacient</th>
                         <th class="text-dark font-medium fs-4">Status</th>
-                        <th class="text-dark font-medium fs-4">Analyse</th>
+                        <th class="text-dark font-medium fs-4">Review</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor='let ts of topSelling'>
                         <td>
                             <div class="d-flex align-items-center">
                                 <div class="ms-3">
-                                    <h5 class="mb-0 font-medium">{{ts.uname}}</h5>
-                                    <span class="text-muted">{{ts.gmail}}</span>
+                                    <h5 class="mb-0 font-medium"> a </h5>
+                                    <span class="text-muted"> </span>
                                 </div>
                             </div>
                         </td>
-                        <td class="fs-4">{{ts.productName}}</td>
+                        <td class="fs-4"></td>
                         <td>
-                            <span class="p-2 bg-{{ts.status}} rounded-circle d-inline-block ms-3"></span>
                         </td>
                         
                         <td>
                             <button type="button" class="btn btn-primary"> <i class="bi bi-eye-fill"></i> </button>
                         </td>
-                    </tr>              
                 </tbody>
             </table>
         </div>
+        <div class="d-flex align-items-center justify-content-center">
+
+            <button type="button" style="border-radius: 3%" class="btn btn-danger"> Contact support team <i class="bi bi-envelope-fill" ></i></button>
+
+        </div>
+
     </div>
+    
     
 </div>
