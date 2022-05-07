@@ -274,28 +274,29 @@ def getEeg(request):
 @api_view(['POST'])
 def createEEG(request):
     """POST de um EEG"""
+
     operator = None
     patient = None
 
-    operatorSsn = request.data['operator']['healthNumber']
-    print("===================================")
+    print("entrou")
     print("===================================")
 
+    print(request.data)
+
     try:
-        operator = Operator.objects.get(health_number=operatorSsn)
         operator = Operator.objects.get(health_number=request.data['operatorID'])
     except Operator.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    patientSsn = request.data['patient']['healthNumber']
+    print(operator)
+
     try:
-        patient = Patient.objects.get(health_number=patientSsn)
         patient = Patient.objects.get(health_number=request.data['patientID'])
     except Patient.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    serializer = serializers.EEGSerializer(data=request.data)
-    print("===================================")
+    print(patient)
+
 
     file = request.data['file']
 
@@ -309,6 +310,7 @@ def createEEG(request):
         "timestramp":datetime.now()
     }
 
+    print("===================================")
     serializer = serializers.EEGSerializer(data=eeg)
     if serializer.is_valid():
         print("valid")

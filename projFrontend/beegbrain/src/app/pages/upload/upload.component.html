@@ -15,7 +15,7 @@
                             <label for="patient">Patient ID:</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" id="patient" name="patient" required>
+                            <input [(ngModel)]="patientID" type="text" id="patient" name="patient" required>
                         </div>
                     </div>
                     <div class="operator row">
@@ -23,14 +23,14 @@
                             <label for="operator">Operator ID:</label>
                         </div>
                         <div class="col-8">
-                            <input type="text" id="operator" name="operator" required>
+                            <input [(ngModel)]="operatorID" type="text" id="operator" name="operator" required>
                         </div>
                     </div>
                     <div class="upload row">
                         <h4>Drag and drop the file</h4>
                         <h4>or</h4>
                         <label for="file">Upload file</label>
-                        <input type="file" id="file" name="file" accept=".edf" required multiple>
+                        <input [(ngModel)]="file" type="file" id="file" name="file" accept=".edf" required multiple>
                     </div>
                     <div class="submit">
                         <button type="submit" id="submit" value="submit">Submit</button>
