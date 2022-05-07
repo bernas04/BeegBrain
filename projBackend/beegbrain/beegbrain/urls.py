@@ -16,7 +16,69 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from app import views
+
+# NOTA MUITO IMPORTANTE PARA QUANDO ESTIVERMOS A ADICIONAR CENAS UM MODEL QUE TENHA UM FIELD
+# QUE É OUTRO MODEL, TEMOS QUE ADICIONAR A CHAVE PRIMÁRIA DO MODEL QUE É PASSADO COMO FIELD
+#
+# EX: http://127.0.0.1:8000/api/createOperator
+# {"name": "Alfred", "email": "alfred@gmail.com", "address": "Austin Street", "telephone": "965087101", 
+# "birthday": "1966-11-29", "health_number": "985041310", "gender": "F", "operator_number": "293792027", "providence":"asd"} 
+#
+# A providence TEM QUE SER UM INTEIRO PORQUE A CHAVE PRIMÁRIA DE providence É O ID
+
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
+    path('api/patients', views.getPatients),
+    path('api/createPatient', views.createPatient),
+    path('api/patient', views.getPatientByNss),
+
+    path('api/operators', views.getOperators),
+    path('api/createOperator', views.createOperator),
+    path('api/operator', views.getOperatorById),
+    
+    path('api/doctors', views.getDoctors),
+    path('api/createDoctor', views.createDoctor),
+    path('api/doctor', views.getDoctorById),
+
+    path('api/proveniences', views.getProvidence),
+    path('api/createProveniences', views.createProvidence),
+    path('api/providence', views.getProvidenceById),
+
+    path('api/revisioncenters', views.getRevisionCenter),
+    path('api/createRevisionCenter', views.createRevisionCenter),
+    path('api/revisioncenter', views.getRevisionCenterById),
+
+    path('api/contracts', views.getContract),
+    path('api/createContract', views.createContract),
+    path('api/contract', views.getContractById),
+
+    path('api/reports', views.getReport),
+    path('api/createReport', views.createReport),
+    path('api/report', views.getReportById),
+
+    path('api/eegs', views.getEeg),
+    path('api/createEeg', views.createEEG),
+    path('api/eeg', views.getEegById),
+
+    path('api/events', views.getEvent),
+    path('api/createEvent', views.createEvent),
+    path('api/event', views.getEventById),
+
+    path('api/sharedFolders', views.sharedFolder),
+    path('api/createSharedFolder', views.createSharedFolder),
+    path('api/sharedFolder', views.getSharedFolderById),
+
+    path('api/accessEeg', views.getAccessEeg),
+    path('api/createAccessEeg', views.createAccessEeg),
+    
+    path('api/doctorevisioncenter', views.getDoctorRevisionCenter),
+    path('api/createDoctorevisioncenter', views.createDoctorRevisionCenter),
+
+
+    
+
 ]

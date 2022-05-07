@@ -8,7 +8,7 @@ from rest_framework import status
 
 # ############################### PROVENIENCIAS ###############################
 @api_view(['GET'])
-def get_providence(request):
+def getProvidence(request):
     """GET de todas as Proveniencias"""
     providences = Providence.objects.all()
     serializer = serializers.ProvidenceSerializer(providences, many=True)
@@ -16,7 +16,7 @@ def get_providence(request):
 
 
 @api_view(['POST'])
-def create_providence(request):
+def createProvidence(request):
     """POST de uma Proveniencia"""
     serializer = serializers.ProvidenceSerializer(data=request.data)
     if serializer.is_valid():
@@ -27,7 +27,7 @@ def create_providence(request):
 
 
 @api_view(['GET'])
-def get_providence_by_id(request, id):
+def getProvidenceById(request):
     """GET de uma Proveniencia pelo seu id"""
     prov_id = int(request.GET['id'])
     try:
@@ -42,7 +42,7 @@ def get_providence_by_id(request, id):
 
 # ############################### REVISION CENTER ###############################
 @api_view(['GET'])
-def get_revision_center(request):
+def getRevisionCenter(request):
     """GET de todos os centros de revisão"""
     revision_centers = RevisionCenter.objects.all()
     serializer = serializers.RevisionCenterSerializer(revision_centers, many=True)
@@ -50,7 +50,7 @@ def get_revision_center(request):
 
 
 @api_view(['POST'])
-def create_revision_center(request):
+def createRevisionCenter(request):
     """POST de um Centro de Revisão"""
     serializer = serializers.RevisionCenterSerializer(data=request.data)
     if serializer.is_valid():
@@ -61,7 +61,7 @@ def create_revision_center(request):
 
 
 @api_view(['GET'])
-def get_revision_center_by_id(request, id):
+def getRevisionCenterById(request, id):
     """GET de um Centro de Revisão pelo seu id"""
     rev_id = int(request.GET['id'])
     try:
@@ -75,7 +75,7 @@ def get_revision_center_by_id(request, id):
 
 # ############################### CONTRACT ###############################
 @api_view(['GET'])
-def get_contract(request):
+def getContract(request):
     """GET de todos os contratos"""
     contracts = Contract.objects.all()
     serializer = serializers.ContractSerializer(contracts, many=True)
@@ -83,7 +83,7 @@ def get_contract(request):
 
 
 @api_view(['POST'])
-def create_contract(request):
+def createContract(request):
     """POST de um Contracto"""
     serializer = serializers.ContractSerializer(data=request.data)
     if serializer.is_valid():
@@ -94,7 +94,7 @@ def create_contract(request):
 
 
 @api_view(['GET'])
-def get_contract_by_id(request, id):
+def getContractById(request, id):
     """GET de um contrato pelo seu id"""
     cont_id = int(request.GET['id'])
     try:
@@ -109,7 +109,7 @@ def get_contract_by_id(request, id):
 
 # ############################### PATIENTS ###############################
 @api_view(['GET'])
-def get_patient(request):
+def getPatients(request):
     """GET de todos os pacientes"""
     patients = Patient.objects.all()
     serializer = serializers.PatientSerializer(patients, many=True)
@@ -117,7 +117,7 @@ def get_patient(request):
 
 
 @api_view(['POST'])
-def create_patient(request):
+def createPatient(request):
     """POST de um Paciente"""
     serializer = serializers.PatientSerializer(data=request.data)
     if serializer.is_valid():
@@ -128,12 +128,11 @@ def create_patient(request):
 
 
 @api_view(['GET'])
-def get_patient_by_id(request, id):
+def getPatientByNss(request):
     """GET de um paciente pelo seu id"""
-    pat_id = int(request.GET['id'])
+    pat_id = int(request.GET['nss'])
     try:
-        ret = Patient.objects.get(id=pat_id)
-        
+        ret = Patient.objects.get(health_number=pat_id)
     except Patient.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
@@ -141,9 +140,42 @@ def get_patient_by_id(request, id):
     return Response(serializer.data)
 
 
+# ############################### Operators ###############################
+@api_view(['GET'])
+def getOperators(request):
+    """GET de todos os Operators"""
+    operators = Operator.objects.all()
+    serializer = serializers.OperatorSerializer(operators, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+def createOperator(request):
+    """POST de um Operator"""
+    serializer = serializers.OperatorSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+def getOperatorById(request):
+    """GET de um operator pelo seu id"""
+    op_id = int(request.GET['id'])
+    try:
+        ret = Operator.objects.get(health_number=op_id)
+    except Operator.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = serializers.OperatorSerializer(ret)
+    return Response(serializer.data)
+
+
 # ############################### DOCTORS ###############################
 @api_view(['GET'])
-def get_doctor(request):
+def getDoctors(request):
     """GET de todos os médicos"""
     doctors = Doctor.objects.all()
     serializer = serializers.DoctorSerializer(doctors, many=True)
@@ -151,7 +183,7 @@ def get_doctor(request):
 
 
 @api_view(['POST'])
-def create_doctor(request):
+def createDoctor(request):
     """POST de um Doctor"""
     serializer = serializers.DoctorSerializer(data=request.data)
     if serializer.is_valid():
@@ -162,7 +194,7 @@ def create_doctor(request):
 
 
 @api_view(['GET'])
-def get_doctor_by_id(request, id):
+def getDoctorById(request):
     """GET de um Doutor pelo seu id"""
     doc_id = int(request.GET['id'])
     try:
@@ -177,7 +209,7 @@ def get_doctor_by_id(request, id):
 
 # ############################### DOCTOR_REVISON _CENTER ###############################
 @api_view(['GET'])
-def get_doctor_revision_center(request):
+def getDoctorRevisionCenter(request):
     """GET de todos os doctor_revision_center"""
     doctor_revision_center = DoctorRevisionCenter.objects.all()
     serializer = serializers.DoctorRevisionCenterSerializer(doctor_revision_center, many=True)
@@ -185,7 +217,7 @@ def get_doctor_revision_center(request):
 
 
 @api_view(['POST'])
-def create_doctor_revision_center(request):
+def createDoctorRevisionCenter(request):
     """POST de um Doctor_Revision_Center"""
     serializer = serializers.DoctorRevisionCenterSerializer(data=request.data)
     if serializer.is_valid():
@@ -197,7 +229,7 @@ def create_doctor_revision_center(request):
 
 # ############################### REPORT ###############################
 @api_view(['GET'])
-def get_report(request):
+def getReport(request):
     """GET de todos os relatórios"""
     reports = Report.objects.all()
     serializer = serializers.ReportSerializer(reports, many=True)
@@ -205,7 +237,7 @@ def get_report(request):
 
 
 @api_view(['POST'])
-def create_report(request):
+def createReport(request):
     """POST de um Report"""
     serializer = serializers.ReportSerializer(data=request.data)
     if serializer.is_valid():
@@ -216,7 +248,7 @@ def create_report(request):
 
 
 @api_view(['GET'])
-def get_report_by_id(request, id):
+def getReportById(request):
     """GET de um relatório pelo seu id"""
     rep_id = int(request.GET['id'])
     try:
@@ -231,7 +263,7 @@ def get_report_by_id(request, id):
 
 # ############################### EEG ###############################
 @api_view(['GET'])
-def get_eeg(request):
+def getEeg(request):
     """GET de todos os EEG's"""
     eegs = EEG.objects.all()
     serializer = serializers.EEGSerializer(eegs, many=True)
@@ -239,8 +271,23 @@ def get_eeg(request):
 
 
 @api_view(['POST'])
-def create_EEG(request):
+def createEEG(request):
     """POST de um EEG"""
+    operator = None
+    patient = None
+
+    operatorSsn = request.data['operator']['healthNumber']
+    try:
+        operator = Operator.objects.get(health_number=operatorSsn)
+    except Operator.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    patientSsn = request.data['patient']['healthNumber']
+    try:
+        patient = Patient.objects.get(health_number=patientSsn)
+    except Patient.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
     serializer = serializers.EEGSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -250,7 +297,7 @@ def create_EEG(request):
 
 
 @api_view(['GET'])
-def get_eeg_by_id(request, id):
+def getEegById(request, id):
     """GET de um EEG pelo seu id"""
     eeg_id = int(request.GET['id'])
     try:
@@ -266,7 +313,7 @@ def get_eeg_by_id(request, id):
 
 # ############################### ACESS_EEG ###############################
 @api_view(['GET'])
-def get_access_eeg(request):
+def getAccessEeg(request):
     """GET de todos os access_eeg"""
     access_eegs = AccessEEG.objects.all()
     serializer = serializers.ReportSerializer(access_eegs, many = True)
@@ -274,7 +321,7 @@ def get_access_eeg(request):
 
 
 @api_view(['POST'])
-def create_access_eeg(request):
+def createAccessEeg(request):
     """POST de um Access EEG"""
     serializer = serializers.ReportSerializer(data=request.data)
     if serializer.is_valid():
@@ -286,7 +333,7 @@ def create_access_eeg(request):
 
 # ############################### EVENT ###############################
 @api_view(['GET'])
-def get_event(request):
+def getEvent(request):
     """GET de todos os eventos"""
     events = Event.objects.all()
     serializer = serializers.EventSerializer(events, many=True)
@@ -294,7 +341,7 @@ def get_event(request):
 
 
 @api_view(['POST'])
-def create_event(request):
+def createEvent(request):
     """POST de um evento"""
     serializer = serializers.EventSerializer(data=request.data)
     if serializer.is_valid():
@@ -305,7 +352,7 @@ def create_event(request):
 
 
 @api_view(['GET'])
-def get_event_by_id(request, id):
+def getEventById(request, id):
     """GET de um evento pelo seu id"""
     eve_id = int(request.GET['id'])
     try:
@@ -320,7 +367,7 @@ def get_event_by_id(request, id):
 
 # ############################### SHARED_FOLDER ###############################
 @api_view(['GET'])
-def shared_folder(request):
+def sharedFolder(request):
     """GET de todas as pastas partilhadas"""
     shared_folders = SharedFolder.objects.all()
     serializer = serializers.SharedFolderSerializer(shared_folders, many=True)
@@ -328,7 +375,7 @@ def shared_folder(request):
 
 
 @api_view(['POST'])
-def create_shared_folder(request):
+def createSharedFolder(request):
     """POST de uma pasta partilhada"""
     serializer = serializers.SharedFolderSerializer(data=request.data)
     if serializer.is_valid():
@@ -339,7 +386,7 @@ def create_shared_folder(request):
 
 
 @api_view(['GET'])
-def get_shared_folder_by_id(request, id):
+def getSharedFolderById(request, id):
     """GET de uma pasta partilhada pelo seu id"""
     eve_id = int(request.GET['id'])
     try:
