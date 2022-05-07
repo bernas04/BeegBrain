@@ -1,7 +1,8 @@
 djangorestframework
-django==2.2.4
+django==4.0.4
 requests==2.24.0
 markdown
 django-filter
 django-cors-headers
 mysqlclient
+django_extensions
