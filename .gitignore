@@ -7,6 +7,7 @@ client/bootstrap-overview
 backend/bin
 backend/include
 backend/lib
+backend/beegbrain/static
 
 
 # Byte-compiled / optimized / DLL files
