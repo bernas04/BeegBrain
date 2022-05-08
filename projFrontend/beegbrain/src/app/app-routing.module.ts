@@ -1,3 +1,4 @@
+import { ProfileComponent } from './pages/profile/profile.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
@@ -10,7 +11,10 @@ const routes: Routes = [
 
   { path: 'workspace', component: WorkspaceComponent },
 
-  { path: 'patients', component: PatientsComponent }
+  { path: 'patients', component: PatientsComponent },
+
+  { path: 'profile', component: ProfileComponent }
+
 
 ];
 
