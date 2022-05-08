@@ -1,8 +1,11 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Doctor } from '../classes/Doctor';
 import { EEG } from '../classes/EEG';
 import { Operator } from '../classes/Operator';
 import { Patient } from '../classes/Patient';
+import { Report } from '../classes/Report';
 
 @Injectable({
   providedIn: 'root'
@@ -13,23 +16,18 @@ export class EEGService {
 
   constructor(private http: HttpClient) { }
 
-  submitEEG(patientID: string, operatorID: string, file: File) {
+  submitEEG(patientID: string, operatorID: string, file: File) : Observable<EEG> {
 
-    console.log(file)
+    let formData = new FormData();
+    formData.append("file", file);
+    formData.append('patientID', patientID);
+    formData.append('operatorID', operatorID);
 
-    const uploadData = new FormData();
-    uploadData.append('operatorID', operatorID);
-    uploadData.append('patientID', patientID);
-    uploadData.append('file', file, file.name);
-    
-    const httpOptions : Object = {
-      headers: new HttpHeaders({
-        'Content-Type': 'multipart/form-data'
-      }),
-      responseType: 'blob'
-    };
+    console.log(patientID);
+    console.log(operatorID);
+    console.log(file);
 
-    return this.http.post<any>(this.BASE_URL + 'createEEG', uploadData, httpOptions);
+    return this.http.post<any>(this.BASE_URL + 'createEEG', formData);
 
   }
 
