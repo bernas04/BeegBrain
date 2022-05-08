@@ -52,7 +52,7 @@ htmlcov/
 .tox/
 .coverage
 .coverage.*
-.cache
+projFrontend/beegbrain/.angular/cache
 nosetests.xml
 coverage.xml
 *,cover
