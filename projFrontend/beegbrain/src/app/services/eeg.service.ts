@@ -13,8 +13,9 @@ export class EEGService {
 
   constructor(private http: HttpClient) { }
 
-  submitEEG(patientID: string, operatorID: string, file: File) {
+  submitEEG(formData : FormData) {
 
+    /* 
     console.log(file)
 
     const uploadData = new FormData();
@@ -26,10 +27,12 @@ export class EEGService {
       headers: new HttpHeaders({
         'Content-Type': 'multipart/form-data'
       }),
-      responseType: 'blob'
+      responseType: 'Blob'
     };
 
-    return this.http.post<any>(this.BASE_URL + 'createEEG', uploadData, httpOptions);
+    return this.http.post<any>(this.BASE_URL + 'createEEG', uploadData, httpOptions); */
+
+    return this.http.post<any>(this.BASE_URL + 'createEEG', formData, {reportProgress: true});
 
   }
 
