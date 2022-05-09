@@ -13,6 +13,8 @@ import { EegComponent } from './pages/eeg/eeg.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { EegTableComponent } from './components/eeg-table/eeg-table.component';
 import { EegFiltersComponent } from './components/eeg-filters/eeg-filters.component';
+import { ErrorareaComponent } from './components/errorarea/errorarea.component';
+import { EditProfileComponent } from './pages/edit-profile/edit-profile.component';
 
 @NgModule({
   declarations: [
@@ -26,7 +28,9 @@ import { EegFiltersComponent } from './components/eeg-filters/eeg-filters.compon
     EegComponent,
     ProfileComponent,
     EegTableComponent,
-    EegFiltersComponent
+    EegFiltersComponent,
+    ErrorareaComponent,
+    EditProfileComponent
   ],
   imports: [
     BrowserModule,
