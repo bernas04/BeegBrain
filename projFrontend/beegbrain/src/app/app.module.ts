@@ -13,45 +13,31 @@ import { EegComponent } from './pages/eeg/eeg.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { EegTableComponent } from './components/eeg-table/eeg-table.component';
 import { EegFiltersComponent } from './components/eeg-filters/eeg-filters.component';
-import { EEGViewerComponent } from './components/eeg-viewer/eeg-viewer.component';
-import { UploadComponent } from './pages/upload/upload.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { IgxCategoryChartModule, IgxLegendModule } from "igniteui-angular-charts";
-import { IgxSliderModule } from "igniteui-angular";
-import { NgApexchartsModule } from 'ng-apexcharts';
+import { ErrorareaComponent } from './components/errorarea/errorarea.component';
+import { EditProfileComponent } from './pages/edit-profile/edit-profile.component';
 
 @NgModule({
-	declarations: [
-		AppComponent,
-		NavbarComponent,
-		LoginComponent,
-		DashboardComponent,
-		WorkspaceComponent,
-		PatientsComponent,
-		PatientComponent,
-		EegComponent,
-		ProfileComponent,
-		EegTableComponent,
-		EegFiltersComponent,
-		EEGViewerComponent,
-		UploadComponent,
-	],
-	imports: [
-		BrowserModule,
-		AppRoutingModule,
-		FormsModule,
-		ReactiveFormsModule,
-		HttpClientModule,
-		BrowserAnimationsModule,
-		IgxCategoryChartModule,
-		IgxLegendModule,
-		IgxSliderModule,
-		NgApexchartsModule
-	],
-	providers: [],
-	bootstrap: [AppComponent]
+  declarations: [
+    AppComponent,
+    NavbarComponent,
+    LoginComponent,
+    DashboardComponent,
+    WorkspaceComponent,
+    PatientsComponent,
+    PatientComponent,
+    EegComponent,
+    ProfileComponent,
+    EegTableComponent,
+    EegFiltersComponent,
+    ErrorareaComponent,
+    EditProfileComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule
+  ],
+  providers: [],
+  bootstrap: [AppComponent]
 })
 export class AppModule {
 }
