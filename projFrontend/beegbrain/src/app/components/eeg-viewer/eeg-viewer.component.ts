@@ -10,6 +10,7 @@ import {
   ApexXAxis,
   ApexTooltip
 } from "ng-apexcharts";
+import { interval, takeWhile } from "rxjs";
 import { dataSeries } from "./data-series";
 
 @Component({
@@ -29,9 +30,20 @@ export class EEGViewerComponent {
     public yaxis!: ApexYAxis;
     public xaxis!: ApexXAxis;
     public tooltip!: ApexTooltip;
+    public frequency: Number[] = [];
   
     constructor() {
       this.initChartData();
+      this.updateData();
+    }
+
+    public updateData() {
+      interval(1000)
+      .pipe(takeWhile(() => !stop))
+      .subscribe(() => {
+        const num = Math.floor(Math.random() * (119 + 1))
+        this.frequency.push(dataSeries[1][num].value)
+      });
     }
   
     public initChartData(): void {
