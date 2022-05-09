@@ -1,3 +1,4 @@
+import { LoginComponent } from './pages/login/login.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
@@ -13,7 +14,10 @@ const routes: Routes = [
 
   { path: 'patients', component: PatientsComponent },
 
-  { path: 'profile', component: ProfileComponent }
+  { path: 'profile', component: ProfileComponent },
+  
+  { path: 'login', component: LoginComponent }
+
 
 
 ];
