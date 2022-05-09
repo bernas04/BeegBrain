@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": "9598dfdc-20f4-40ba-b2b1-1b71da917eb1"
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -27,9 +30,17 @@
               "src/assets"
             ],
             "styles": [
+<<<<<<< HEAD
+              "node_modules/minireset.css/minireset.css",
+              "src/styles.css",
+              "node_modules/igniteui-angular/styles/igniteui-angular.css"
+            ],
+            "scripts": [ "./node_modules/hammerjs/hammer.min.js"]
+=======
               "src/styles.css"
             ],
             "scripts": []
+>>>>>>> 3b675031a6649683da28752a9583b60c409d5bda
           },
           "configurations": {
             "production": {
@@ -94,9 +105,16 @@
               "src/assets"
             ],
             "styles": [
+<<<<<<< HEAD
+              "src/styles.css",
+              "node_modules/igniteui-angular/styles/igniteui-angular.css"
+            ],
+            "scripts": [ "./node_modules/hammerjs/hammer.min.js"]
+=======
               "src/styles.css"
             ],
             "scripts": []
+>>>>>>> 3b675031a6649683da28752a9583b60c409d5bda
           }
         }
       }
