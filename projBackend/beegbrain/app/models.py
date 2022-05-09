@@ -11,7 +11,7 @@ class Institution(models.Model):
     telephone = models.CharField(max_length=20)
 
     def __str__(self) -> str:
-        return f'{self.institution_id} {self.name}'
+        return f'{self.id} {self.name}'
 
 # Providence -> Institution responsible for producing EEG exams, made by Operators
 class Providence(Institution):
