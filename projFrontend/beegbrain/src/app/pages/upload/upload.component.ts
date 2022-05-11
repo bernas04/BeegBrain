@@ -13,7 +13,7 @@ export class UploadComponent implements OnInit {
 
   @Input() patientID! : string;
   @Input() operatorID! : string;
-  @Input() file! : File;
+  file! : File;
 
   //fileName = '';
 
@@ -25,6 +25,9 @@ export class UploadComponent implements OnInit {
 
   }
 
+  onFileSelected(event: any) {
+    this.file = event.target.files[0];
+  }
 
   submitEEG() {
 
@@ -39,11 +42,9 @@ export class UploadComponent implements OnInit {
     const formData = new FormData();
     formData.append('operatorID', this.operatorID);
     formData.append('patientID', this.patientID);
-    formData.append('file', this.file);
+    formData.append('file', this.file, this.file.name);
     
-    this.eegService.submitEEG(formData).subscribe((eeg) => {
-      this.router.navigate(['/eeg/' + eeg.id])
-    });
+    this.eegService.submitEEG(formData);
 
   }
   

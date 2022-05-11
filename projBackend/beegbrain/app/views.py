@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 from click import File
 from django.shortcuts import render
 from rest_framework.decorators import api_view
@@ -6,6 +6,9 @@ from rest_framework.response import Response
 from app.models import *
 from app import serializers
 from rest_framework import status
+import tempfile
+
+import pyedflib
 
 
 # ############################### PROVENIENCIAS ###############################
@@ -279,11 +282,7 @@ def createEEG(request):
     operator = None
     patient = None
 
-    print("entrou")
-    print("===================================")
-
     print(request.data)
-    print(request.data['file'])
 
     try:
         operator = Operator.objects.get(health_number=request.data['operatorID'])
@@ -302,7 +301,17 @@ def createEEG(request):
     print(f">> Patient[{patient.health_number}] was found!")
 
 
-    file = request.data['file']
+    memoryFile = request.data['file']
+    file = memoryFile.file
+    print(type(file))
+    print(file.name)
+    
+    f = pyedflib.EdfReader(file.name)
+
+    n = f.signals_in_file # isto vai buscar os sinais e descarta o resto da informação 
+    print(n)
+
+
 
     eeg = {
         "operator": operator,
