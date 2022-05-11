@@ -20,6 +20,9 @@ import { UploadComponent } from './pages/upload/upload.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgApexchartsModule } from 'ng-apexcharts';
+import { NgxEchartsModule } from 'ngx-echarts';
+
+import * as echarts from 'echarts';
 
 @NgModule({
   declarations: [
@@ -45,7 +48,10 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 		FormsModule,
 		ReactiveFormsModule,
 		HttpClientModule,
-		NgApexchartsModule
+		NgApexchartsModule,
+    NgxEchartsModule.forRoot({
+      echarts,
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent]

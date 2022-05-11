@@ -1,0 +1,53 @@
+{
+  "name": "ng-apexcharts",
+  "version": "1.7.1",
+  "description": "An angular implementation of ApexCharts",
+  "peerDependencies": {
+    "@angular/common": ">=13.0.0",
+    "@angular/core": ">=13.0.0",
+    "rxjs": "^6.5.3 || ^7.4.0",
+    "apexcharts": "^3.31.0"
+  },
+  "keywords": [
+    "angular",
+    "apexcharts",
+    "charts",
+    "statistics",
+    "ui"
+  ],
+  "author": {
+    "name": "Morris Janatzek"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/apexcharts/ng-apexcharts/issues"
+  },
+  "homepage": "https://github.com/apexcharts/ng-apexcharts",
+  "dependencies": {
+    "tslib": "^2.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/apexcharts/ng-apexcharts.git"
+  },
+  "module": "fesm2015/ng-apexcharts.mjs",
+  "es2020": "fesm2020/ng-apexcharts.mjs",
+  "esm2020": "esm2020/ng-apexcharts.mjs",
+  "fesm2020": "fesm2020/ng-apexcharts.mjs",
+  "fesm2015": "fesm2015/ng-apexcharts.mjs",
+  "typings": "ng-apexcharts.d.ts",
+  "exports": {
+    "./package.json": {
+      "default": "./package.json"
+    },
+    ".": {
+      "types": "./ng-apexcharts.d.ts",
+      "esm2020": "./esm2020/ng-apexcharts.mjs",
+      "es2020": "./fesm2020/ng-apexcharts.mjs",
+      "es2015": "./fesm2015/ng-apexcharts.mjs",
+      "node": "./fesm2015/ng-apexcharts.mjs",
+      "default": "./fesm2020/ng-apexcharts.mjs"
+    }
+  },
+  "sideEffects": false
+}

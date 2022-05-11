@@ -21,11 +21,11 @@ const routes: Routes = [
 
   { path: 'patients', component: PatientsComponent },
 
-  { path: 'patients', component: PatientsComponent },
-
   { path: 'profile', component: ProfileComponent },
   
-  { path: 'login', component: LoginComponent }
+  { path: 'login', component: LoginComponent },
+
+  { path: 'upload', component: UploadComponent }
 
 
 
