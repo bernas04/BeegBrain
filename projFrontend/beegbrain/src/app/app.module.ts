@@ -15,6 +15,11 @@ import { EegTableComponent } from './components/eeg-table/eeg-table.component';
 import { EegFiltersComponent } from './components/eeg-filters/eeg-filters.component';
 import { ErrorareaComponent } from './components/errorarea/errorarea.component';
 import { EditProfileComponent } from './pages/edit-profile/edit-profile.component';
+import { EEGViewerComponent } from './components/eeg-viewer/eeg-viewer.component';
+import { UploadComponent } from './pages/upload/upload.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
+import { NgApexchartsModule } from 'ng-apexcharts';
 
 @NgModule({
   declarations: [
@@ -30,11 +35,17 @@ import { EditProfileComponent } from './pages/edit-profile/edit-profile.componen
     EegTableComponent,
     EegFiltersComponent,
     ErrorareaComponent,
-    EditProfileComponent
+    EditProfileComponent,
+    EEGViewerComponent,
+    UploadComponent
   ],
   imports: [
-    BrowserModule,
-    AppRoutingModule
+		BrowserModule,
+		AppRoutingModule,
+		FormsModule,
+		ReactiveFormsModule,
+		HttpClientModule,
+		NgApexchartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
