@@ -44,7 +44,16 @@ export class UploadComponent implements OnInit {
     formData.append('patientID', this.patientID);
     formData.append('file', this.file, this.file.name);
     
-    this.eegService.submitEEG(formData);
+    this.eegService.submitEEG(formData).subscribe({
+      next: (eeg) => {
+        console.log("FETCH SUCCESS")
+        console.log(eeg);
+        this.router.navigate(['/workspace/' + eeg.id]);
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
 
   }
   

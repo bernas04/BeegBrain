@@ -1,5 +1,7 @@
 import { HttpClient, HttpEventType, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { EEG } from '../classes/EEG';
 
 @Injectable({
   providedIn: 'root'
@@ -10,18 +12,9 @@ export class EEGService {
 
   constructor(private http: HttpClient) { }
 
-  submitEEG(formData : FormData) {
+  submitEEG(formData : FormData) : Observable<EEG> {
 
-    return this.http.post<any>(this.BASE_URL + 'createEEG', formData, {
-      reportProgress: true,
-      observe: 'events'
-    }).subscribe(event => {
-      if (event.type === HttpEventType.UploadProgress) {
-        console.log('Upload progress: ' + (Math.round(event.loaded / event.total!) * 100 + "%"));
-      } else if (event.type === HttpEventType.Response) {
-        console.log(event);
-      }
-    });
+    return this.http.post<EEG>(this.BASE_URL + 'createEEG', formData);
 
   }
 
