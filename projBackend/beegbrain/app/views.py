@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 from datetime import datetime
-=======
-import datetime
->>>>>>> a8787be5984df9f40142e1b614f7afb44e7cb8aa
 from click import File
 from django.shortcuts import render
 from rest_framework.decorators import api_view
@@ -10,12 +6,10 @@ from rest_framework.response import Response
 from app.models import *
 from app import serializers
 from rest_framework import status
-<<<<<<< HEAD
 import tempfile
 
 import pyedflib
-=======
->>>>>>> a8787be5984df9f40142e1b614f7afb44e7cb8aa
+
 
 
 # ############################### PROVENIENCIAS ###############################
@@ -289,8 +283,6 @@ def createEEG(request):
     operator = None
     patient = None
 
-    print(request.data)
-
     try:
         operator = Operator.objects.get(health_number=request.data['operatorID'])
     except Operator.DoesNotExist:
@@ -310,8 +302,6 @@ def createEEG(request):
 
     memoryFile = request.data['file']
     file = memoryFile.file
-    print(type(file))
-    print(file.name)
     
     f = pyedflib.EdfReader(file.name)
 
@@ -323,7 +313,7 @@ def createEEG(request):
     eeg = {
         "operator": operator,
         "patient": patient,
-        "file": file,
+        "file": memoryFile,
         "status": True,
         "priority": 3,
         "report": None,
@@ -334,6 +324,7 @@ def createEEG(request):
     serializer = serializers.EEGSerializer(data=eeg)
     if serializer.is_valid():
         print("valid")
+        print(serializer)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

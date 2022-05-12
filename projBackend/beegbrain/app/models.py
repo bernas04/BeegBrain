@@ -88,10 +88,10 @@ class DoctorRevisionCenter(models.Model):
         unique_together = (('doctor', 'revision_center'),)
     doctor = models.ForeignKey(Doctor, verbose_name=('doctor'), on_delete=models.CASCADE, related_name='%(class)s_doctor')
     revision_center = models.ForeignKey(RevisionCenter, verbose_name=('revision center'), on_delete=models.CASCADE, related_name='%(class)s_revision_center')
+
 # Report -> Content written by a Doctor related to a EEG.
 class Report(models.Model):
 
-    filename = models.CharField(max_length=50)
     content = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
     doctor = models.ForeignKey(Doctor, verbose_name=('doctor'), on_delete=models.CASCADE, related_name='%(class)s_doctor')
@@ -99,14 +99,12 @@ class Report(models.Model):
 # EEG -> Has all the information about an EEG exam
 class EEG(models.Model):
 
-    filename = models.CharField(max_length=50)
-    filetype = models.CharField(max_length=10)
-    file = models.FileField()                                       # TODO: Check if we need to add any parameters (like: specify size range?)
-    status = models.BooleanField(default=True)                      # If false: The file has an error
+    file = models.FileField(null=False)                                     
+    status = models.BooleanField(default=True)                     
     timestamp = models.DateTimeField(auto_now_add=True)
-    report = models.ForeignKey(Report, verbose_name=('report'), on_delete=models.CASCADE, related_name='%(class)s_report')
-    operator = models.ForeignKey(Operator, verbose_name=('operator'), on_delete=models.CASCADE, related_name='%(class)s_operator')
-    patient = models.ForeignKey(Patient, verbose_name=('patient'), on_delete=models.CASCADE, related_name='%(class)s_patient')
+    report = models.ForeignKey(Report, verbose_name=('report'), on_delete=models.CASCADE, related_name='%(class)s_report', null=True, blank=True)
+    operator = models.ForeignKey(Operator, verbose_name=('operator'), on_delete=models.CASCADE, related_name='%(class)s_operator', null=False)
+    patient = models.ForeignKey(Patient, verbose_name=('patient'), on_delete=models.CASCADE, related_name='%(class)s_patient', null=False)
 
 # AccessEEG -> Table responsible for defining what Persons have access to a specific EEG
 class AccessEEG(models.Model):
