@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 from datetime import datetime
+=======
+import datetime
+>>>>>>> a8787be5984df9f40142e1b614f7afb44e7cb8aa
 from click import File
 from django.shortcuts import render
 from rest_framework.decorators import api_view
@@ -6,9 +10,12 @@ from rest_framework.response import Response
 from app.models import *
 from app import serializers
 from rest_framework import status
+<<<<<<< HEAD
 import tempfile
 
 import pyedflib
+=======
+>>>>>>> a8787be5984df9f40142e1b614f7afb44e7cb8aa
 
 
 # ############################### PROVENIENCIAS ###############################
