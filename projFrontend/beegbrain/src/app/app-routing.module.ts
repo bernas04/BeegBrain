@@ -1,3 +1,4 @@
+import { EditProfileComponent } from './pages/edit-profile/edit-profile.component';
 import { LoginComponent } from './pages/login/login.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { NgModule } from '@angular/core';
@@ -16,7 +17,10 @@ const routes: Routes = [
 
   { path: 'profile', component: ProfileComponent },
   
-  { path: 'login', component: LoginComponent }
+  { path: 'login', component: LoginComponent },
+
+  { path: 'editprofile', component: EditProfileComponent  }
+
 
 
 
