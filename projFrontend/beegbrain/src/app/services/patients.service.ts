@@ -16,4 +16,8 @@ export class PatientsService {
     return this.http.get<Patient[]>(this.BASE_URL + 'patients');
   }
 
+  getPatientsbySSN(ssn : string) : Observable<Patient> {
+    return this.http.get<Patient>(this.BASE_URL + 'patient?ssn='+ ssn );
+  }
+
 }

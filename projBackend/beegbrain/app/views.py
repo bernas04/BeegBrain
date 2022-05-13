@@ -132,9 +132,9 @@ def createPatient(request):
 
 
 @api_view(['GET'])
-def getPatientByNss(request):
+def getPatientBySSN(request):
     """GET de um paciente pelo seu id"""
-    pat_id = int(request.GET['nss'])
+    pat_id = int(request.GET['ssn'])
     try:
         ret = Patient.objects.get(health_number=pat_id)
     except Patient.DoesNotExist:
