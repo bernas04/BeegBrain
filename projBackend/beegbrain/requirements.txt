@@ -5,8 +5,4 @@ markdown
 django-filter
 django-cors-headers
 mysqlclient
-<<<<<<< HEAD
 django_extensions
-=======
-django_extensions
->>>>>>> 665ea426270417635d4f662475db8b78d75ce844
