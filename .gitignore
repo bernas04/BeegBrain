@@ -52,7 +52,7 @@ htmlcov/
 .tox/
 .coverage
 .coverage.*
-*/.angular
+.angular/
 nosetests.xml
 coverage.xml
 *,cover
