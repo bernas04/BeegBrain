@@ -1,0 +1,5 @@
+/*
+ * Public API Surface of ngx-echarts
+ */
+export * from './lib/ngx-echarts.module';
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicHVibGljLWFwaS5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uL3Byb2plY3RzL25neC1lY2hhcnRzL3NyYy9wdWJsaWMtYXBpLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOztHQUVHO0FBRUgsY0FBYywwQkFBMEIsQ0FBQyIsInNvdXJjZXNDb250ZW50IjpbIi8qXG4gKiBQdWJsaWMgQVBJIFN1cmZhY2Ugb2Ygbmd4LWVjaGFydHNcbiAqL1xuXG5leHBvcnQgKiBmcm9tICcuL2xpYi9uZ3gtZWNoYXJ0cy5tb2R1bGUnO1xuIl19

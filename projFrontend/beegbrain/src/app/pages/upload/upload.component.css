@@ -1,0 +1,32 @@
+.card {
+    min-width: 600px;
+}
+
+.content {
+    margin: auto;
+}
+
+.card-header h2 {
+    margin: auto;
+    text-align: center;
+}
+
+input {
+    margin: auto;
+    width: 100%;
+}
+
+.row {
+    margin-bottom: 15px;
+}
+
+button {
+    margin: 0 auto;
+    display: block;
+}
+
+.upload {
+    border-style: dotted;
+    border-width: 5px;
+    height: 200px;
+}

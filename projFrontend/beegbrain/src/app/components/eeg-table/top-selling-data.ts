@@ -1,4 +1,5 @@
 export interface Product {
+    id: number,
     image: string,
     uname: string,
     gmail: string,
@@ -11,6 +12,7 @@ export interface Product {
 export const TopSelling: Product[] = [
 
     {
+        id: 1,
         image: 'assets/images/users/user1.jpg',
         uname: 'Hanna Gover',
         gmail: 'hgover@gmail.com',
@@ -20,6 +22,7 @@ export const TopSelling: Product[] = [
         budget: '95K'
     },
     {
+        id: 2,
         image: 'assets/images/users/user2.jpg',
         uname: 'Hanna Gover',
         gmail: 'hgover@gmail.com',
@@ -29,6 +32,7 @@ export const TopSelling: Product[] = [
         budget: '95K'
     },
     {
+        id: 3,
         image: 'assets/images/users/user3.jpg',
         uname: 'Hanna Gover',
         gmail: 'hgover@gmail.com',
@@ -38,6 +42,7 @@ export const TopSelling: Product[] = [
         budget: '95K'
     },
     {
+        id: 4,
         image: 'assets/images/users/user4.jpg',
         uname: 'Hanna Gover',
         gmail: 'hgover@gmail.com',

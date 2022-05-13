@@ -279,7 +279,6 @@ def getEeg(request):
 @api_view(['POST'])
 def createEEG(request):
     """POST de um EEG"""
-
     try:
         operator = Operator.objects.get(health_number=request.data['operatorID'])
     except Operator.DoesNotExist:
@@ -311,6 +310,7 @@ def createEEG(request):
 
     serializer = serializers.EEGSerializer(data=eeg)
     if serializer.is_valid():
+        print("valid")
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 

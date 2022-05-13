@@ -13,9 +13,15 @@ import { EegComponent } from './pages/eeg/eeg.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { EegTableComponent } from './components/eeg-table/eeg-table.component';
 import { EegFiltersComponent } from './components/eeg-filters/eeg-filters.component';
+import { ErrorareaComponent } from './components/errorarea/errorarea.component';
+import { EditProfileComponent } from './pages/edit-profile/edit-profile.component';
+import { EEGViewerComponent } from './components/eeg-viewer/eeg-viewer.component';
 import { UploadComponent } from './pages/upload/upload.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { NgxEchartsModule } from 'ngx-echarts';
+
+import * as echarts from 'echarts';
 
 @NgModule({
   declarations: [
@@ -30,14 +36,20 @@ import { HttpClientModule } from '@angular/common/http';
     ProfileComponent,
     EegTableComponent,
     EegFiltersComponent,
+    ErrorareaComponent,
+    EditProfileComponent,
+    EEGViewerComponent,
     UploadComponent
   ],
   imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpClientModule,
+		BrowserModule,
+		AppRoutingModule,
+		FormsModule,
+		ReactiveFormsModule,
+		HttpClientModule,
+    NgxEchartsModule.forRoot({
+      echarts,
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent]
