@@ -15,6 +15,13 @@ import { EegTableComponent } from './components/eeg-table/eeg-table.component';
 import { EegFiltersComponent } from './components/eeg-filters/eeg-filters.component';
 import { ErrorareaComponent } from './components/errorarea/errorarea.component';
 import { EditProfileComponent } from './pages/edit-profile/edit-profile.component';
+import { PatientinfoComponent } from './components/patientinfo/patientinfo.component';
+import { UploadComponent } from './pages/upload/upload.component';
+import { FormsModule } from '@angular/forms';
+import { UploadingComponent } from './components/uploading/uploading.component';
+import { DndDirective } from './dnd.directive';
+import { ProgressComponent } from './components/progress/progress.component';
+import { RegisterComponent } from './components/register/register.component';
 
 @NgModule({
   declarations: [
@@ -30,12 +37,19 @@ import { EditProfileComponent } from './pages/edit-profile/edit-profile.componen
     EegTableComponent,
     EegFiltersComponent,
     ErrorareaComponent,
-    EditProfileComponent
+    EditProfileComponent,
+    PatientinfoComponent,
+    UploadComponent,
+    UploadingComponent,
+    DndDirective,
+    ProgressComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

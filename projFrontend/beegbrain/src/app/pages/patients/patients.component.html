@@ -53,121 +53,12 @@
     <div class="row align-items-center h-100">
         <div class="col-12 mx-auto">
             
-            <!-- title -->
-            <h4 > <strong> {{patient.name}}'s information </strong> </h4>
-            <!-- title -->
+            <app-patientinfo></app-patientinfo>
+            <hr>
 
-            <div class="card h-100 justify-content-center">                        
-                <div class="card-body">
-        
-                    <form>
-                        <div class="row">
+            <div class="col-lg-12 align-items-center">
+                <app-eeg-table> </app-eeg-table>
 
-                            <div class="col-lg-6 d-flex align-items-center">
-                                <div class="col-lg-3 col-sm-6">
-                                    <label>Name</label>
-                                </div>
-                                <div class="col-lg-6 col-sm-6">
-                                    <h5 class="form-control" id="name" style="margin-left: 2em;"> {{patient.name}} </h5>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6 d-flex align-items-center">
-                                <div class="col-lg-4">
-                                    <label>Address</label>
-                                </div>
-                                
-                                <div class="col-lg-6">
-                                    <h5 class="form-control" id="numberHealth" style="margin-left: 2em;"> {{patient.address}} </h5>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-lg-6 d-flex align-items-center">
-                                <div class="col-lg-3">
-                                    <label>Health Number</label>
-                                </div>
-                                
-                                <div class="col-lg-3">
-                                    <h5 class="form-control" id="health_number" style="margin-left: 2em;"> {{patient.health_number}} </h5>
-                                </div>
-                                
-                            </div>
-
-                            <div class="col-lg-6 d-flex align-items-center">
-
-                                <div class="col-lg-4">
-                                    <label>Email</label>
-                                </div>
-                                
-                                <div class="col-lg-6">
-                                    <h5 class="form-control" id="email" style="margin-left: 2em;"> {{patient.email}} </h5>
-                                </div>
-                            </div>
-                            
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-lg-6 d-flex align-items-center">
-                                <div class="col-lg-3">
-                                    <label>Phone Number</label>
-                                </div>
-                                
-                                <div class="col-lg-3">
-                                    <h5 class="form-control" id="numberHealth" style="margin-left: 2em;"> {{patient.telephone}} </h5>
-                                </div>
-                            </div>
-
-
-                            <div class="col-lg-6 d-flex align-items-center">
-                                <div class="col-lg-4">
-                                    <label>Birthday</label>
-                                </div>
-                                
-                                <div class="col-lg-3">
-                                    <h5 class="form-control" id="birthday" style="margin-left: 2em;"> {{patient.birthday}} </h5>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-lg-6 d-flex align-items-center">
-                                <div class="col-lg-3">
-                                    <label>Gender</label>
-                                </div>
-                                
-                                <div class="col-lg-6">
-                                    <button *ngIf="patient.gender == 'F'" type="button" class="btn btn-dark" style="font-weight: bold; margin-left: 2em;" disabled> {{patient.gender}} </button>
-                                    <button *ngIf="patient.gender == 'M'" type="button" class="btn btn-info" style="font-weight: bold; margin-left: 2em;" disabled> {{patient.gender}} </button>
-                                    <button *ngIf="patient.gender == 'Other'" type="button" class="btn btn-warning" style="font-weight: bold; margin-left: 2em;color: white" disabled> {{patient.gender}} </button>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6 d-flex align-items-center">
-                                <div class="col-lg-4">
-                                    <label>Health diseases </label>
-                                </div>
-                                
-                                <div class="col-lg-5">
-                                    <h5 class="form-control" id="medical_info" style="margin-left: 2em;"> {{patient.medical_info}} </h5>
-                                </div>
-                            </div>
-                        </div>
-
-                        <hr>
-
-                        <div class="col-lg-12 align-items-center">
-                            <app-eeg-table> </app-eeg-table>
-
-                        </div>
-
-
-                    </form>
-                </div>
             </div>
         </div>
     </div>
