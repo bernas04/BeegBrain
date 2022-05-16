@@ -13,25 +13,21 @@ export class PatientsComponent implements OnInit {
   
   public listOfPatients: Patient[] = []
   public patient!: Patient
-  public text: string = "367879615";
+  public text: string = "";
 
   ngOnInit(): void {
     this.getPatients();
-    this.getPatientsbySSN(); // apagar depois
   }
 
   getPatients() {
     this.services.getPatients().subscribe((info) => {
       this.listOfPatients = info;
-      console.log(this.listOfPatients);
     });
   } 
 
   getPatientsbySSN(){
-    // this.text = (<HTMLInputElement>document.getElementById("patient_search")).value;
+    this.text = (<HTMLInputElement>document.getElementById("patient_search")).value;
     if (this.text == "") return
-
-    console.log(this.text)
 
     this.services.getPatientsbySSN( this.text ).subscribe((info) => {
       this.patient = info;

@@ -51,15 +51,14 @@
 
 <div class="container-xl h-100" *ngIf="patient">
     <div class="row align-items-center h-100">
-        <div class="col-12 mx-auto">
+        <div class="col-lg-12 align-items-center">
             
-            <app-patientinfo></app-patientinfo>
+            <app-patientinfo [patient]=patient ></app-patientinfo>
+            
             <hr>
 
-            <div class="col-lg-12 align-items-center">
-                <app-eeg-table> </app-eeg-table>
-
-            </div>
+            <app-eeg-table> </app-eeg-table>
+            
         </div>
     </div>
 
