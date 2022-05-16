@@ -45,7 +45,6 @@ import { RegisterComponent } from './components/register/register.component';
     EEGViewerComponent,
     UploadComponent,
     PatientinfoComponent,
-    UploadComponent,
     UploadingComponent,
     DndDirective,
     ProgressComponent,
