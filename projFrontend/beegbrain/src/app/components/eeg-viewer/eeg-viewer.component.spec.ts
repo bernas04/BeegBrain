@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { EEGViewerComponent } from './eeg-viewer.component';
 
 describe('EegTableComponent', () => {

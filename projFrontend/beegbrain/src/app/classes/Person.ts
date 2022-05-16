@@ -1,7 +1,7 @@
 export interface Person {
 
     id : number;
-    healthNumber : string;
+    health_number : string;
     name : string;
     email : string;
     address : string;

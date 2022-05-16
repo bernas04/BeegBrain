@@ -44,3 +44,72 @@
   background: rgba(0, 0, 0, .08);
   color: rgba(0, 0, 0, .3);
 }
+
+/* ****************************************** GENDER BUTTONS ************************************************** */
+
+.btn-dark, .btn-dark:hover, .btn-dark:active, .btn-dark:visited {
+  background-color: #DB7093 !important;
+  border-color: #DB7093 !important;
+}
+
+.btn-info, .btn-info:hover, .btn-info:active, .btn-info:visited {
+  background-color: #6495ED !important;
+  border-color: #6495ED!important;
+}
+
+.btn-warning, .btn-warning:hover, .btn-warning:active, .btn-warning:visited {
+  background-color: #C0C0C0 !important;
+  border-color: #C0C0C0!important;
+}
+
+/* ************************************* SEARCH BAR ************************************************** */
+
+
+ .search{
+ position: relative;
+ box-shadow: 0 0 40px rgba(51, 51, 51, .1);
+   
+ }
+
+ .search input{
+
+  height: 50px;
+  text-indent: 25px;
+  border: 2px solid #d6d4d4;
+
+
+ }
+
+
+ .search input:focus{
+
+  box-shadow: none;
+  border: 2px solid blue;
+
+
+ }
+
+ .search .fa-search{
+
+  position: absolute;
+  top: 18px;
+  left: 16px;
+
+ }
+
+ .search button{
+
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  height: 50px;
+  width: 110px;
+  background: #4169E1;
+
+ }
+
+ /* ******************************************* CARDS *********************************************** */
+
+ .card-body {
+  background-color: #F5F5F5 !important;
+ }

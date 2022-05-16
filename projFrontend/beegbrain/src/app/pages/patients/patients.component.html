@@ -4,112 +4,181 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<div class="card">
-
-    <div class="card-body">
-
-       
-
-        <div class="container h-100">
-            <div class="row " style="padding: 30px;">
-                <h3><strong> Information about your patient </strong> </h3>
-            </div>
-            <div class="row align-items-center h-100">
-                <div class="col-12 mx-auto">
-                    <!-- ESTA MERDA ESTAVA ALINHADA E JA NAO ESTA PQ CRL -->
 
 
-                    <div class="input-group my-3 d-flex">
-                        <div class="col-6">
-                            <input type="search" class="form-control rounded"
-                            placeholder="Search by patient's name or SSN" aria-label="Search"
-                            aria-describedby="search-addon" />
-                        </div>
-                        <div class="col-4">
-                            <button class="button-18 ml-3" role="button"><i class="fa fa-search"></i></button>
-                        </div>
-                    </div>
+<div class="container h-100">
+    <!--  <div class="row " style="padding: 30px;">
+        <h3><strong> Information about your patient </strong> </h3>
+    </div> -->
+    <!-- <div class="row align-items-center h-100">
+        <div class="col-12 mx-auto">
+
+            <div class="input-group my-3 d-flex">
+                <div class="col-6">
+                    <input type="search" class="form-control rounded" id="patient_search"
+                    placeholder="Search by patient's name or SSN" aria-label="Search"
+                    aria-describedby="search-addon" />
+                </div>
+                <div class="col-4">
+                    <button class="button-18 ml-3" role="button" (keyup)="getPatientsbySSN()" (click)="getPatientsbySSN()">
+                        <i class="fa fa-search"></i>
+                    </button>
                 </div>
             </div>
         </div>
+    </div> -->
 
+    <div class="container">
 
+        <div class="row height d-flex justify-content-center align-items-center">
 
+            <div class="col-md-8">
 
-        <div class="container-xl h-100">
-            <div class="row align-items-center h-100">
-                <div class="col-12 mx-auto">
-                    <div class="card h-100 justify-content-center">
-                        <div class="card-body ">
-                            <!-- title -->
-                            <h4 class="card-title"> <strong> Patient's details</strong></h4>
-                            <thead>
-                                <p> </p>
-                            </thead>
-
-                            <!-- title -->
-                            <form>
-
-                                <div class="form-row ">
-                                    <div class="form-group col-sm-4">
-                                        <label for="inputEmail4">Email</label>
-                                        <h5 type="email" class="form-control" id="inputEmail4">
-                                            evapomposo@123.com</h5>
-                                    </div>
-
-                                    <br>
-                                    <div class="form-group col-sm-4">
-                                        <label for="inputNumberHealth">Health Number</label>
-                                        <h5 type="email" class="form-control" id="numberHealth"> 29487154512
-                                        </h5>
-                                    </div>
-
-                                    <div class="form-group col-sm-4">
-                                        <label for="inputNumberHealth">Cellphone </label>
-                                        <h5 type="email" class="form-control" id="numberHealth"> 915414789
-                                        </h5>
-                                    </div>
-                                    <div class="form-group col-sm-4">
-                                        <label for="inputCity"> Emergency Cellphone</label>
-                                        <h5 type="text" class="form-control" id="inputCity"> 948574123 </h5>
-                                    </div>
-
-                                    <div class="form-group col-sm-4">
-                                        <label for="inputEmail4">Gender</label>
-                                        <h5 type="text" class="form-control" id="inputEmail4">F</h5>
-                                    </div>
-                                    <div class="form-group col-sm-4">
-                                        <label for="inputNumberHealth"> Date of Birth </label>
-                                        <h5 type="email" class="form-control" id="numberHealth"> 12-01-1987
-                                        </h5>
-                                    </div>
-
-                                    <div class="form-group col-sm-4">
-                                        <label for="inputNumberHealth">Address </label>
-                                        <h5 type="email" class="form-control" id="numberHealth"> Rua de São
-                                            Tiago,
-                                            nº 12, Aveiro</h5>
-                                    </div>
-
-                                    <div class="form-group col-sm-4">
-                                        <label for="inputEmail4">Health diseases </label>
-                                        <h5 type="text" class="form-control" id="inputEmail4"> Epilepsy</h5>
-                                    </div>
-
-
-                                </div>
-
-                            </form>
-                        </div>
-                    </div>
-                </div>
+            <div class="search">
+                <i class="fa fa-search"></i>
+                <input type="text" id="patient_search" class="form-control" placeholder="Search by patient's name or SSN" (keyup.enter)="getPatientsbySSN()">
+                <button class="btn btn-primary" style="font-weight:bold" (click)="getPatientsbySSN()">Search</button>
             </div>
-            <div class="my-3">
-
-                <app-eeg-table> </app-eeg-table>
-
+            
             </div>
-
+            
         </div>
     </div>
+
+</div>
+
+<hr>
+
+<div class="container-xl h-100" *ngIf="patient">
+    <div class="row align-items-center h-100">
+        <div class="col-12 mx-auto">
+            
+            <!-- title -->
+            <h4 > <strong> {{patient.name}}'s information </strong> </h4>
+            <!-- title -->
+
+            <div class="card h-100 justify-content-center">                        
+                <div class="card-body">
+        
+                    <form>
+                        <div class="row">
+
+                            <div class="col-lg-6 d-flex align-items-center">
+                                <div class="col-lg-3 col-sm-6">
+                                    <label>Name</label>
+                                </div>
+                                <div class="col-lg-6 col-sm-6">
+                                    <h5 class="form-control" id="name" style="margin-left: 2em;"> {{patient.name}} </h5>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 d-flex align-items-center">
+                                <div class="col-lg-4">
+                                    <label>Address</label>
+                                </div>
+                                
+                                <div class="col-lg-6">
+                                    <h5 class="form-control" id="numberHealth" style="margin-left: 2em;"> {{patient.address}} </h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-6 d-flex align-items-center">
+                                <div class="col-lg-3">
+                                    <label>Health Number</label>
+                                </div>
+                                
+                                <div class="col-lg-3">
+                                    <h5 class="form-control" id="health_number" style="margin-left: 2em;"> {{patient.health_number}} </h5>
+                                </div>
+                                
+                            </div>
+
+                            <div class="col-lg-6 d-flex align-items-center">
+
+                                <div class="col-lg-4">
+                                    <label>Email</label>
+                                </div>
+                                
+                                <div class="col-lg-6">
+                                    <h5 class="form-control" id="email" style="margin-left: 2em;"> {{patient.email}} </h5>
+                                </div>
+                            </div>
+                            
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-6 d-flex align-items-center">
+                                <div class="col-lg-3">
+                                    <label>Phone Number</label>
+                                </div>
+                                
+                                <div class="col-lg-3">
+                                    <h5 class="form-control" id="numberHealth" style="margin-left: 2em;"> {{patient.telephone}} </h5>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-6 d-flex align-items-center">
+                                <div class="col-lg-4">
+                                    <label>Birthday</label>
+                                </div>
+                                
+                                <div class="col-lg-3">
+                                    <h5 class="form-control" id="birthday" style="margin-left: 2em;"> {{patient.birthday}} </h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+
+                            <div class="col-lg-6 d-flex align-items-center">
+                                <div class="col-lg-3">
+                                    <label>Gender</label>
+                                </div>
+                                
+                                <div class="col-lg-6">
+                                    <button *ngIf="patient.gender == 'F'" type="button" class="btn btn-dark" style="font-weight: bold; margin-left: 2em;" disabled> {{patient.gender}} </button>
+                                    <button *ngIf="patient.gender == 'M'" type="button" class="btn btn-info" style="font-weight: bold; margin-left: 2em;" disabled> {{patient.gender}} </button>
+                                    <button *ngIf="patient.gender == 'Other'" type="button" class="btn btn-warning" style="font-weight: bold; margin-left: 2em;color: white" disabled> {{patient.gender}} </button>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 d-flex align-items-center">
+                                <div class="col-lg-4">
+                                    <label>Health diseases </label>
+                                </div>
+                                
+                                <div class="col-lg-5">
+                                    <h5 class="form-control" id="medical_info" style="margin-left: 2em;"> {{patient.medical_info}} </h5>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <div class="col-lg-12 align-items-center">
+                            <app-eeg-table> </app-eeg-table>
+
+                        </div>
+
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+    <!-- 
+    <h4 style="margin-top: 2em;"> <strong> EEG Historic </strong> </h4>
+
+    <div class="my-3">
+        <app-eeg-table> </app-eeg-table>
+    </div> 
+    -->
+
 </div>

@@ -10,9 +10,6 @@ import { LineSeriesOption } from 'echarts/charts';
 import * as echarts from 'echarts';
 import { Component } from '@angular/core';
 import { DataItem } from './DataItem';
-import { TreemapValueMappingMode_$type } from 'igniteui-angular-charts';
-
-
 
 type EChartsOption = echarts.ComposeOption<
   | TitleComponentOption
