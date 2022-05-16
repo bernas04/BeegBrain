@@ -1,8 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { EEGService } from 'src/app/services/eeg.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-upload',
@@ -22,7 +22,6 @@ export class UploadComponent implements OnInit {
   constructor(private formBuilder: FormBuilder, private eegService: EEGService, private router: Router, private http: HttpClient) { }
 
   ngOnInit(): void {
-
   }
 
   onFileSelected(event: any) {

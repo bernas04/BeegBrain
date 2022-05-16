@@ -21,6 +21,11 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgxEchartsModule } from 'ngx-echarts';
 
 import * as echarts from 'echarts';
+import { PatientinfoComponent } from './components/patientinfo/patientinfo.component';
+import { UploadingComponent } from './components/uploading/uploading.component';
+import { DndDirective } from './dnd.directive';
+import { ProgressComponent } from './components/progress/progress.component';
+import { RegisterComponent } from './components/register/register.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +43,13 @@ import * as echarts from 'echarts';
     ErrorareaComponent,
     EditProfileComponent,
     EEGViewerComponent,
-    UploadComponent
+    UploadComponent,
+    PatientinfoComponent,
+    UploadComponent,
+    UploadingComponent,
+    DndDirective,
+    ProgressComponent,
+    RegisterComponent
   ],
   imports: [
 		BrowserModule,

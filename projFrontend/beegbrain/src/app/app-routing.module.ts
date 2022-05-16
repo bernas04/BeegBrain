@@ -1,4 +1,5 @@
 import { EditProfileComponent } from './pages/edit-profile/edit-profile.component';
+import { RegisterComponent } from './components/register/register.component';
 import { LoginComponent } from './pages/login/login.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { NgModule } from '@angular/core';
@@ -26,9 +27,11 @@ const routes: Routes = [
   
   { path: 'login', component: LoginComponent },
 
-  { path: 'editprofile', component: EditProfileComponent  },
+  { path: 'upload', component: UploadComponent },
 
-  { path: 'upload', component: UploadComponent }
+  { path: 'register', component: RegisterComponent },
+
+  { path: 'editprofile', component: EditProfileComponent  },
 
 ];
 
