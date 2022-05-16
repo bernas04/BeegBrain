@@ -279,23 +279,48 @@ def getEeg(request):
 def createEEG(request):
     """POST de um EEG"""
     try:
-        operator = Operator.objects.get(health_number=request.data['operatorID'])
+        operator = Operator.objects.get(health_number=request.data['operator'])
     except Operator.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     try:
-        patient = Patient.objects.get(health_number=request.data['patientID'])
+        patient = Patient.objects.get(health_number=request.data['patient'])
     except Patient.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     memoryFile = request.data['file']
     
-    # file = memoryFile.file
+    file = memoryFile.file
     
-    # f = pyedflib.EdfReader(file.name)
+    f = pyedflib.EdfReader(file.name)
 
-    # n = f.signals_in_file # isto vai buscar os sinais e descarta o resto da informação 
-    # print(n)
+    n = f.signals_in_file # isto vai buscar os canais e descarta o resto da informação
+    print("Channels ",n)
+
+
+    print("Duração (seconds)" ,f.file_duration)
+
+    for i in range(n):
+        f.readSignal(i)  # isto lê os valores específicos de cada canal
+    
+        
+
+
+
+
+
+    """ if request.data['priority']=='Very Low':
+        priority=1
+    elif request.data['priority']=='Low':
+        priority=2
+    elif request.data['priority']=='Medium':
+        priority=3
+    elif request.data['priority']=='High':
+        priority=4
+    elif request.data['priority']=='Very High':
+        priority=5 """
+    
+    
 
     eeg = {
         "operator": operator,
