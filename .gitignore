@@ -11,7 +11,7 @@ backend/beegbrain/static
 
 
 # Byte-compiled / optimized / DLL files
-__pycache__/
+**/__pycache__/*
 *.py[cod]
 *$py.class
 
@@ -93,6 +93,12 @@ celerybeat-schedule
 
 # dotenv
 .env
+
+# added for django
+db.sqlite3
+**/migrations/*
+**/.idea/*
+
 
 # virtualenv
 .venv
