@@ -27,8 +27,6 @@ const routes: Routes = [
 
   { path: 'upload', component: UploadComponent }
 
-
-
 ];
 
 @NgModule({

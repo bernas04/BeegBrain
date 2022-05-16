@@ -54,4 +54,5 @@ import * as echarts from 'echarts';
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

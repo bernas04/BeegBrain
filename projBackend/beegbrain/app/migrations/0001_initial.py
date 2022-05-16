@@ -19,6 +19,7 @@ class Migration(migrations.Migration):
                 ('file', models.FileField(upload_to='')),
                 ('status', models.BooleanField(default=True)),
                 ('timestamp', models.DateTimeField(auto_now_add=True)),
+                ('priority', models.IntegerField(choices=[(1, 'Very Low'), (2, 'Low'), (3, 'Medium'), (4, 'High'), (5, 'Very High')])),
             ],
         ),
         migrations.CreateModel(

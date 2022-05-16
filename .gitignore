@@ -54,6 +54,7 @@ htmlcov/
 .coverage.*
 projFrontend/beegbrain/.angular/
 .angular/
+*/.angular
 nosetests.xml
 coverage.xml
 *,cover

@@ -64,6 +64,20 @@ class EEGSerializer(serializers.ModelSerializer):
         model = EEG
         fields = "__all__"
 
+"""
+Ver para n ser preciso fazer parsing dos dados na view
+    class Meta: 
+        model = EEG
+        fields = ('id','file','status', 'timestamp', 'priority','report','operator','patient')
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        data['report'] = ReportSerializer(Report.objects.get(id=data['report'])).data
+        data['operator'] = OperatorSerializer(Operator.objects.get(id=data['operator'])).data
+        data['patient'] = PatientSerializer(Patient.objects.get(id=data['patient'])).data
+        return data
+"""
+
 class AccessEEGSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccessEEG
