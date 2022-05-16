@@ -40,7 +40,7 @@
 
                             <label for="file">Upload file</label>
                                 <!-- <input [(ngModel)]="file" type="file" id="file" name="file" accept=".edf" required> -->
-                                <app-uploading></app-uploading>
+                                <app-uploading (newFileEvent)="getFiles($event)"></app-uploading>
 
 
                         </div>

@@ -278,6 +278,10 @@ def getEeg(request):
 @api_view(['POST'])
 def createEEG(request):
     """POST de um EEG"""
+
+    print(request.data)
+    print(request.FILES)
+
     try:
         operator = Operator.objects.get(health_number=request.data['operatorID'])
     except Operator.DoesNotExist:
@@ -288,7 +292,7 @@ def createEEG(request):
     except Patient.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    memoryFile = request.data['file']
+    for memoryFile in request.FILES:
     
     # file = memoryFile.file
     
@@ -297,21 +301,21 @@ def createEEG(request):
     # n = f.signals_in_file # isto vai buscar os sinais e descarta o resto da informação 
     # print(n)
 
-    eeg = {
-        "operator": operator,
-        "patient": patient,
-        "file": memoryFile,
-        "status": True,
-        "priority": 3,
-        "report": None,
-        "timestramp": datetime.now()
-    }
+        eeg = {
+            "operator": operator,
+            "patient": patient,
+            "file": memoryFile,
+            "status": True,
+            "priority": 3,
+            "report": None,
+            "timestramp": datetime.now()
+        }
 
-    serializer = serializers.EEGSerializer(data=eeg)
-    if serializer.is_valid():
-        print("valid")
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        serializer = serializers.EEGSerializer(data=eeg)
+        if serializer.is_valid():
+            print("valid")
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

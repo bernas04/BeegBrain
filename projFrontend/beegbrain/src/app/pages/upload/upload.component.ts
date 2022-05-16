@@ -13,7 +13,7 @@ export class UploadComponent implements OnInit {
 
   @Input() patientID! : string;
   @Input() operatorID! : string;
-  file! : File;
+  files : File[] = [];
 
   //fileName = '';
 
@@ -24,24 +24,23 @@ export class UploadComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onFileSelected(event: any) {
-    this.file = event.target.files[0];
+  getFiles(files : any[]) {
+    this.files = files;
   }
 
   submitEEG() {
 
     console.log("Submitting EEG")
-    console.log(this.file)
-    console.log(this.file.name)
-    console.log(this.file.size)
-    console.log(this.file.type)
     console.log(this.operatorID)
     console.log(this.patientID)
 
     const formData = new FormData();
     formData.append('operatorID', this.operatorID);
     formData.append('patientID', this.patientID);
-    formData.append('file', this.file, this.file.name);
+    for (let file of this.files) {
+      console.log(file.name)
+      formData.append('file', file, file.name);
+    }
     
     this.eegService.submitEEG(formData).subscribe({
       next: (eeg) => {
