@@ -60,28 +60,21 @@ class ReportSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class EEGSerializer(serializers.ModelSerializer):
-    class Meta: 
+    class Meta:
         model = EEG
-        fields = ('id','file','status', 'timestamp', 'priority','report','operator','patient')
-
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        data['report'] = ReportSerializer(Report.objects.get(id=data['report'])).data
-        data['operator'] = OperatorSerializer(Operator.objects.get(id=data['operator'])).data
-        data['patient'] = PatientSerializer(Patient.objects.get(id=data['patient'])).data
-        return data
+        fields = "__all__"
 
 class AccessEEGSerializer(serializers.ModelSerializer):
     class Meta:
-        models = AccessEEG
+        model = AccessEEG
         fields = "__all__"
 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
-        models = Event
+        model = Event
         fields = "__all__"
 
 class SharedFolderSerializer(serializers.ModelSerializer):
     class Meta: 
-        models = SharedFolder
+        model = SharedFolder
         fields = "__all__"

@@ -23,6 +23,9 @@ class Providence(Institution):
 # Revision Center -> Institution responsible for reviewing and creating reports for EEG exams, made by Doctors
 class RevisionCenter(Institution):
     institution = models.OneToOneField(Institution, on_delete=models.CASCADE, primary_key=True, related_name='%(class)s_institution')
+
+    def __str__(self) -> str:
+        return 'Revision Center: ' + super().__str__()
     #id = models.ForeignKey(Institution, verbose_name=('id'), primary_key=True, on_delete=models.CASCADE)
 
 # Contract -> Exclusive contract between a Providence and a RevisionCenter (1:1 relation). 
@@ -75,13 +78,16 @@ class Operator(Person):
     #health_number = models.ForeignKey(Person, verbose_name=('health_number'), primary_key=True, on_delete=models.CASCADE)
     operator_number = models.CharField(max_length=20)
     providence = models.ForeignKey(Providence, verbose_name=('providence'), on_delete=models.CASCADE, related_name='%(class)s_providence')
+
+    def __str__(self) -> str:
+        return 'Operator: ' + super().__str__() + f' {self.health_number}'
     
 # DoctorRevisionCenter -> Defines what Revision Centers Doctors work on and vice versa.
 class DoctorRevisionCenter(models.Model):
     class Meta:
         unique_together = (('doctor', 'revision_center'),)
     doctor = models.ForeignKey(Doctor, verbose_name=('doctor'), on_delete=models.CASCADE, related_name='%(class)s_doctor')
-    revision_center = models.ForeignKey(RevisionCenter, verbose_name=('revision_center'), on_delete=models.CASCADE, related_name='%(class)s_revision_center')
+    revision_center = models.ForeignKey(RevisionCenter, verbose_name=('revision center'), on_delete=models.CASCADE, related_name='%(class)s_revision_center')
 
 # Report -> Content written by a Doctor related to a EEG.
 class Report(models.Model):
@@ -93,14 +99,12 @@ class Report(models.Model):
 # EEG -> Has all the information about an EEG exam
 class EEG(models.Model):
 
-    file = models.FileField()                                       # TODO: Check if we need to add any parameters (like: specify size range?)
-    status = models.BooleanField(default=True)                      # If false: The file has an error
+    file = models.FileField(null=False)                                     
+    status = models.BooleanField(default=True)                     
     timestamp = models.DateTimeField(auto_now_add=True)
-    PRIORITIES = [(1,"Very Low"),(2, "Low"),(3, "Medium"),(4, "High"),(5, "Very High")]
-    priority = models.IntegerField(choices=PRIORITIES)
-    report = models.ForeignKey(Report, verbose_name=('report'), on_delete=models.CASCADE, related_name='%(class)s_report', null=True)
-    operator = models.ForeignKey(Operator, verbose_name=('operator'), on_delete=models.CASCADE, related_name='%(class)s_operator')
-    patient = models.ForeignKey(Patient, verbose_name=('patient'), on_delete=models.CASCADE, related_name='%(class)s_patient')
+    report = models.ForeignKey(Report, verbose_name=('report'), on_delete=models.CASCADE, related_name='%(class)s_report', null=True, blank=True)
+    operator = models.ForeignKey(Operator, verbose_name=('operator'), on_delete=models.CASCADE, related_name='%(class)s_operator', null=False)
+    patient = models.ForeignKey(Patient, verbose_name=('patient'), on_delete=models.CASCADE, related_name='%(class)s_patient', null=False)
 
 # AccessEEG -> Table responsible for defining what Persons have access to a specific EEG
 class AccessEEG(models.Model):
@@ -120,6 +124,6 @@ class Event(models.Model):
 
 # SharedFolder -> Table responsible for defining the EEG exams that an institution (and its workers) is allowed to access.  
 class SharedFolder(models.Model):
-    
+    path = models.CharField(max_length=300, null=True)
     institution = models.ForeignKey(Institution, verbose_name=('institution'), on_delete=models.CASCADE, related_name='%(class)s_institution')
     eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE, related_name='%(class)s_eeg')

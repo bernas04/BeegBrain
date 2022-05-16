@@ -1,13 +1,15 @@
-import datetime
 from datetime import datetime
-from fileinput import filename
-from time import time
+from click import File
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from app.models import *
 from app import serializers
 from rest_framework import status
+import tempfile
+
+import pyedflib
+
 
 
 # ############################### PROVENIENCIAS ###############################
@@ -277,53 +279,41 @@ def getEeg(request):
 @api_view(['POST'])
 def createEEG(request):
     """POST de um EEG"""
-
-    operator = None
-    patient = None
-
-    print("entrou")
-    print("===================================")
-
-    print(request.data)
-
     try:
         operator = Operator.objects.get(health_number=request.data['operatorID'])
     except Operator.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
-    print(operator)
 
     try:
         patient = Patient.objects.get(health_number=request.data['patientID'])
     except Patient.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    print(patient)
+    memoryFile = request.data['file']
+    
+    # file = memoryFile.file
+    
+    # f = pyedflib.EdfReader(file.name)
 
-
-    file = request.data['file']
+    # n = f.signals_in_file # isto vai buscar os sinais e descarta o resto da informação 
+    # print(n)
 
     eeg = {
-        "operator":operator,
-        "patient":patient,
-        "file":file,
-        "status":True,
-        "priority":3,
-        "report":None,
-        "timestramp":datetime.now()
+        "operator": operator,
+        "patient": patient,
+        "file": memoryFile,
+        "status": True,
+        "priority": 3,
+        "report": None,
+        "timestramp": datetime.now()
     }
 
-    print("===================================")
     serializer = serializers.EEGSerializer(data=eeg)
     if serializer.is_valid():
         print("valid")
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    print(serializer.errors)
-
-    print("invalid")
-    print("===================================")
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
