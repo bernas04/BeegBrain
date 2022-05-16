@@ -95,10 +95,12 @@ celerybeat-schedule
 # dotenv
 .env
 
-# added for django
+# added for django or angular
 db.sqlite3
 **/migrations/*
 **/.idea/*
+**/.cache/*
+**/node_modules/*
 
 
 # virtualenv
