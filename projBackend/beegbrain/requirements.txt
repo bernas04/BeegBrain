@@ -6,3 +6,4 @@ django-filter
 django-cors-headers
 mysqlclient
 django_extensions
+pyedflib
