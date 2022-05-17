@@ -2,9 +2,24 @@ version: '3'
 
 services:
 
+  database:
+    image: mysql:latest
+    container_name: database-mysql
+    restart: always
+    volumes:
+      - ./mysql:/var/lib/mysql
+    ports:
+      - '3307:3306'
+    expose:
+      - 3307
+    environment:
+      MYSQL_DATABASE: 'beegbrain'
+      MYSQL_PORT: '3306'
+      MYSQL_PASSWORD: 'root'
+      MYSQL_ROOT_PASSWORD: 'root'
+
   django:
-    build: ./backend/beegbrain
-    command: python manage.py runserver 0.0.0.0:8080
+    build: ./projBackend/beegbrain
     volumes:
       - /backend:/backend
     ports:
@@ -12,11 +27,16 @@ services:
     image: django
     container_name: backend-django
     restart: unless-stopped
+    depends_on:
+      - database
 
   angular:
-      build: ./frontend/beegbrain
-      image: angular
-      container_name: frontend-angular
-      restart: unless-stopped
-      depends_on:
-        - django
+    build: ./projFrontend/beegbrain
+    image: angular
+    container_name: frontend-angular
+    restart: unless-stopped
+    depends_on:
+      - django
+      - database
+
+# adicionar volumes
