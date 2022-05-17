@@ -64,6 +64,16 @@ class EEGSerializer(serializers.ModelSerializer):
         model = EEG
         fields = "__all__"
 
+class ChannelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Channel
+        fields = "__all__"
+
+""" class AnnotationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Annotation
+        fields = "__all__" """
+
 """
 Ver para n ser preciso fazer parsing dos dados na view
     class Meta: 

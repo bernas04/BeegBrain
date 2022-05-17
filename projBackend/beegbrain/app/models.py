@@ -105,31 +105,30 @@ class Report(models.Model):
 
 # EEG -> Has all the information about an EEG exam
 class EEG(models.Model):
-
-    status = models.BooleanField(default=True)                     
-    timestamp = models.DateTimeField(null=True)
-    PRIORITIES = [("1","Very Low"),("2","Low"),("3","Medium"),("4","High"),("5","Very High")]
-    priority = models.CharField(max_length=1, choices=PRIORITIES)
-    duration = models.IntegerField(null=False)  
-    report = models.ForeignKey(Report, verbose_name=('report'), on_delete=models.CASCADE, related_name='%(class)s_report', null=True, blank=True)
     operator = models.ForeignKey(Operator, verbose_name=('operator'), on_delete=models.CASCADE, related_name='%(class)s_operator', null=False)
     patient = models.ForeignKey(Patient, verbose_name=('patient'), on_delete=models.CASCADE, related_name='%(class)s_patient', null=False)
+    status = models.BooleanField(default=True)                     
+    timestamp = models.DateTimeField(null=True, blank=True)
+    PRIORITIES = [("1","Very Low"),("2","Low"),("3","Medium"),("4","High"),("5","Very High")]
+    priority = models.CharField(max_length=1, choices=PRIORITIES)
+    duration = models.IntegerField(null=True, blank=True)  
+    report = models.ForeignKey(Report, verbose_name=('report'), on_delete=models.CASCADE, related_name='%(class)s_report', null=True, blank=True)
 
 
 # Channel -> Represents a channel in a EEG exam (has a label 'A01', a file with the values of that channel and the EEG it belongs to)
 class Channel(models.Model):
     label = models.CharField(null=False, max_length=20)
-    file = models.FileField(null=False)         
+    file =models.FileField(null=False)         
     eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE, related_name='%(class)s_eeg', null=False)
 
 
 # Annotation -> Information about some event occured during the EEG exam (with start time, duration and description)
-class Annotation(models.Model):
+""" class Annotation(models.Model):
 
     timestamp = models.DateTimeField(null=False)
     duration = models.FloatField(null=False)
     description = models.TextField(null=False)              
-    eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE, related_name='%(class)s_eeg', null=False)
+    eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE, related_name='%(class)s_eeg', null=False) """
 
 
 """

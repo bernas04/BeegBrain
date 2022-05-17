@@ -6,6 +6,10 @@ from app.models import *
 from app import serializers
 from rest_framework import status
 import tempfile
+import numpy as np
+import tempfile
+import os
+
 
 import pyedflib
 
@@ -278,9 +282,32 @@ def getEeg(request):
 @api_view(['POST'])
 def createEEG(request):
     """POST de um EEG"""
+    if request.data['priority']=='Very Low':
+        priority=1
+    elif request.data['priority']=='Low':
+        priority=2
+    elif request.data['priority']=='Medium':
+        priority=3
+    elif request.data['priority']=='High':
+        priority=4
+    elif request.data['priority']=='Very High':
+        priority=5
 
-    print(request.data)
-    print(request.FILES)
+
+    memoryFile = request.data['file']
+    file = memoryFile.file
+
+
+    f = pyedflib.EdfReader(file.name)
+    timestamp = datetime.timestamp(f.getStartdatetime())
+    duration = f.getFileDuration()
+
+    n = f.signals_in_file # isto vai buscar os sinais e descarta o resto da informação 
+    m = f.getNSamples()[0]
+    signal_labels = f.getSignalLabels() # Returns a list with all labels (name) (“FP1”, “SaO2”, etc.)
+    sigbufs = np.zeros((n, m)) # matriz de zeros n channels por comprimento de sinal
+
+
 
     try:
         operator = Operator.objects.get(health_number=request.data['operator'])
@@ -292,57 +319,56 @@ def createEEG(request):
     except Patient.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    for memoryFile in request.FILES:
+    eeg = {
+        "operator": operator,
+        "patient": patient,
+        "status": True,
+        "timestamp": timestamp,
+        "priority": priority,
+        "report": None,
+        "duration": duration,
+    }
+
+
+    # Criar o objeto EEG
+    serializer = serializers.EEGSerializer(data=eeg)
     
-    file = memoryFile.file
+    if serializer.is_valid():
+        print("------------------> eeg is valid")
+        serializer.save()
+        idEEG = serializer.id
+
+    # get eeg by id
+    eegObject = EEG.objects.get(id=idEEG)
+
     
-    f = pyedflib.EdfReader(file.name)
+    for i in np.arange(n):
+        sigbufs[i, :] = f.readSignal(i) 
+        channelLabel = signal_labels[i]
 
-    n = f.signals_in_file # isto vai buscar os canais e descarta o resto da informação
-    print("Channels ",n)
+        with open('../' + channelLabel + '.npy', 'wb') as file:
+            ftmp = tempfile.NamedTemporaryFile(delete=False)
+            fname = ftmp.name + ".npy"
+            np.save(fname, sigbufs[i, :], allow_pickle=False)
+            channel = {
+                    'label':channelLabel,
+                    'file':ftmp,
+                    'eeg': eegObject
+                }
 
+            # Criar o objeto Channel
 
-    print("Duração (seconds)" ,f.file_duration)
-
-    for i in range(n):
-        f.readSignal(i)  # isto lê os valores específicos de cada canal
-    
-        
-
-
-
-
-
-    """ if request.data['priority']=='Very Low':
-        priority=1
-    elif request.data['priority']=='Low':
-        priority=2
-    elif request.data['priority']=='Medium':
-        priority=3
-    elif request.data['priority']=='High':
-        priority=4
-    elif request.data['priority']=='Very High':
-        priority=5 """
-    
+            serializer = serializers.ChannelSerializer(data=channel)
+            if serializer.is_valid():
+                print("Valid channel")
+                serializer.save()
     
 
-        eeg = {
-            "operator": operator,
-            "patient": patient,
-            "file": memoryFile,
-            "status": True,
-            "priority": 3,
-            "report": None,
-            "timestramp": datetime.now()
-        }
 
-        serializer = serializers.EEGSerializer(data=eeg)
-        if serializer.is_valid():
-            print("valid")
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    
 
 
 @api_view(['GET'])
