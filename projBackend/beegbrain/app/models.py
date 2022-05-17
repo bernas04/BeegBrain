@@ -118,9 +118,8 @@ class EEG(models.Model):
 
 # Channel -> Represents a channel in a EEG exam (has a label 'A01', a file with the values of that channel and the EEG it belongs to)
 class Channel(models.Model):
-
-    label = models.CharField(null=False)
-    file = models.FileField(null=False)              
+    label = models.CharField(null=False, max_length=20)
+    file = models.FileField(null=False)         
     eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE, related_name='%(class)s_eeg', null=False)
 
 
