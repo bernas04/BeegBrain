@@ -27,6 +27,10 @@ import { DndDirective } from './dnd.directive';
 import { ProgressComponent } from './components/progress/progress.component';
 import { RegisterComponent } from './components/register/register.component';
 
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { SliderComponent } from './components/slider/slider.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -48,7 +52,8 @@ import { RegisterComponent } from './components/register/register.component';
     UploadingComponent,
     DndDirective,
     ProgressComponent,
-    RegisterComponent
+    RegisterComponent,
+    SliderComponent
   ],
   imports: [
 		BrowserModule,
@@ -56,9 +61,11 @@ import { RegisterComponent } from './components/register/register.component';
 		FormsModule,
 		ReactiveFormsModule,
 		HttpClientModule,
+    NgxSliderModule,
     NgxEchartsModule.forRoot({
       echarts,
     }),
+    BrowserAnimationsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

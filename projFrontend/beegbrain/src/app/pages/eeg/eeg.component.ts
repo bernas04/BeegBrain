@@ -1,3 +1,4 @@
+import { Options } from '@angular-slider/ngx-slider';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -11,5 +12,12 @@ export class EegComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  initial_speed: number = 1000;
+  options: Options = {
+    floor: 100,
+    ceil: 5000,
+    step: 100
+  };
 
 }

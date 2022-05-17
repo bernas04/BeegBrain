@@ -8,8 +8,9 @@ import {
 } from 'echarts/components';
 import { LineSeriesOption } from 'echarts/charts';
 import * as echarts from 'echarts';
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { DataItem } from './DataItem';
+import { Options } from '@angular-slider/ngx-slider';
 
 type EChartsOption = echarts.ComposeOption<
   | TitleComponentOption
@@ -29,7 +30,8 @@ export class EEGViewerComponent {
   myChart! : echarts.ECharts;
   option!: echarts.EChartsOption;
 
-
+  @Input('speed') speed!: number;
+  
   data: DataItem[] = [];
   now = new Date(1997, 9, 3);
   oneDay = 24 * 3600 * 1000;
@@ -148,7 +150,7 @@ export class EEGViewerComponent {
         ]
       }); 
 
-    }, 1000); // mudar velocidade
+    }, this.speed); // mudar velocidade
 
     this.option && this.myChart.setOption(this.option);
 

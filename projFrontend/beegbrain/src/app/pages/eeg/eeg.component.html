@@ -1,3 +1,10 @@
 <app-navbar></app-navbar>
 
-<app-eeg-viewer></app-eeg-viewer> 
+<div class="slider">
+    <i class="bi bi-speedometer2" style="margin-left:10em"></i>
+
+    <app-slider [value]=initial_speed [options]=options ></app-slider>
+
+</div>
+
+<app-eeg-viewer [speed]=initial_speed ></app-eeg-viewer> 
