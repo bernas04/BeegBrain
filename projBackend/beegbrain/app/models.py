@@ -113,7 +113,7 @@ class EEG(models.Model):
     priority = models.CharField(max_length=1, choices=PRIORITIES)
     duration = models.IntegerField(null=True, blank=True)  
     report = models.ForeignKey(Report, verbose_name=('report'), on_delete=models.CASCADE, related_name='%(class)s_report', null=True, blank=True)
-
+    
 
 # Channel -> Represents a channel in a EEG exam (has a label 'A01', a file with the values of that channel and the EEG it belongs to)
 class Channel(models.Model):

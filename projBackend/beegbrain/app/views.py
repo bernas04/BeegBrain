@@ -1,4 +1,5 @@
 from datetime import datetime
+from importlib.metadata import files
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -281,6 +282,7 @@ def getEeg(request):
 
 @api_view(['POST'])
 def createEEG(request):
+    
     """POST de um EEG"""
     if request.data['priority']=='Very Low':
         priority=1
@@ -299,7 +301,7 @@ def createEEG(request):
 
 
     f = pyedflib.EdfReader(file.name)
-    timestamp = datetime.timestamp(f.getStartdatetime())
+    timestamp = f.getStartdatetime()
     duration = f.getFileDuration()
 
     n = f.signals_in_file # isto vai buscar os sinais e descarta o resto da informação 
@@ -318,7 +320,7 @@ def createEEG(request):
         patient = Patient.objects.get(health_number=request.data['patient'])
     except Patient.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
+    print("TIMESTAMP ", timestamp)
     eeg = {
         "operator": operator,
         "patient": patient,
@@ -331,12 +333,12 @@ def createEEG(request):
 
 
     # Criar o objeto EEG
-    serializer = serializers.EEGSerializer(data=eeg)
+    serializer_eeg = serializers.EEGSerializer(data=eeg)
+    print("Serializer ",serializer_eeg)
+    if serializer_eeg.is_valid():
+        serializer_eeg.save()
+        idEEG = EEG.objects.latest('id').id
     
-    if serializer.is_valid():
-        print("------------------> eeg is valid")
-        serializer.save()
-        idEEG = serializer.id
 
     # get eeg by id
     eegObject = EEG.objects.get(id=idEEG)
@@ -356,12 +358,20 @@ def createEEG(request):
                     'eeg': eegObject
                 }
 
+            print(type(ftmp))
+
             # Criar o objeto Channel
 
             serializer = serializers.ChannelSerializer(data=channel)
             if serializer.is_valid():
                 print("Valid channel")
                 serializer.save()
+            else:
+                print(serializer.errors)
+            
+    
+    return Response(serializer_eeg.data, status=status.HTTP_201_CREATED)
+
     
 
 
