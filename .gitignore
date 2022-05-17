@@ -3,13 +3,6 @@ client/node_modules
 client/e2e
 client/bootstrap-overview
 
-
-backend/bin
-backend/include
-backend/lib
-backend/beegbrain/static
-
-
 # Byte-compiled / optimized / DLL files
 **/__pycache__/*
 *.py[cod]

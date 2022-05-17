@@ -2,14 +2,14 @@ FROM python:3.8
 
 ENV PYTHONUNBUFFERED 1
 
-WORKDIR /backend
+WORKDIR /projBackend
 
 COPY ./requirements.txt .
 
 RUN pip3 install -r requirements.txt
 
-COPY . /backend/
+COPY . /projBackend/
 
-EXPOSE 8080
+EXPOSE 8000
 
-ENTRYPOINT ["python","manage.py","runserver","0.0.0.0:8080"]
+ENTRYPOINT ["python","manage.py","runserver","8000"]
