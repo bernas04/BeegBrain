@@ -39,6 +39,7 @@ export class EEGViewerComponent implements OnChanges {
   now = new Date(1997, 9, 3);
   oneDay = 24 * 3600 * 1000;
   value = Math.random() * 1000;
+  seconds = 0;
 
   ngOnChanges(model: any) {
     this.changeSpeed();
@@ -76,14 +77,9 @@ export class EEGViewerComponent implements OnChanges {
         trigger: 'axis',
         formatter: function (params: any) {
           params = params[0];
-          var date = new Date(params.name);
-          return (
-            date.getDate() +
-            '/' +
-            (date.getMonth() + 1) +
-            '/' +
-            date.getFullYear() +
-            ' : ' +
+          return ('timestamp: ' + 
+            params.value[0] +
+            ' : ' + 'value: ' +
             params.value[1]
           );
         },
@@ -169,12 +165,13 @@ export class EEGViewerComponent implements OnChanges {
 
 
   randomData(): DataItem {
-    this.now = new Date(+this.now + this.oneDay);
+    this.seconds++;
     this.value = this.value + Math.random() * 21 - 10;
+    
     return {
-      name: this.now.toString(),
+      name: this.seconds.toString(),
       value: [
-        [this.now.getFullYear(), this.now.getMonth() + 1, this.now.getDate()].join('/'),
+        this.seconds.toString(),
         Math.round(this.value)
       ]
     };
