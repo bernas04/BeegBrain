@@ -29,7 +29,6 @@ import { RegisterComponent } from './components/register/register.component';
 
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { SliderComponent } from './components/slider/slider.component';
 
 @NgModule({
   declarations: [
@@ -53,7 +52,6 @@ import { SliderComponent } from './components/slider/slider.component';
     DndDirective,
     ProgressComponent,
     RegisterComponent,
-    SliderComponent
   ],
   imports: [
 		BrowserModule,

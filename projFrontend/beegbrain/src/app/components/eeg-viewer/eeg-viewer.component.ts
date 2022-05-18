@@ -8,7 +8,7 @@ import {
 } from 'echarts/components';
 import { LineSeriesOption } from 'echarts/charts';
 import * as echarts from 'echarts';
-import { Component, Input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
 import { DataItem } from './DataItem';
 import { Options } from '@angular-slider/ngx-slider';
 
@@ -22,20 +22,27 @@ type EChartsOption = echarts.ComposeOption<
 @Component({
     selector: 'app-eeg-viewer',
     templateUrl: './eeg-viewer.component.html',
-    styleUrls: ['./eeg-viewer.component.css']
+    styleUrls: ['./eeg-viewer.component.css'],
+    changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class EEGViewerComponent {
+export class EEGViewerComponent implements OnChanges {
 
   chartDom! : HTMLElement;
   myChart! : echarts.ECharts;
   option!: echarts.EChartsOption;
 
   @Input('speed') speed!: number;
+  intervalId! : any;
+  lst_intervalId: any[] = [];
   
   data: DataItem[] = [];
   now = new Date(1997, 9, 3);
   oneDay = 24 * 3600 * 1000;
   value = Math.random() * 1000;
+
+  ngOnChanges(model: any) {
+    this.changeSpeed();
+  }
 
   ngOnInit(): void {
 
@@ -43,9 +50,7 @@ export class EEGViewerComponent {
     setTimeout(() => {
       this.chartDom = document.getElementById('chart')!;
       this.myChart = echarts.init(this.chartDom);
-    },1000);
-
-    console.log(document.getElementById('chart'));
+    },500);
 
     for (let i = 0; i < 1000; i++) {
       this.data.push(this.randomData());
@@ -133,14 +138,18 @@ export class EEGViewerComponent {
       ]
     };
 
+    this.start(this.speed);
+
+    /* 
+
     setInterval(() => {
+
+      console.log("int speed", this.speed)
 
       for (let i = 0; i < 5; i++) {
         this.data.shift();
         this.data.push(this.randomData());
       }
-
-      console.log(this.myChart);
   
       this.myChart.setOption<echarts.EChartsOption>({
         series: [
@@ -150,7 +159,9 @@ export class EEGViewerComponent {
         ]
       }); 
 
-    }, this.speed); // mudar velocidade
+    }, this.speed); // mudar velocidade 
+    
+    */
 
     this.option && this.myChart.setOption(this.option);
 
@@ -168,4 +179,40 @@ export class EEGViewerComponent {
       ]
     };
   }
+
+
+  start(speed: number) {
+
+    this.intervalId = setInterval(() => {
+
+      for (let i = 0; i < 5; i++) {
+        this.data.shift();
+        this.data.push(this.randomData());
+      }
+  
+      this.myChart.setOption<echarts.EChartsOption>({
+        series: [
+          {
+            data: this.data
+          }
+        ]
+      }); 
+
+    }, speed); // mudar velocidade
+    this.lst_intervalId.push(this.intervalId);
+
+  }
+
+
+  changeSpeed() {
+    // clear the existing interval
+    for (var id in this.lst_intervalId)
+      clearInterval( parseInt(id) );
+
+    clearInterval( this.intervalId );
+
+    // just start a new one
+    this.start(this.speed);
+  }
+
 }
