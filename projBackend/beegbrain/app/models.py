@@ -68,7 +68,7 @@ class Patient(Person):
 # Doctor -> A Doctor can work in more than one Revision Center. He's responsible for visualizing, monitoring and reporting an EEG exam.
 class Doctor(Person):
 
-    medical_number = models.CharField(max_length=20)
+    medical_number = models.CharField(max_length=20, unique=True)
 
     def __str__(self) -> str:
         return 'Doctor: ' + super().__str__() + f' {self.medical_number}'
@@ -78,7 +78,7 @@ class Doctor(Person):
 # into the platform to be seen by the Revision Center that holds a contract with his Providence.
 class Operator(Person):
 
-    operator_number = models.CharField(max_length=20)
+    operator_number = models.CharField(max_length=20, unique=True)
     providence = models.ForeignKey(Providence, verbose_name=('providence'), on_delete=models.CASCADE, related_name='%(class)s_providence')
 
     def __str__(self) -> str:

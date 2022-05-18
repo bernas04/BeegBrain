@@ -1,7 +1,7 @@
 import numpy as np
 import pyedflib
 import matplotlib.pyplot as plt
-
+"""
 f = pyedflib.EdfReader("/home/bernas/Desktop/Face13/sub-s07/eeg/eeg.edf")
 
 n = f.signals_in_file # isto vai buscar os sinais e descarta o resto da informação 
@@ -25,11 +25,10 @@ f.close()
 def deassembleEEG(file_path):
 
     f = pyedflib.EdfReader(file_path)
-    n = f.signals_in_file # isto vai buscar os sinais e descarta o resto da informação 
+    n = f.signals_in_file-1 # isto vai buscar os sinais e descarta o resto da informação 
     m = f.getNSamples()[0]
     signal_labels = f.getSignalLabels() # Returns a list with all labels (name) (“FP1”, “SaO2”, etc.)
     sigbufs = np.zeros((n, m)) # matriz de zeros n channels por comprimento de sinal
-
     for i in np.arange(n):
         sigbufs[i, :] = f.readSignal(i) 
         channelLabel = signal_labels[i]
@@ -57,4 +56,3 @@ def assembleEEG(n,m,channel_labels, output_file):
 
 channel_labels,n,m = deassembleEEG("./eeg.edf")
 assembleEEG(n,m,channel_labels,"assembled.edf")
-"""

@@ -1,5 +1,6 @@
 from datetime import datetime
 from importlib.metadata import files
+import operator
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -173,9 +174,9 @@ def createOperator(request):
 @api_view(['GET'])
 def getOperatorById(request):
     """GET de um operator pelo seu id"""
-    op_id = int(request.GET['id'])
+    op_id = int(request.GET['operator'])
     try:
-        ret = Operator.objects.get(health_number=op_id)
+        ret = Operator.objects.get(operator_number=op_id)
     except Operator.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
@@ -206,9 +207,9 @@ def createDoctor(request):
 @api_view(['GET'])
 def getDoctorById(request):
     """GET de um Doutor pelo seu id"""
-    doc_id = int(request.GET['id'])
+    doc_id = int(request.GET['medical'])
     try:
-        ret = Doctor.objects.get(id=doc_id)
+        ret = Doctor.objects.get(medical_number=doc_id)
         
     except Doctor.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -304,7 +305,7 @@ def createEEG(request):
     timestamp = f.getStartdatetime()
     duration = f.getFileDuration()
 
-    n = f.signals_in_file # isto vai buscar os sinais e descarta o resto da informação 
+    n = f.signals_in_file-1 # isto vai buscar os sinais e descarta o resto da informação 
     m = f.getNSamples()[0]
     signal_labels = f.getSignalLabels() # Returns a list with all labels (name) (“FP1”, “SaO2”, etc.)
     sigbufs = np.zeros((n, m)) # matriz de zeros n channels por comprimento de sinal
@@ -350,16 +351,14 @@ def createEEG(request):
 
         with open('../' + channelLabel + '.npy', 'wb') as file:
             ftmp = tempfile.NamedTemporaryFile(delete=False)
-            fname = ftmp.name + ".npy"
-            np.save(fname, sigbufs[i, :], allow_pickle=False)
+            ftmp.name=file
+            print(ftmp.name)
+            np.save(ftmp, sigbufs[i, :])
             channel = {
                     'label':channelLabel,
                     'file':ftmp,
                     'eeg': eegObject
                 }
-
-            print(type(ftmp))
-
             # Criar o objeto Channel
 
             serializer = serializers.ChannelSerializer(data=channel)
