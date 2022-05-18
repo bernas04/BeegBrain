@@ -94,7 +94,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'beegbrain',
-        'HOST': 'db',
+        'HOST': 'localhost',
+        #'HOST': 'db',
         'PORT': '3306',
         'USER': 'root',
         'PASSWORD': 'root',
