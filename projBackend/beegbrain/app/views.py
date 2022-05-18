@@ -381,8 +381,8 @@ def getChannelByLabel(request):
 def getAllEegChannels(request):
     """GET de todos os channels de um eeg"""
     eeg_id = int(request.GET['eeg'])
-    channelS = Channel.objects.filter(eeg_id=eeg_id)
-    serializer = serializers.ChannelSerializer(channelS, many=True)
+    channels = Channel.objects.filter(eeg_id=eeg_id)
+    serializer = serializers.ChannelSerializer(channels, many=True)
     return Response(serializer.data)
 
 # ############################### EVENT ###############################
