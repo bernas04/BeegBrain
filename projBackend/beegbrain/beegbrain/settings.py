@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'beegbrain.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'information_schema',
+        'NAME': 'beegbrain',
         'HOST': 'localhost',
         'PORT': '3306',
         'USER': 'root',

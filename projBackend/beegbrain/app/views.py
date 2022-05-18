@@ -1,5 +1,7 @@
 from datetime import datetime
 from importlib.metadata import files
+from django.core.files import File
+from django.core.files.base import ContentFile
 import operator
 from django.shortcuts import render
 from rest_framework.decorators import api_view
@@ -284,6 +286,9 @@ def getEeg(request):
 @api_view(['POST'])
 def createEEG(request):
     
+    print(request.data)
+    print(request.content_type)
+
     """POST de um EEG"""
     if request.data['priority']=='Very Low':
         priority=1
@@ -321,6 +326,7 @@ def createEEG(request):
         patient = Patient.objects.get(health_number=request.data['patient'])
     except Patient.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
+
     print("TIMESTAMP ", timestamp)
     eeg = {
         "operator": operator,
@@ -339,36 +345,25 @@ def createEEG(request):
     if serializer_eeg.is_valid():
         serializer_eeg.save()
         idEEG = EEG.objects.latest('id').id
+
     
 
     # get eeg by id
     eegObject = EEG.objects.get(id=idEEG)
+    print("eegobject")
+    print(eegObject)
 
     
     for i in np.arange(n):
         sigbufs[i, :] = f.readSignal(i) 
         channelLabel = signal_labels[i]
+        filename = './media/' + channelLabel + ".npy"
 
-        with open('../' + channelLabel + '.npy', 'wb') as file:
-            ftmp = tempfile.NamedTemporaryFile(delete=False)
-            ftmp.name=file
-            print(ftmp.name)
-            np.save(ftmp, sigbufs[i, :])
-            channel = {
-                    'label':channelLabel,
-                    'file':ftmp,
-                    'eeg': eegObject
-                }
-            # Criar o objeto Channel
+        with open(filename, 'wb') as file:
+            np.save(filename, sigbufs[i, :])
+        
+        chn = Channel.objects.create(label=channelLabel,file=File(open(filename,"rb")),eeg=eegObject)
 
-            serializer = serializers.ChannelSerializer(data=channel)
-            if serializer.is_valid():
-                print("Valid channel")
-                serializer.save()
-            else:
-                print(serializer.errors)
-            
-    
     return Response(serializer_eeg.data, status=status.HTTP_201_CREATED)
 
     
