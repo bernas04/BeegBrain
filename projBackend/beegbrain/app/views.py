@@ -1,5 +1,3 @@
-import os
-from django.core.files import File
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from app.models import *
@@ -7,7 +5,7 @@ from app import serializers
 from rest_framework import status
 import numpy as np
 import pyedflib
-
+import gzip
 
 
 # ############################### PROVENIENCIAS ###############################
@@ -277,13 +275,7 @@ def getEeg(request):
 @api_view(['POST'])
 def createEEG(request):
 
-    PRIORITIES = {
-        'Very Low':1,
-        'Low':2,
-        'Medium':3,
-        'High':4,
-        'Very High':5,
-    }
+    PRIORITIES = {'Very Low':1,'Low':2,'Medium':3,'High':4,'Very High':5}
 
     memoryFile = request.data['file']
     file = memoryFile.file
@@ -325,24 +317,28 @@ def createEEG(request):
         idEEG = EEG.objects.latest('id').id
 
     eegObject = EEG.objects.get(id=idEEG)
-
     
     for i in np.arange(n):
         sigbufs[i, :] = f.readSignal(i) 
         channelLabel = signal_labels[i]
-        filename = './media/' + str(eegObject.id) + '_' + channelLabel + ".npy"
-        np.save(filename, sigbufs[i, :])
+        array = np.array(sigbufs[i,:])
+        filename = str(eegObject.id) + '_' + channelLabel
+        compressChannel(filename,array)
         chn = Channel.objects.create(label=channelLabel,eeg=eegObject)
-        chn.file.name = channelLabel
+        chn.file.name = filename + ".npy.gz"
         chn.save()
 
     return Response(serializer_eeg.data, status=status.HTTP_201_CREATED)
 
     
+def compressChannel(filename, channelArray):
+    file = gzip.GzipFile('./media/' + filename + ".npy.gz", "w")
+    np.save(file=file, arr=channelArray)
+    file.close()
 
-
-
-
+def decompress(filename):
+    file = gzip.GzipFile('./media/' + filename + '.npy.gz', "r"); 
+    return np.load(file)
 
     
 
