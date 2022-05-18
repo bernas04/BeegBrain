@@ -46,8 +46,6 @@ htmlcov/
 .coverage
 .coverage.*
 projFrontend/beegbrain/.angular/
-.angular/
-*/.angular
 nosetests.xml
 coverage.xml
 *,cover
@@ -100,7 +98,7 @@ db.sqlite3
 # virtualenv
 .venv
 venv/
-ENV/
+ENV/database_init
 
 # Spyder project settings
 .spyderproject

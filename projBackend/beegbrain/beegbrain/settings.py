@@ -94,12 +94,19 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'beegbrain',
-        'HOST': 'database',
+        'HOST': 'db',
         'PORT': '3306',
         'USER': 'root',
         'PASSWORD': 'root',
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+            'init_command': "UPDATE user SET plugin='mysql_native_password' WHERE User='root'; \
+                            FLUSH PRIVILEGES; \
+                            ALTER USER 'root'@'localhost' IDENTIFIED BY 'root'; \
+                            exit; \
+                            systemctl restart mysql \
+                            mysql -u root -p \
+                            root; \
+                            create database beegbrain;",
         }
     }
 }
