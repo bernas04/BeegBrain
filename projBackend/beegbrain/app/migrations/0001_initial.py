@@ -17,9 +17,9 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('status', models.BooleanField(default=True)),
-                ('timestamp', models.DateTimeField(null=True)),
+                ('timestamp', models.DateTimeField(blank=True, null=True)),
                 ('priority', models.CharField(choices=[('1', 'Very Low'), ('2', 'Low'), ('3', 'Medium'), ('4', 'High'), ('5', 'Very High')], max_length=1)),
-                ('duration', models.IntegerField()),
+                ('duration', models.IntegerField(blank=True, null=True)),
             ],
         ),
         migrations.CreateModel(
@@ -57,7 +57,7 @@ class Migration(migrations.Migration):
             name='Doctor',
             fields=[
                 ('person_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='app.person')),
-                ('medical_number', models.CharField(max_length=20)),
+                ('medical_number', models.CharField(max_length=20, unique=True)),
             ],
             bases=('app.person',),
         ),
@@ -116,16 +116,6 @@ class Migration(migrations.Migration):
                 ('eeg', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='%(class)s_eeg', to='app.eeg', verbose_name='eeg')),
             ],
         ),
-        migrations.CreateModel(
-            name='Annotation',
-            fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('timestamp', models.DateTimeField()),
-                ('duration', models.FloatField()),
-                ('description', models.TextField()),
-                ('eeg', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='%(class)s_eeg', to='app.eeg', verbose_name='eeg')),
-            ],
-        ),
         migrations.AddField(
             model_name='report',
             name='doctor',
@@ -135,7 +125,7 @@ class Migration(migrations.Migration):
             name='Operator',
             fields=[
                 ('person_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='app.person')),
-                ('operator_number', models.CharField(max_length=20)),
+                ('operator_number', models.CharField(max_length=20, unique=True)),
                 ('providence', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='%(class)s_providence', to='app.providence', verbose_name='providence')),
             ],
             bases=('app.person',),

@@ -8,3 +8,4 @@ mysqlclient
 django_extensions
 #libmysqlclient-dev==5.7.38
 pyedflib
+numpy
