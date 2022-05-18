@@ -95,6 +95,7 @@ db.sqlite3
 **/.idea/*
 **/.cache/*
 **/node_modules/*
+**/media/*
 
 
 # virtualenv
