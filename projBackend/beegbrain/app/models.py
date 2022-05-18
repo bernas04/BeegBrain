@@ -123,24 +123,13 @@ class Channel(models.Model):
 
 
 # Annotation -> Information about some event occured during the EEG exam (with start time, duration and description)
-""" class Annotation(models.Model):
+class Annotation(models.Model):
 
     timestamp = models.DateTimeField(null=False)
     duration = models.FloatField(null=False)
     description = models.TextField(null=False)              
-    eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE, related_name='%(class)s_eeg', null=False) """
+    eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE, related_name='%(class)s_eeg', null=False)
 
-
-"""
-Vamos retirar, porque o acesso ao EEG é feito pelo shared folder, só os medicos duma instituição é que tem acesso aos EEGs
-
-# AccessEEG -> Table responsible for defining what Persons have access to a specific EEG
-class AccessEEG(models.Model):
-
-    patient = models.ForeignKey(Patient, verbose_name=('patient'), on_delete=models.CASCADE, null=True, related_name='%(class)s_patient')
-    eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE, related_name='%(class)s_eeg')
-
-"""
 
 # Event -> Entity responsible for monitoring the life-cycle of an EEG (examples: UPLOAD, DELETE, GENERATE_PDF, etc...).
 # Associated with a person (Operator/Doctor) or an automatic proccess and a timestamp.

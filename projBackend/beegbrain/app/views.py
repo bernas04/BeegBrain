@@ -341,8 +341,6 @@ def decompress(filename):
     return np.load(file)
 
     
-
-
 @api_view(['GET'])
 def getEegById(request, id):
     """GET de um EEG pelo seu id"""
@@ -357,26 +355,35 @@ def getEegById(request, id):
     return Response(serializer.data)
 
 
+# ############################### CHANNEL ###############################
 
-# ############################### ACESS_EEG ###############################
 @api_view(['GET'])
-def getAccessEeg(request):
-    """GET de todos os access_eeg"""
-    access_eegs = AccessEEG.objects.all()
-    serializer = serializers.ReportSerializer(access_eegs, many = True)
+def getAllEegChannels(request):
+    """GET da LISTA (labels apenas) de um EEG"""
+    eeg_id = int(request.GET['eeg'])
+    channels = Channel.objects.filter(eeg_id=eeg_id)
+    channelsLabels = [chn.label for chn in channels]
+    return Response(channelsLabels)
+
+@api_view(['GET'])
+def getChannelByLabel(request):
+    """GET de um channel pela sua label e id do EEG"""
+    eeg_id = int(request.GET['eeg'])
+    label = request.GET['label']
+    try:
+        channel = Channel.objects.get(eeg_id=eeg_id,label=label)
+    except Channel.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = serializers.ChannelSerializer(channel)
     return Response(serializer.data)
 
-
-@api_view(['POST'])
-def createAccessEeg(request):
-    """POST de um Access EEG"""
-    serializer = serializers.ReportSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+@api_view(['GET'])
+def getAllEegChannels(request):
+    """GET de todos os channels de um eeg"""
+    eeg_id = int(request.GET['eeg'])
+    channelS = Channel.objects.filter(eeg_id=eeg_id)
+    serializer = serializers.ChannelSerializer(channelS, many=True)
+    return Response(serializer.data)
 
 # ############################### EVENT ###############################
 @api_view(['GET'])

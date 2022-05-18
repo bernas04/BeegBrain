@@ -69,12 +69,12 @@ class ChannelSerializer(serializers.ModelSerializer):
         model = Channel
         fields = "__all__"
 
-""" class AnnotationSerializer(serializers.ModelSerializer):
+class AnnotationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Annotation
         fields = "__all__" """
 
-"""
+
 Ver para n ser preciso fazer parsing dos dados na view
     class Meta: 
         model = EEG
@@ -93,6 +93,7 @@ Ver para n ser preciso fazer parsing dos dados na view
         model = AccessEEG
         fields = "__all__"
  """
+ 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event

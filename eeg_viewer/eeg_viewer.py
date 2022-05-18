@@ -1,8 +1,8 @@
 import numpy as np
 import pyedflib
 import matplotlib.pyplot as plt
-"""
-f = pyedflib.EdfReader("/home/bernas/Desktop/Face13/sub-s07/eeg/eeg.edf")
+
+f = pyedflib.EdfReader("/home/ricardo/Downloads/S001/S001R14.edf")
 
 n = f.signals_in_file # isto vai buscar os sinais e descarta o resto da informação 
 print(n)
@@ -11,8 +11,10 @@ signal_labels = f.getSignalLabels() # Returns a list with all labels (name) (“
 print(signal_labels)                # descomentem esta linha se quiserem ver as labels para perceberem melhor, mas neste caso acho que
                                      # se referem aos canais
 
-print("--> ",f.readAnnotations())
-
+#print("--> ",f.readAnnotations())
+for an in f.readAnnotations():
+    print("====")
+    print(an)
 
 
 #sigbufs - matriz bidensional com n colunas (numero de canais) e x sinais (frequencia)
@@ -21,6 +23,8 @@ print("--> ",f.readAnnotations())
 # https://pyflac.readthedocs.io/en/latest/
 
 f.close()
+
+
 """
 def deassembleEEG(file_path):
 
@@ -56,3 +60,4 @@ def assembleEEG(n,m,channel_labels, output_file):
 
 channel_labels,n,m = deassembleEEG("./eeg.edf")
 assembleEEG(n,m,channel_labels,"assembled.edf")
+"""

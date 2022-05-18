@@ -64,6 +64,10 @@ urlpatterns = [
     path('api/createEEG', views.createEEG),
     path('api/eeg', views.getEegById),
 
+    path('api/channel', views.getChannelByLabel),
+    path('api/labels', views.getAllEegChannels),
+    path('api/eegChannels', views.getAllEegChannels),
+
     path('api/events', views.getEvent),
     path('api/createEvent', views.createEvent),
     path('api/event', views.getEventById),
@@ -71,9 +75,6 @@ urlpatterns = [
     path('api/sharedFolders', views.sharedFolder),
     path('api/createSharedFolder', views.createSharedFolder),
     path('api/sharedFolder', views.getSharedFolderById),
-
-    path('api/accessEeg', views.getAccessEeg),
-    path('api/createAccessEeg', views.createAccessEeg),
     
     path('api/doctorevisioncenter', views.getDoctorRevisionCenter),
     path('api/createDoctorevisioncenter', views.createDoctorRevisionCenter),
