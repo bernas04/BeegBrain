@@ -1,5 +1,3 @@
-from dataclasses import field, fields
-from pyexpat import model
 from rest_framework import serializers
 from app.models import *
 
@@ -69,10 +67,14 @@ class ChannelSerializer(serializers.ModelSerializer):
         model = Channel
         fields = "__all__"
 
+
 class AnnotationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Annotation
-        fields = "__all__" """
+        fields = "__all__" 
+        
+
+"""      
 
 
 Ver para n ser preciso fazer parsing dos dados na view

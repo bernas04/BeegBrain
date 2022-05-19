@@ -8,6 +8,7 @@ import pyedflib
 import gzip
 
 
+
 # ############################### PROVENIENCIAS ###############################
 @api_view(['GET'])
 def getProvidence(request):
@@ -323,21 +324,22 @@ def createEEG(request):
         channelLabel = signal_labels[i]
         array = np.array(sigbufs[i,:])
         filename = str(eegObject.id) + '_' + channelLabel
+        #np.save(filename,sigbufs[i,:])
         compressChannel(filename,array)
         chn = Channel.objects.create(label=channelLabel,eeg=eegObject)
-        chn.file.name = filename + ".npy.gz"
+        chn.file.name = filename + ".npy"
         chn.save()
 
     return Response(serializer_eeg.data, status=status.HTTP_201_CREATED)
 
     
 def compressChannel(filename, channelArray):
-    file = gzip.GzipFile('./media/' + filename + ".npy.gz", "w")
+    file = gzip.GzipFile('/media/' + filename + ".npy.gz", "w")
     np.save(file=file, arr=channelArray)
     file.close()
 
 def decompress(filename):
-    file = gzip.GzipFile('./media/' + filename + '.npy.gz', "r"); 
+    file = gzip.GzipFile('./media/' + filename + '.gz', "r"); 
     return np.load(file)
 
     
@@ -374,16 +376,17 @@ def getChannelByLabel(request):
         channel = Channel.objects.get(eeg_id=eeg_id,label=label)
     except Channel.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-    serializer = serializers.ChannelSerializer(channel)
-    return Response(serializer.data)
+
+    data = { channel.label : decompress(channel.file.name) }
+    return Response(data)
 
 @api_view(['GET'])
 def getAllEegChannels(request):
     """GET de todos os channels de um eeg"""
+
     eeg_id = int(request.GET['eeg'])
-    channels = Channel.objects.filter(eeg_id=eeg_id)
-    serializer = serializers.ChannelSerializer(channels, many=True)
-    return Response(serializer.data)
+    data = { channel.label : decompress(channel.file.name) for channel in Channel.objects.filter(eeg_id=eeg_id) }
+    return Response(data,)
 
 # ############################### EVENT ###############################
 @api_view(['GET'])
