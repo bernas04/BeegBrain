@@ -34,6 +34,9 @@ export class EEGViewerComponent implements OnChanges {
   @Input('speed') speed!: number;
   intervalId! : any;
   lst_intervalId: any[] = [];
+
+  @Input('interval') interval!: number;
+
   
   data: DataItem[] = [];
   now = new Date(1997, 9, 3);
@@ -43,6 +46,7 @@ export class EEGViewerComponent implements OnChanges {
 
   ngOnChanges(model: any) {
     this.changeSpeed();
+    console.log(this.interval)
   }
 
   ngOnInit(): void {
@@ -60,7 +64,7 @@ export class EEGViewerComponent implements OnChanges {
     this.option = {
       title: {
         text: 'EEG',
-        subtext: 'Electroencephalogram exam',
+        subtext: 'EEG exam',
         textStyle: {
           fontFamily: "Arial",
           fontSize: 20,
@@ -102,15 +106,19 @@ export class EEGViewerComponent implements OnChanges {
         }
       },
       xAxis: {
+        name : "Time",
         type: 'time',
         splitLine: {
           show: true
         },
-        axisPointer: {
+        // interval: 2000,
+        /* min:0,
+        max:this.interval, */
+        axisPointer: {},
 
-        }
       },
       yAxis: {
+        name : 'Value',
         type: 'value',
         boundaryGap: [0, '100%'], // min: 0 , max: o máximo do sinal
         splitLine: {
@@ -135,29 +143,6 @@ export class EEGViewerComponent implements OnChanges {
     };
 
     this.start(this.speed);
-
-    /* 
-
-    setInterval(() => {
-
-      console.log("int speed", this.speed)
-
-      for (let i = 0; i < 5; i++) {
-        this.data.shift();
-        this.data.push(this.randomData());
-      }
-  
-      this.myChart.setOption<echarts.EChartsOption>({
-        series: [
-          {
-            data: this.data
-          }
-        ]
-      }); 
-
-    }, this.speed); // mudar velocidade 
-    
-    */
 
     this.option && this.myChart.setOption(this.option);
 
@@ -186,13 +171,19 @@ export class EEGViewerComponent implements OnChanges {
         this.data.shift();
         this.data.push(this.randomData());
       }
+      console.log(parseInt(this.data[0].value[0]))
+      let minvalue = parseInt(this.data[0].value[0])
   
       this.myChart.setOption<echarts.EChartsOption>({
         series: [
           {
             data: this.data
           }
-        ]
+        ],
+        /* xAxis: {
+          min : this.speed + minvalue,
+          max: this.speed + minvalue + this.interval,
+        }, */
       }); 
 
     }, speed); // mudar velocidade

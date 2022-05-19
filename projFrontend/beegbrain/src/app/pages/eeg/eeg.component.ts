@@ -10,10 +10,11 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 export class EegComponent implements OnInit {
 
   constructor() { }
-
+  
   ngOnInit(): void {
+    
   }
-
+  
   speed: number = 1000; // default: 1 segundo
   options: Options = {
     floor: 0,
@@ -25,6 +26,13 @@ export class EegComponent implements OnInit {
     },
   };
   
+  window_size: number=1;
+  
+  
+  getInputValue(event:any){
+    this.window_size = event.target.value;
+
+  }
 
   update() {
     console.log("new speed value: "+ this.speed)
