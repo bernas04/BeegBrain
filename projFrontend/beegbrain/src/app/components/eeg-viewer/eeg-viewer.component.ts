@@ -180,10 +180,10 @@ export class EEGViewerComponent implements OnChanges {
             data: this.data
           }
         ],
-        /* xAxis: {
+        xAxis: {
           min : this.speed + minvalue,
           max: this.speed + minvalue + this.interval,
-        }, */
+        },
       }); 
 
     }, speed); // mudar velocidade
