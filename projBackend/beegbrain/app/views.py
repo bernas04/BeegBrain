@@ -334,7 +334,7 @@ def createEEG(request):
 
     
 def compressChannel(filename, channelArray):
-    file = gzip.GzipFile('/media/' + filename + ".npy.gz", "w")
+    file = gzip.GzipFile('./media/' + filename + ".npy.gz", "w")
     np.save(file=file, arr=channelArray)
     file.close()
 
@@ -360,7 +360,7 @@ def getEegById(request, id):
 # ############################### CHANNEL ###############################
 
 @api_view(['GET'])
-def getAllEegChannels(request):
+def getAllEegLabels(request):
     """GET da LISTA (labels apenas) de um EEG"""
     eeg_id = int(request.GET['eeg'])
     channels = Channel.objects.filter(eeg_id=eeg_id)

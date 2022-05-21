@@ -6,18 +6,19 @@ import { EEG } from '../classes/EEG';
 import { Operator } from '../classes/Operator';
 import { Patient } from '../classes/Patient';
 import { Report } from '../classes/Report';
+import { Channel } from '../classes/Channel';
 
 @Injectable({
   providedIn: 'root'
 })
-export class EEGService {
+export class ChannelService {
 
   private BASE_URL = 'http://localhost:8000/api/';
 
   constructor(private http: HttpClient) { }
 
-  submitEEG(formData : FormData) : Observable<EEG> {
-    return this.http.post<EEG>(this.BASE_URL + 'createEEG', formData);
+  getLabelsFromEEG(id: number) : Observable<String[]> {
+      return this.http.get<String[]>(this.BASE_URL+'labels?eeg='+id);
   }
 
   

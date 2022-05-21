@@ -1,5 +1,7 @@
 import { Options } from '@angular-slider/ngx-slider';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { IDropdownSettings } from 'ng-multiselect-dropdown';
+import { ChannelService } from 'src/app/services/channel.service';
 
 @Component({
   selector: 'app-eeg',
@@ -8,11 +10,33 @@ import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EegComponent implements OnInit {
+  dropdownSettings:IDropdownSettings={};
+  dropdownList!:String[];
+  public listOfLabels: String[] = [];
 
-  constructor() { }
+  constructor(private services:ChannelService) { }
+
   
+
+
   ngOnInit(): void {
-    
+    this.getLabelsFromEEG();
+    this.dropdownSettings = {
+      singleSelection: false,
+      idField : 'item_id',
+      textField : 'item_text',
+      selectAllText : 'Select all',
+      unSelectAllText : 'Unselect all'
+    };
+  }
+
+  
+
+  getLabelsFromEEG(){
+    this.services.getLabelsFromEEG(15).subscribe((info) => {
+      this.listOfLabels=info;
+      this.dropdownList=info;
+    })
   }
   
   speed: number = 1000; // default: 1 segundo
@@ -31,7 +55,6 @@ export class EegComponent implements OnInit {
   
   getInputValue(event:any){
     this.window_size = event.target.value;
-
   }
 
   update() {

@@ -8,6 +8,15 @@
     <label style="margin-left: 2em;">Time: 
         <input (keyup)="getInputValue($event)" (click)="getInputValue($event)" id="window_interval" type="number" min="1" max="60" value="30"><br>
     </label>
+    <div class="drop-container col-lg-3">
+        <ng-multiselect-dropdown
+        [settings] = "dropdownSettings"
+        [data] = "dropdownList"
+        >
+    
+        </ng-multiselect-dropdown>
+    </div>
 </div>
+
 
 <app-eeg-viewer [speed]=speed [interval]=window_size></app-eeg-viewer> 

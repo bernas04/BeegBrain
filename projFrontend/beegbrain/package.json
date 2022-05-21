@@ -34,6 +34,7 @@
     "jszip": "^3.7.1",
     "minireset.css": "~0.0.4",
     "ng-apexcharts": "^1.7.1",
+    "ng-multiselect-dropdown": "^0.3.8",
     "ng5-slider": "^1.2.6",
     "ngx-echarts": "^8.0.1",
     "rxjs": "~7.5.0",

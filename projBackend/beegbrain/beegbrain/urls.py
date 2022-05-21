@@ -41,7 +41,7 @@ urlpatterns = [
     path('api/eeg', views.getEegById),
 
     path('api/channel', views.getChannelByLabel),
-    path('api/labels', views.getAllEegChannels),
+    path('api/labels', views.getAllEegLabels),
     path('api/eegChannels', views.getAllEegChannels),
 
     path('api/events', views.getEvent),
