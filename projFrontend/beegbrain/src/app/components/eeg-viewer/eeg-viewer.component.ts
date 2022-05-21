@@ -38,15 +38,16 @@ export class EEGViewerComponent implements OnChanges {
   @Input('interval') interval!: number;
 
   
-  data: DataItem[] = [];
+  yData: number[] = [];
+  xData: string[] = [];
   now = new Date(1997, 9, 3);
   oneDay = 24 * 3600 * 1000;
   value = Math.random() * 1000;
   seconds = 0;
+  control = true;
 
   ngOnChanges(model: any) {
     this.changeSpeed();
-    console.log(this.interval)
   }
 
   ngOnInit(): void {
@@ -56,11 +57,11 @@ export class EEGViewerComponent implements OnChanges {
       this.chartDom = document.getElementById('chart')!;
       this.myChart = echarts.init(this.chartDom);
     },500);
-
-    for (let i = 0; i < 1000; i++) {
-      this.data.push(this.randomData());
+    // Vai gerar dados este número de vezes
+    for (let i = 0; i < 3; i++) {
+      this.yData.push(this.randomData());
+      this.xData.push(this.weekDays());
     }
-    
     this.option = {
       title: {
         text: 'EEG',
@@ -79,14 +80,6 @@ export class EEGViewerComponent implements OnChanges {
       },
       tooltip: {
         trigger: 'axis',
-        formatter: function (params: any) {
-          params = params[0];
-          return ('timestamp: ' + 
-            params.value[0] +
-            ' : ' + 'value: ' +
-            params.value[1]
-          );
-        },
         axisPointer: {
           animation: false
         }
@@ -106,16 +99,8 @@ export class EEGViewerComponent implements OnChanges {
         }
       },
       xAxis: {
-        name : "Time",
-        type: 'time',
-        splitLine: {
-          show: true
-        },
-        // interval: 2000,
-        /* min:0,
-        max:this.interval, */
-        axisPointer: {},
-
+        type: 'category',
+        data: this.xData,
       },
       yAxis: {
         name : 'Value',
@@ -133,62 +118,63 @@ export class EEGViewerComponent implements OnChanges {
       darkMode: true,
       series: [
         {
-          name: 'Fake Data',
+          name: 'Value',
           type: 'line',
           showSymbol: false,
-          data: this.data,
+          data: this.yData,
           
         }
       ]
     };
 
     this.start(this.speed);
-
+    this.changeSpeed(); // This line is to adjust data
     this.option && this.myChart.setOption(this.option);
-
   }
 
 
-  randomData(): DataItem {
+  randomData(): number {
     this.seconds++;
-    this.value = this.value + Math.random() * 21 - 10;
-    
-    return {
-      name: this.seconds.toString(),
-      value: [
-        this.seconds.toString(),
-        Math.round(this.value)
-      ]
-    };
+    return this.seconds;
   }
 
+  weekDays() : string{
+    let days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+    return days[this.seconds%days.length]
+  }
 
+  /* Esta é a função que vai estar sempre a ser chamada */
   start(speed: number) {
-
+    
+    
     this.intervalId = setInterval(() => {
+      //this.yData = []
+      let convertedInterval = Math.floor(this.interval/10);
+      this.yData=[];
+      this.xData=[];
+      for (let i = 0; i < convertedInterval; i++) {
+        // O shift remove o elemento que se encontra na cabeça da ArrayList e retorna esse mesmo elemento
+        this.yData.push(this.randomData());
+        this.xData.push(this.weekDays());
 
-      for (let i = 0; i < 5; i++) {
-        this.data.shift();
-        this.data.push(this.randomData());
       }
-      console.log(parseInt(this.data[0].value[0]))
-      let minvalue = parseInt(this.data[0].value[0])
-  
+      
+      //console.log(parseInt(this.data[0].value[0]))
+      //let minvalue = parseInt(this.data[0].value[0])
       this.myChart.setOption<echarts.EChartsOption>({
         series: [
           {
-            data: this.data
+            data: this.yData
           }
         ],
         xAxis: {
-          min : this.speed + minvalue,
-          max: this.speed + minvalue + this.interval,
+            data : this.xData
         },
       }); 
 
     }, speed); // mudar velocidade
+    
     this.lst_intervalId.push(this.intervalId);
-
   }
 
 

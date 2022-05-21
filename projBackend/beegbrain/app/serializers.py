@@ -1,5 +1,3 @@
-from dataclasses import field, fields
-from pyexpat import model
 from rest_framework import serializers
 from app.models import *
 
@@ -64,7 +62,21 @@ class EEGSerializer(serializers.ModelSerializer):
         model = EEG
         fields = "__all__"
 
-"""
+class ChannelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Channel
+        fields = "__all__"
+
+
+class AnnotationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Annotation
+        fields = "__all__" 
+        
+
+"""      
+
+
 Ver para n ser preciso fazer parsing dos dados na view
     class Meta: 
         model = EEG
@@ -76,6 +88,7 @@ Ver para n ser preciso fazer parsing dos dados na view
         data['operator'] = OperatorSerializer(Operator.objects.get(id=data['operator'])).data
         data['patient'] = PatientSerializer(Patient.objects.get(id=data['patient'])).data
         return data
+
 
 class AccessEEGSerializer(serializers.ModelSerializer):
     class Meta:

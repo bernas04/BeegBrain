@@ -26,7 +26,7 @@ export class EegComponent implements OnInit {
     },
   };
   
-  window_size: number=1;
+  window_size: number=30;
   
   
   getInputValue(event:any){

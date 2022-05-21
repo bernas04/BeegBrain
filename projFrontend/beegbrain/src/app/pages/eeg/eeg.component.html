@@ -6,7 +6,7 @@
 
     <ngx-slider class="slider" invert [(value)]="speed" [options]="options" (userChangeEnd)="update()" ></ngx-slider>
     <label style="margin-left: 2em;">Time: 
-        <input (keyup)="getInputValue($event)" (click)="getInputValue($event)" id="window_interval" type="number" min="1" max="30" value="1"><br>
+        <input (keyup)="getInputValue($event)" (click)="getInputValue($event)" id="window_interval" type="number" min="1" max="60" value="30"><br>
     </label>
 </div>
 

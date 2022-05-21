@@ -1,4 +1,5 @@
 import { Component, ViewChild, ElementRef } from "@angular/core";
+import { Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-uploading',
@@ -11,8 +12,8 @@ export class UploadingComponent {
   @ViewChild("fileDropRef", { static: false })
   fileDropEl!: ElementRef;
   files: any[] = [];
+  @Output() newFileEvent = new EventEmitter<any>();
   
-
   /**
    * on file drop handler
    */
@@ -39,6 +40,10 @@ export class UploadingComponent {
     this.files.splice(index, 1);
   }
 
+  updateFiles() {
+    this.newFileEvent.emit(this.files)
+  }
+
   /**
    * Simulate the upload process
    */
@@ -54,9 +59,9 @@ export class UploadingComponent {
           } else {
             this.files[index].progress += 5;
           }
-        }, 200);
+        }, 20);
       }
-    }, 1000);
+    }, 300);
   }
 
   /**
@@ -68,6 +73,7 @@ export class UploadingComponent {
       item.progress = 0;
       this.files.push(item);
     }
+    this.updateFiles();
     this.fileDropEl.nativeElement.value = "";
     this.uploadFilesSimulator(0);
   }

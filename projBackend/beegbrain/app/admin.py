@@ -16,3 +16,4 @@ admin.site.register(EEG)
 """ admin.site.register(AccessEEG) """
 admin.site.register(Event)
 admin.site.register(SharedFolder)
+admin.site.register(Channel)
