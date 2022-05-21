@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input} from '@angular/core';
+import { EEG } from 'src/app/classes/EEG';
 import { Product, TopSelling } from './top-selling-data';
 
 @Component({
@@ -9,6 +10,7 @@ import { Product, TopSelling } from './top-selling-data';
 export class EegTableComponent implements OnInit {
 
   topSelling: Product[];
+  @Input('allEEG') lst_EEG!: EEG[];
 
   constructor() { 
 

@@ -9,32 +9,48 @@
             <table class="table align-middle">
                 <thead>
                     <tr>
-                        <th class="text-dark font-medium fs-4">Exam ID</th>
-                        <th class="text-dark font-medium fs-4">Pacient</th>
-                        <th class="text-dark font-medium fs-4">Status</th>
+                        <th class="text-dark font-medium fs-4">ID</th>
+                        <th class="text-dark font-medium fs-4">Date</th>
+                        <th class="text-dark font-medium fs-4">Patient</th>
+                        <th class="text-dark font-medium fs-4">Priority</th>
                         <th class="text-dark font-medium fs-4">Analyse</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor='let ts of topSelling'>
-                        <td>
+                    <tr *ngFor='let eeg of lst_EEG'>
+
+                        <!-- <td>
                             <div class="d-flex align-items-center">
                                 <div class="ms-3">
                                     <h5 class="mb-0 font-medium">{{ts.uname}}</h5>
                                     <span class="text-muted">{{ts.gmail}}</span>
                                 </div>
                             </div>
-                        </td>
-                        <td class="fs-4">{{ts.productName}}</td>
+                        </td> -->
+
+                        <!-- <td class="fs-4">{{eeg.id}}</td>
+                        <td class="fs-4">{{eeg.date}}</td>
+                        <td class="fs-4">{{eeg.patient.name}}</td> -->
+
+                        <td class="fs-4">ai</td>
+                        <td class="fs-4">ai</td>
+                        <td class="fs-4">ai</td>
+                        <td class="fs-4">ai</td>
                         <td>
+                            <a href="/workspace/${eeg.id}">
+                                <button type="button" class="btn btn-primary"> <i class="bi bi-eye-fill"></i> </button>
+                            </a>
+                        </td>
+
+                        <!-- <td>
                             <span class="p-2 bg-{{ts.status}} rounded-circle d-inline-block ms-3"></span>
                         </td>
                         
                         <td>
-                            <a href="/workspace/${ts.id}">
+                            <a href="/workspace/${eeg.id}">
                                 <button type="button" class="btn btn-primary"> <i class="bi bi-eye-fill"></i> </button>
                             </a>
-                        </td>
+                        </td> -->
                     </tr>              
                 </tbody>
             </table>
