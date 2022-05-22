@@ -1,3 +1,5 @@
+from bz2 import compress
+import multiprocessing
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from app.models import *
@@ -7,6 +9,7 @@ import numpy as np
 import pyedflib
 import gzip
 
+import time
 
 
 # ############################### PROVENIENCIAS ###############################
@@ -318,28 +321,37 @@ def createEEG(request):
         idEEG = EEG.objects.latest('id').id
 
     eegObject = EEG.objects.get(id=idEEG)
-    
+
+    poolSize = 6
+    pool = multiprocessing.Pool(poolSize)
+
     for i in np.arange(n):
-        sigbufs[i, :] = f.readSignal(i) 
+
+        signal = f.readSignal(i) 
         channelLabel = signal_labels[i]
-        array = np.array(sigbufs[i,:])
-        filename = str(eegObject.id) + '_' + channelLabel
-        #np.save(filename,sigbufs[i,:])
-        compressChannel(filename,array)
-        chn = Channel.objects.create(label=channelLabel,eeg=eegObject)
-        chn.file.name = filename + ".npy"
-        chn.save()
+        pool.apply_async(worker,(channelLabel,eegObject,signal,))
 
     return Response(serializer_eeg.data, status=status.HTTP_201_CREATED)
 
-    
+def saveChannel(label,eeg,array):
+    filename = str(eeg.id) + '_' + label
+    compressChannel(filename,array)
+    chn = Channel.objects.create(label=label,eeg=eeg)
+    chn.file.name = filename + ".npy"
+    chn.save()
+
+def worker(label,eeg,signal):
+    saveChannel(label,eeg,signal)
+
 def compressChannel(filename, channelArray):
-    file = gzip.GzipFile('/media/' + filename + ".npy.gz", "w")
-    np.save(file=file, arr=channelArray)
+    start = time.time()
+    file = gzip.GzipFile('./media/' + filename + ".npy.gz", "wb")
+    np.save(file, channelArray)
     file.close()
+    print("elapsed time (compression): " + str(time.time() - start))
 
 def decompress(filename):
-    file = gzip.GzipFile('./media/' + filename + '.gz', "r"); 
+    file = gzip.GzipFile('./media/' + filename + '.gz', "rb")
     return np.load(file)
 
     
@@ -360,7 +372,7 @@ def getEegById(request, id):
 # ############################### CHANNEL ###############################
 
 @api_view(['GET'])
-def getAllEegChannels(request):
+def getChannelLabels(request):
     """GET da LISTA (labels apenas) de um EEG"""
     eeg_id = int(request.GET['eeg'])
     channels = Channel.objects.filter(eeg_id=eeg_id)
@@ -376,17 +388,27 @@ def getChannelByLabel(request):
         channel = Channel.objects.get(eeg_id=eeg_id,label=label)
     except Channel.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
     data = { channel.label : decompress(channel.file.name) }
     return Response(data)
 
 @api_view(['GET'])
 def getAllEegChannels(request):
     """GET de todos os channels de um eeg"""
+    poolSize = 8
+    pool = multiprocessing.Pool(poolSize)
+    eeg_id = int(request.GET['eeg'])    
+    manager = multiprocessing.Manager()
+    data = manager.dict()
+    for channel in Channel.objects.filter(eeg_id=eeg_id):
+        pool.apply_async(workerDecompress,(data,channel.label,channel.file.name),)
+    pool.close()
+    pool.join() 
+    return Response(data,status=status.HTTP_200_OK)
 
-    eeg_id = int(request.GET['eeg'])
-    data = { channel.label : decompress(channel.file.name) for channel in Channel.objects.filter(eeg_id=eeg_id) }
-    return Response(data,)
+def workerDecompress(data,label,filename):
+    data[label] = decompress(filename)
+
+
 
 # ############################### EVENT ###############################
 @api_view(['GET'])
