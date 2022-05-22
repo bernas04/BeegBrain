@@ -32,6 +32,26 @@
 
                     </div>
 
+                    <div class="priority row">
+                        <div class="col-4">
+                            <label for="priority">Priority</label>
+
+                        </div>
+
+                        <div class="col-8">
+                            <select [(ngModel)]="priority" id="priority" name="priority" required>
+                                <option value="Very High">Very High</option>
+                                <option value="High">High</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Low">Low</option>
+                                <option value="Very Low">Very Low</option>
+                              </select>
+                        </div>
+
+                       
+
+                    </div>
+
 
                     <div class="upload">
                         <div class="col-12 ">

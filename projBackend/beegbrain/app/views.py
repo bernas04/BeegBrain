@@ -281,55 +281,58 @@ def createEEG(request):
 
     PRIORITIES = {'Very Low':1,'Low':2,'Medium':3,'High':4,'Very High':5}
 
-    memoryFile = request.data['file']
-    file = memoryFile.file
-    f = pyedflib.EdfReader(file.name)
-    priority = PRIORITIES[request.data['priority']]
-    timestamp = f.getStartdatetime()
-    duration = f.getFileDuration()
-    n = f.signals_in_file-1 
-    m = f.getNSamples()[0]
-    signal_labels = f.getSignalLabels()
-    sigbufs = np.zeros((n, m))
+    # permitir a adição de mais que um EEG
+
+    print(request.data)
 
     try:
-        operator = Operator.objects.get(health_number=request.data['operator'])
+        operator = Operator.objects.get(health_number=request.data['operatorID'])
     except Operator.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
     try:
-        patient = Patient.objects.get(health_number=request.data['patient'])
+        patient = Patient.objects.get(health_number=request.data['patientID'])
     except Patient.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    eeg = {
-        "operator": operator,
-        "patient": patient,
-        "status": True,
-        "timestamp": timestamp,
-        "priority": priority,
-        "report": None,
-        "duration": duration,
-    }
+    for memoryFile in request.FILES.getlist('file'):
 
-    # Criar o objeto EEG
-    idEEG = None
-    serializer_eeg = serializers.EEGSerializer(data=eeg)
-    if serializer_eeg.is_valid():
+        file = memoryFile.file
+        f = pyedflib.EdfReader(file.name)
+        priority = PRIORITIES[request.data['priority']]
+        timestamp = f.getStartdatetime()
+        duration = f.getFileDuration()
+        n = f.signals_in_file-1 
+        signal_labels = f.getSignalLabels()
 
-        serializer_eeg.save()
-        idEEG = EEG.objects.latest('id').id
+        eeg = {
+            "operator": operator,
+            "patient": patient,
+            "status": True,
+            "timestamp": timestamp,
+            "priority": priority,
+            "report": None,
+            "duration": duration,
+        }
 
-    eegObject = EEG.objects.get(id=idEEG)
+        # Criar o objeto EEG
+        idEEG = None
+        serializer_eeg = serializers.EEGSerializer(data=eeg)
+        if serializer_eeg.is_valid():
 
-    poolSize = 6
-    pool = multiprocessing.Pool(poolSize)
+            serializer_eeg.save()
+            idEEG = EEG.objects.latest('id').id
 
-    for i in np.arange(n):
+        eegObject = EEG.objects.get(id=idEEG)
 
-        signal = f.readSignal(i) 
-        channelLabel = signal_labels[i]
-        pool.apply_async(worker,(channelLabel,eegObject,signal,))
+        poolSize = 6
+        pool = multiprocessing.Pool(poolSize)
+
+        for i in np.arange(n):
+
+            signal = f.readSignal(i) 
+            channelLabel = signal_labels[i]
+            pool.apply_async(worker,(channelLabel,eegObject,signal,))
 
     return Response(serializer_eeg.data, status=status.HTTP_201_CREATED)
 
@@ -348,7 +351,7 @@ def compressChannel(filename, channelArray):
     file = gzip.GzipFile('./media/' + filename + ".npy.gz", "wb")
     np.save(file, channelArray)
     file.close()
-    print("elapsed time (compression): " + str(time.time() - start))
+    #print("elapsed time (compression): " + str(time.time() - start))
 
 def decompress(filename):
     file = gzip.GzipFile('./media/' + filename + '.gz', "rb")
@@ -379,6 +382,22 @@ def getChannelLabels(request):
     channelsLabels = [chn.label for chn in channels]
     return Response(channelsLabels)
 
+"""Retorna um array com os valores de um canal de um EEG, desde o momento de início (start - numero do tick inicial) até ao start + timeInterval (em segundos)"""
+def getChannelIntervalValues(eeg_id,label,timeInterval,start):
+    try:
+        channel = Channel.objects.get(eeg_id=eeg_id,label=label)
+    except Channel.DoesNotExist:
+        return False
+    try:
+        eeg = EEG.objects.get(id=eeg_id)
+    except EEG.DoesNotExist:
+        return False
+    data = decompress(channel.file.name)
+    fileDuration = eeg.duration
+    ticksPerSecond = len(data) / fileDuration
+    data = data[start:start+timeInterval*ticksPerSecond]
+    return data
+
 @api_view(['GET'])
 def getChannelByLabel(request):
     """GET de um channel pela sua label e id do EEG"""
@@ -390,6 +409,25 @@ def getChannelByLabel(request):
         return Response(status=status.HTTP_404_NOT_FOUND)
     data = { channel.label : decompress(channel.file.name) }
     return Response(data)
+
+@api_view(['GET'])
+def getChannelsByLabels(request):
+    """GET de channels por um array de labels e id do EEG"""
+    poolSize = 8
+    pool = multiprocessing.Pool(poolSize)
+    eeg_id = int(request.GET['eeg'])    
+    labels = request.GET.getlist('labels[]')
+    manager = multiprocessing.Manager()
+    data = manager.dict()
+    for label in labels:
+        pool.apply_async(channelWorker,(data,label,eeg_id),)
+    pool.close()
+    pool.join() 
+    return Response(data,status=status.HTTP_200_OK)
+
+def channelWorker(data,label,eeg_id):
+    channel = Channel.objects.get(eeg_id=eeg_id, label=label)
+    data[label] = decompress(channel.file.name)
 
 @api_view(['GET'])
 def getAllEegChannels(request):

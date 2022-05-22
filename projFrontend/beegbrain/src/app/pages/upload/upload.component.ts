@@ -13,6 +13,7 @@ export class UploadComponent implements OnInit {
 
   @Input() patientID! : string;
   @Input() operatorID! : string;
+  @Input() priority! : string;
   files : File[] = [];
 
   //fileName = '';
@@ -37,6 +38,7 @@ export class UploadComponent implements OnInit {
     const formData = new FormData();
     formData.append('operatorID', this.operatorID);
     formData.append('patientID', this.patientID);
+    formData.append('priority', this.priority);
     for (let file of this.files) {
       console.log(file.name)
       formData.append('file', file, file.name);

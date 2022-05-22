@@ -17,6 +17,14 @@ for an in f.readAnnotations():
     print(an)
 
 
+print("start date time")
+print(f.getStartdatetime())
+seconds = f.getFileDuration()
+print(str(f.getFileDuration()) + "seconds")
+print(len(f.readSignal(0)))
+length = len(f.readSignal(1))
+print(length/seconds)
+
 #sigbufs - matriz bidensional com n colunas (numero de canais) e x sinais (frequencia)
 
 # SEPARAR O FICHEIRO EEG EM VÁRIAS PARTES - UM FICHEIRO PARA CADA CANAL:
