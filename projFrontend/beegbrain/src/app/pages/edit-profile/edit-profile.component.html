@@ -8,10 +8,10 @@
                 <div class="card-body text-center">
                     <img src="../../../assets/doctor1.png" alt="avatar"
                         class="rounded-circle img-fluid" style="width: 150px;">
-                    <h5 class="my-3">John Smith</h5>
+                    <h5 class="my-3">Duarte Pereira</h5>
                     <p class="text-muted mb-1">Neurologist</p>
                     <div class="d-flex justify-content-center mb-2">
-                        <button type="button" class="btn btn-primary">Save changes</button>
+                        <button type="button" class="btn btn-primary" routerLink="/profile">Save changes</button>
                     </div>
                 </div>
             </div>
@@ -20,12 +20,14 @@
         <div class="col-lg-8">
             <div class="card mb-4">
                 <div class="card-body">
+                    <form>
+
                     <div class="row">
                         <div class="col-sm-3">
                             <p class="mb-0">Full Name</p>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">Duarte Pereira</p>
+                            <input type="text" name="fullname" id="fullname" class="text-muted mb-0" placeholder="Duarte Pereira">
                         </div>
                     </div>
                     <hr>
@@ -34,7 +36,7 @@
                             <p class="mb-0">Email</p>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">duartepereira@chuc.pt</p>
+                            <input  type="email" name="email" id="email" class="text-muted mb-0" placeholder="duartepereira@chuc.pt">
                         </div>
                         
                     </div>
@@ -44,7 +46,7 @@
                             <p class="mb-0">NIF</p>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">124459856</p>
+                            <input class="text-muted mb-0" type="text" name="nif" id="nif" placeholder="124459856">
                         </div>
                     </div>
                     <hr>
@@ -53,7 +55,7 @@
                             <p class="mb-0">Medical Number</p>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">746547458</p>
+                            <input class="text-muted mb-0 " type="text" name="medicalnumber" id="medicalnumber" placeholder=46547458>
                         </div>
                     </div>
                     <hr>
@@ -62,7 +64,7 @@
                             <p class="mb-0">Phone</p>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">914584485</p>
+                            <input class="text-muted mb-0" type="text" name="phone" id="phone" placeholder="914584485">
                         </div>
                     </div>
                     <hr>
@@ -71,7 +73,7 @@
                             <p class="mb-0">Institution</p>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">Centro Hospitalar e Universitário de Coimbra</p>
+                            <input class="text-muted mb-0" style="width: 300px;"  type="text" name="institution" id="institution" placeholder="Centro Hospitalar e Universitário de Coimbra">
                         </div>
                     </div>
                     <hr>
@@ -80,11 +82,12 @@
                             <p class="mb-0">Address</p>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">Rua das Flores, nº12, Coimbra</p>
+                           <input class="text-muted mb-0" style="width: 300px;"  type="text" name="address" id="address" placeholder="Rua das Flores, nº12, Coimbra">
                         </div>
                     </div>
                     
-                    
+                </form>
+
                 </div>
             </div>
             <div class="row">

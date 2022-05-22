@@ -2,21 +2,48 @@ version: '3'
 
 services:
 
-  django:
-    build: ./backend/beegbrain
-    command: python manage.py runserver 0.0.0.0:8080
+  db:
+    image: mysql:8
+    container_name: database-mysql
+    restart: unless-stopped
+    ports:
+      - '3306:3306'
+    expose:
+      - 3306
+    environment:
+      MYSQL_DATABASE: 'beegbrain'
+      MYSQL_PORT: '3306'
+      MYSQL_PASSWORD: 'root'
+      MYSQL_ROOT_PASSWORD: 'root'
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      timeout: 5s
+      retries: 30
     volumes:
-      - /backend:/backend
+      - mysql:/var/lib/mysql
+
+  django:
+    build: ./projBackend/beegbrain
     ports:
       - "8080:8080"
     image: django
     container_name: backend-django
     restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+
+    links:
+      - db
 
   angular:
-      build: ./frontend/beegbrain
-      image: angular
-      container_name: frontend-angular
-      restart: unless-stopped
-      depends_on:
-        - django
+    build: ./projFrontend/beegbrain
+    image: angular
+    container_name: frontend-angular
+    restart: unless-stopped
+    depends_on:
+      - django
+
+
+volumes:
+  mysql:

@@ -1,5 +1,3 @@
-from dataclasses import field, fields
-from pyexpat import model
 from rest_framework import serializers
 from app.models import *
 
@@ -60,6 +58,26 @@ class ReportSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class EEGSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EEG
+        fields = "__all__"
+
+class ChannelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Channel
+        fields = "__all__"
+
+
+class AnnotationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Annotation
+        fields = "__all__" 
+        
+
+"""      
+
+
+Ver para n ser preciso fazer parsing dos dados na view
     class Meta: 
         model = EEG
         fields = ('id','file','status', 'timestamp', 'priority','report','operator','patient')
@@ -70,18 +88,20 @@ class EEGSerializer(serializers.ModelSerializer):
         data['operator'] = OperatorSerializer(Operator.objects.get(id=data['operator'])).data
         data['patient'] = PatientSerializer(Patient.objects.get(id=data['patient'])).data
         return data
+"""
 
-class AccessEEGSerializer(serializers.ModelSerializer):
+""" class AccessEEGSerializer(serializers.ModelSerializer):
     class Meta:
-        models = AccessEEG
+        model = AccessEEG
         fields = "__all__"
-
+ """
+ 
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
-        models = Event
+        model = Event
         fields = "__all__"
 
 class SharedFolderSerializer(serializers.ModelSerializer):
     class Meta: 
-        models = SharedFolder
+        model = SharedFolder
         fields = "__all__"

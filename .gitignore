@@ -3,15 +3,8 @@ client/node_modules
 client/e2e
 client/bootstrap-overview
 
-
-backend/bin
-backend/include
-backend/lib
-backend/beegbrain/static
-
-
 # Byte-compiled / optimized / DLL files
-__pycache__/
+**/__pycache__/*
 *.py[cod]
 *$py.class
 
@@ -52,7 +45,7 @@ htmlcov/
 .tox/
 .coverage
 .coverage.*
-*/.angular
+projFrontend/beegbrain/.angular/
 nosetests.xml
 coverage.xml
 *,cover
@@ -94,10 +87,19 @@ celerybeat-schedule
 # dotenv
 .env
 
+# added for django or angular
+db.sqlite3
+**/migrations/*
+**/.idea/*
+**/.cache/*
+**/node_modules/*
+**/media/*
+
+
 # virtualenv
 .venv
 venv/
-ENV/
+ENV/database_init
 
 # Spyder project settings
 .spyderproject

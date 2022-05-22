@@ -16,18 +16,9 @@ export class EEGService {
 
   constructor(private http: HttpClient) { }
 
-  submitEEG(patientID: string, operatorID: string, file: File) : Observable<EEG> {
+  submitEEG(formData : FormData) : Observable<EEG> {
 
-    let formData = new FormData();
-    formData.append("file", file);
-    formData.append('patientID', patientID);
-    formData.append('operatorID', operatorID);
-
-    console.log(patientID);
-    console.log(operatorID);
-    console.log(file);
-
-    return this.http.post<any>(this.BASE_URL + 'createEEG', formData);
+    return this.http.post<EEG>(this.BASE_URL + 'createEEG', formData);
 
   }
 

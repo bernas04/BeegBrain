@@ -1,6 +1,5 @@
-import { Component, OnInit, Input} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { EEG } from 'src/app/classes/EEG';
-import { Product, TopSelling } from './top-selling-data';
 
 @Component({
   selector: 'app-eeg-table',
@@ -9,15 +8,21 @@ import { Product, TopSelling } from './top-selling-data';
 })
 export class EegTableComponent implements OnInit {
 
-  topSelling: Product[];
   @Input('allEEG') lst_EEG!: EEG[];
+  @Output() eeg_deleted = new EventEmitter<any>();
+  private id! : number;
 
-  constructor() { 
-
-    this.topSelling=TopSelling;
-  }
+  constructor() { }
 
   ngOnInit(): void {
+  }
+
+  delete() {
+    this.eeg_deleted.emit(this.id);
+  }
+  
+  save2delete(id : number) {
+    this.id = id;
   }
 
 }

@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -19,7 +18,14 @@ import { EEGViewerComponent } from './components/eeg-viewer/eeg-viewer.component
 import { UploadComponent } from './pages/upload/upload.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import { NgApexchartsModule } from 'ng-apexcharts';
+import { NgxEchartsModule } from 'ngx-echarts';
+
+import * as echarts from 'echarts';
+import { PatientinfoComponent } from './components/patientinfo/patientinfo.component';
+import { UploadingComponent } from './components/uploading/uploading.component';
+import { DndDirective } from './dnd.directive';
+import { ProgressComponent } from './components/progress/progress.component';
+import { RegisterComponent } from './components/register/register.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +43,12 @@ import { NgApexchartsModule } from 'ng-apexcharts';
     ErrorareaComponent,
     EditProfileComponent,
     EEGViewerComponent,
-    UploadComponent
+    UploadComponent,
+    PatientinfoComponent,
+    UploadingComponent,
+    DndDirective,
+    ProgressComponent,
+    RegisterComponent
   ],
   imports: [
 		BrowserModule,
@@ -45,7 +56,9 @@ import { NgApexchartsModule } from 'ng-apexcharts';
 		FormsModule,
 		ReactiveFormsModule,
 		HttpClientModule,
-		NgApexchartsModule
+    NgxEchartsModule.forRoot({
+      echarts,
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,9 +1,11 @@
 <div class="card">
     <div class="card-body">
         <!-- title -->
-                <h4 class="card-title"><strong>   EEG Exams </strong></h4>
-                <h5 class="card-subtitle mt-1">Overview of the projects</h5>
-            
+
+        <h4 class="card-title"><strong>   EEG Exams </strong></h4>
+        <!-- <h5 class="card-subtitle mt-1">Overview of the projects</h5> -->
+
+          
         <!-- title -->
         <div class="table-responsive">
             <table class="table align-middle">
@@ -13,7 +15,8 @@
                         <th class="text-dark font-medium fs-4">Date</th>
                         <th class="text-dark font-medium fs-4">Patient</th>
                         <th class="text-dark font-medium fs-4">Priority</th>
-                        <th class="text-dark font-medium fs-4">Analyse</th>
+                        <th class="text-dark font-medium fs-4">Report</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -26,23 +29,9 @@
                                     <span class="text-muted">{{ts.gmail}}</span>
                                 </div>
                             </div>
-                        </td> -->
+                        </td> 
 
-                        <!-- <td class="fs-4">{{eeg.id}}</td>
-                        <td class="fs-4">{{eeg.date}}</td>
-                        <td class="fs-4">{{eeg.patient.name}}</td> -->
-
-                        <td class="fs-4">ai</td>
-                        <td class="fs-4">ai</td>
-                        <td class="fs-4">ai</td>
-                        <td class="fs-4">ai</td>
                         <td>
-                            <a href="/workspace/${eeg.id}">
-                                <button type="button" class="btn btn-primary"> <i class="bi bi-eye-fill"></i> </button>
-                            </a>
-                        </td>
-
-                        <!-- <td>
                             <span class="p-2 bg-{{ts.status}} rounded-circle d-inline-block ms-3"></span>
                         </td>
                         
@@ -50,11 +39,72 @@
                             <a href="/workspace/${eeg.id}">
                                 <button type="button" class="btn btn-primary"> <i class="bi bi-eye-fill"></i> </button>
                             </a>
-                        </td> -->
+                        </td>-->
+
+                        <td class="fs-4">{{eeg.id}}</td>
+
+                        <td>
+                            <!-- <h5 class="mb-0 font-medium">{{eeg.timestamp | date:'dd/MM/yyyy'}}</h5> -->
+                            <span class="text-muted">{{eeg.timestamp | date:'dd/MM/yyyy'}}</span>
+                        </td>
+
+                        <td>
+                            <a href="/patients/{{eeg.patient}}">
+                                <button type="button" class="btn btn-success"> {{eeg.patient}}</button>
+                            </a>
+                        </td>
+
+                        <td class="fs-4">{{eeg.priority}}</td>
+
+                        <td>
+                            <span *ngIf="eeg.report == null" class="badge rounded-pill text-bg-secondary"> to do </span>
+                            <span *ngIf="eeg.report != null" class="badge rounded-pill text-bg-primary"> in progress </span>
+                        </td>
+
+                        <td>
+                            <a href="/workspace/{{eeg.id}}">
+                                <button type="button" class="btn btn-primary"> <i class="bi bi-eye-fill"></i> </button>
+                            </a>
+
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#my-modal" (click)="save2delete( eeg.id )"> <i class="bi bi-trash-fill"></i> </button>
+
+                        </td>
+
                     </tr>              
                 </tbody>
             </table>
         </div>
     </div>
     
+</div>
+
+
+<!-- ------------------------------------------- ARE YOU SURE U WANNA DELETE THE EXAM ------------------------------------------- -->
+<div id="my-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0">   
+            <div class="modal-body p-0">
+                <div class="card border-0 p-sm-3 p-2 justify-content-center">
+
+                    <div class="card-header pb-0 bg-white border-0 ">
+                        <h4> Are you sure you wanna delete this exam?</h4>
+                        <span class="text-muted "> This change cannot be reversed, be careful.</span>     
+                    </div>
+
+                    <div class="card-body px-sm-4 mb-2 pt-1 pb-0"> 
+                        <div class="row justify-content-end no-gutters">
+
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-light text-muted" id="button" data-dismiss="modal" style="font-weight: bold">Cancel</button>
+                            </div>
+
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-danger px-4" id="button" data-dismiss="modal" (click)="delete()" style="font-weight: bold">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
+            </div>
+        </div>
+    </div>
 </div>

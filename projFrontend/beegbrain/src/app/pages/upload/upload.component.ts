@@ -1,6 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { EEGService } from 'src/app/services/eeg.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-upload',
@@ -11,20 +13,46 @@ export class UploadComponent implements OnInit {
 
   @Input() patientID! : string;
   @Input() operatorID! : string;
-  @Input() file! : File;
+  files : File[] = [];
 
-  constructor(private eegService: EEGService, private router: Router) { }
+  //fileName = '';
+
+  public form!: FormGroup;
+
+  constructor(private formBuilder: FormBuilder, private eegService: EEGService, private router: Router, private http: HttpClient) { }
 
   ngOnInit(): void {
+  }
 
+  getFiles(files : any[]) {
+    this.files = files;
   }
 
   submitEEG() {
-    console.log("Submitting EEG")
-    console.log(this.patientID)
-    this.eegService.submitEEG(this.patientID,this.operatorID,this.file).subscribe((eeg) => {
-      this.router.navigate(['/eeg/' + eeg.id])
-    });
-  }
 
+    console.log("Submitting EEG")
+    console.log(this.operatorID)
+    console.log(this.patientID)
+
+    const formData = new FormData();
+    formData.append('operatorID', this.operatorID);
+    formData.append('patientID', this.patientID);
+    for (let file of this.files) {
+      console.log(file.name)
+      formData.append('file', file, file.name);
+    }
+    
+    this.eegService.submitEEG(formData).subscribe({
+      next: (eeg) => {
+        console.log("FETCH SUCCESS")
+        console.log(eeg);
+        this.router.navigate(['/workspace/' + eeg.id]);
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+
+  }
+  
 }

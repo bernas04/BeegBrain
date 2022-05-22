@@ -1,13 +1,12 @@
-import datetime
-from datetime import datetime
-from fileinput import filename
-from time import time
-from django.shortcuts import render
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from app.models import *
 from app import serializers
 from rest_framework import status
+import numpy as np
+import pyedflib
+import gzip
+
 
 
 # ############################### PROVENIENCIAS ###############################
@@ -132,9 +131,9 @@ def createPatient(request):
 
 
 @api_view(['GET'])
-def getPatientByNss(request):
+def getPatientBySSN(request):
     """GET de um paciente pelo seu id"""
-    pat_id = int(request.GET['nss'])
+    pat_id = int(request.GET['ssn'])
     try:
         ret = Patient.objects.get(health_number=pat_id)
     except Patient.DoesNotExist:
@@ -167,9 +166,9 @@ def createOperator(request):
 @api_view(['GET'])
 def getOperatorById(request):
     """GET de um operator pelo seu id"""
-    op_id = int(request.GET['id'])
+    op_id = int(request.GET['operator'])
     try:
-        ret = Operator.objects.get(health_number=op_id)
+        ret = Operator.objects.get(operator_number=op_id)
     except Operator.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
@@ -200,9 +199,9 @@ def createDoctor(request):
 @api_view(['GET'])
 def getDoctorById(request):
     """GET de um Doutor pelo seu id"""
-    doc_id = int(request.GET['id'])
+    doc_id = int(request.GET['medical'])
     try:
-        ret = Doctor.objects.get(id=doc_id)
+        ret = Doctor.objects.get(medical_number=doc_id)
         
     except Doctor.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -276,90 +275,136 @@ def getEeg(request):
 
 @api_view(['POST'])
 def createEEG(request):
-    """POST de um EEG"""
 
-    operator = None
-    patient = None
+    PRIORITIES = {'Very Low':1,'Low':2,'Medium':3,'High':4,'Very High':5}
 
-    print("entrou")
-    print("===================================")
-
-    print(request.data)
+    memoryFile = request.data['file']
+    file = memoryFile.file
+    f = pyedflib.EdfReader(file.name)
+    priority = PRIORITIES[request.data['priority']]
+    timestamp = f.getStartdatetime()
+    duration = f.getFileDuration()
+    n = f.signals_in_file-1 
+    m = f.getNSamples()[0]
+    signal_labels = f.getSignalLabels()
+    sigbufs = np.zeros((n, m))
 
     try:
-        operator = Operator.objects.get(health_number=request.data['operatorID'])
+        operator = Operator.objects.get(health_number=request.data['operator'])
     except Operator.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    print(operator)
-
     try:
-        patient = Patient.objects.get(health_number=request.data['patientID'])
+        patient = Patient.objects.get(health_number=request.data['patient'])
     except Patient.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    print(patient)
-
-
-    file = request.data['file']
+    print("PACIENTE:", patient)
 
     eeg = {
-        "operator":operator,
-        "patient":patient,
-        "file":file,
-        "status":True,
-        "priority":3,
-        "report":None,
-        "timestramp":datetime.now()
+        "operator": operator,
+        "patient": patient,
+        "status": True,
+        "timestamp": timestamp,
+        "priority": priority,
+        "report": None,
+        "duration": duration,
     }
 
-    print("===================================")
-    serializer = serializers.EEGSerializer(data=eeg)
-    if serializer.is_valid():
-        print("valid")
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    print("EEG ", eeg)
 
-    print(serializer.errors)
+    # Criar o objeto EEG
+    idEEG = None
+    serializer_eeg = serializers.EEGSerializer(data=eeg)
+    if serializer_eeg.is_valid():
 
-    print("invalid")
-    print("===================================")
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        serializer_eeg.save()
+        idEEG = EEG.objects.latest('id').id
 
+    eegObject = EEG.objects.get(id=idEEG)
+    
+    for i in np.arange(n):
+        sigbufs[i, :] = f.readSignal(i) 
+        channelLabel = signal_labels[i]
+        array = np.array(sigbufs[i,:])
+        filename = str(eegObject.id) + '_' + channelLabel
+        #np.save(filename,sigbufs[i,:])
+        compressChannel(filename,array)
+        chn = Channel.objects.create(label=channelLabel,eeg=eegObject)
+        chn.file.name = filename + ".npy"
+        chn.save()
 
-@api_view(['GET'])
-def getEegById(request, id):
-    """GET de um EEG pelo seu id"""
-    eeg_id = int(request.GET['id'])
-    try:
-        ret = EEG.objects.get(id=eeg_id)
+    return Response(serializer_eeg.data, status=status.HTTP_201_CREATED)
+
+    
+def compressChannel(filename, channelArray):
+    file = gzip.GzipFile('./media/' + filename + ".npy.gz", "w")
+    np.save(file=file, arr=channelArray)
+    file.close()
+
+def decompress(filename):
+    file = gzip.GzipFile('./media/' + filename + '.gz', "r"); 
+    return np.load(file)
+
+    
+@api_view(['GET', 'DELETE'])
+def getEegById(request):
+    """GET ou DELETE de um EEG pelo seu id"""
+
+    if request.method == 'GET':
+        eeg_id = int(request.GET['id'])
+        try:
+            ret = EEG.objects.get(id=eeg_id)
+            
+        except EEG.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         
-    except EEG.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    
-    serializer = serializers.EEGSerializer(ret)
-    return Response(serializer.data)
+        serializer = serializers.EEGSerializer(ret)
+        return Response(serializer.data)
+
+    elif request.method == 'DELETE':
+
+        eeg_id = int(request.GET['id'])
+        try:
+            ret = EEG.objects.get(id=eeg_id)
+            
+        except EEG.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        ret.delete()
+        return True
 
 
+# ############################### CHANNEL ###############################
 
-# ############################### ACESS_EEG ###############################
 @api_view(['GET'])
-def getAccessEeg(request):
-    """GET de todos os access_eeg"""
-    access_eegs = AccessEEG.objects.all()
-    serializer = serializers.ReportSerializer(access_eegs, many = True)
-    return Response(serializer.data)
+def getAllEegChannels(request):
+    """GET da LISTA (labels apenas) de um EEG"""
+    eeg_id = int(request.GET['eeg'])
+    channels = Channel.objects.filter(eeg_id=eeg_id)
+    channelsLabels = [chn.label for chn in channels]
+    return Response(channelsLabels)
 
+@api_view(['GET'])
+def getChannelByLabel(request):
+    """GET de um channel pela sua label e id do EEG"""
+    eeg_id = int(request.GET['eeg'])
+    label = request.GET['label']
+    try:
+        channel = Channel.objects.get(eeg_id=eeg_id,label=label)
+    except Channel.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
-@api_view(['POST'])
-def createAccessEeg(request):
-    """POST de um Access EEG"""
-    serializer = serializers.ReportSerializer(data=request.data)
-    if serializer.is_valid():
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-    
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    data = { channel.label : decompress(channel.file.name) }
+    return Response(data)
+
+@api_view(['GET'])
+def getAllEegChannels(request):
+    """GET de todos os channels de um eeg"""
+
+    eeg_id = int(request.GET['eeg'])
+    data = { channel.label : decompress(channel.file.name) for channel in Channel.objects.filter(eeg_id=eeg_id) }
+    return Response(data,)
 
 
 # ############################### EVENT ###############################
