@@ -14,9 +14,9 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-
+from django.urls import include, path
 from app import views
+from rest_framework.authtoken import views as auth_views
 
 # NOTA MUITO IMPORTANTE PARA QUANDO ESTIVERMOS A ADICIONAR CENAS UM MODEL QUE TENHA UM FIELD
 # QUE É OUTRO MODEL, TEMOS QUE ADICIONAR A CHAVE PRIMÁRIA DO MODEL QUE É PASSADO COMO FIELD
@@ -43,6 +43,12 @@ urlpatterns = [
     path('api/doctors', views.getDoctors),
     path('api/createDoctor', views.createDoctor),
     path('api/doctor', views.getDoctorById),
+
+    path('api/login_token', auth_views.ObtainAuthToken.as_view()),
+    path('api/profile', views.create_user),
+    #path('api/login_user', views.login_view),
+    path('api/login_doctor', views.createDoctor),
+
 
     path('api/proveniences', views.getProvidence),
     path('api/createProveniences', views.createProvidence),
@@ -77,6 +83,5 @@ urlpatterns = [
     
     path('api/doctorevisioncenter', views.getDoctorRevisionCenter),
     path('api/createDoctorevisioncenter', views.createDoctorRevisionCenter),
-    
-
+   
 ]

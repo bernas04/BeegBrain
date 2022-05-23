@@ -11,7 +11,7 @@ def generateBirthday():
         day = randint(1,28)
     else:
         day = randint(1,31)
-    return str(year)+"/"+str(month)+"/"+str(day)
+    return str(year)+"-"+str(month)+"-"+str(day)
 
 def generatePhoneNumber(number):
     if number==1:
@@ -19,8 +19,9 @@ def generatePhoneNumber(number):
     else: 
         return randint(910000000, 919999999)
 
-
-
+def generatePassword():
+    return randint(10000, 20000000)
+    
 """ler as ruas"""
 f = open("./roads.csv","r")
 f.readline()
@@ -41,7 +42,7 @@ f= open("./names.csv","r")
 peopleInfo = []
 f.readline() # descartar o titulo
 
-gender = ['M', 'F']
+gender = ['M', 'F','O']
 
 
 for line in f:
@@ -49,22 +50,26 @@ for line in f:
     brokeLine = line.split(",")
     name = brokeLine[4].replace("\n","")
     email = name.lower() + '@gmail.com'
-    value = randint(0, 1)
+    value = randint(0, 2)
     person_gender = gender[value]
     birthdayDate = generateBirthday()
     phoneNumber = generatePhoneNumber(number=value)
+    password = generatePassword()
+    operatorNumber= generatePassword()
     roadLength = randint(0, len(roads)-1)
     road = roads[roadLength]
     personInfo["name"] = name
     personInfo["email"] = email
+    personInfo["password"] = password
     personInfo["address"] = road
     personInfo["telephone"] = str(phoneNumber)
     personInfo["birthday"] = birthdayDate
+    personInfo["operator_number"] = operatorNumber
     personInfo["health_number"] = str(randint(100000000, 999999999))
     personInfo["gender"] = person_gender
-    personInfo["medical_info"] = "info"
     peopleInfo.append(personInfo)
 
 f.close()
 for i in peopleInfo: 
     print(i)
+

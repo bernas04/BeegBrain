@@ -20,13 +20,13 @@
 				</div>
                 <div class="mb-5"> 
 
-                    <form class="login100-form validate-form">
+                    <form class="login100-form validate-form" action="." method="post" [formGroup]="contactForm">
                         <span class="login100-form-title">
                             Member Login
                         </span>
     
                         <div class="wrap-input100 validate-input" data-validate = "Valid email is required: ex@abc.xyz">
-                            <input class="input100" type="text" name="email" placeholder="Email">
+                            <input class="input100" type="text" name="login-email" placeholder="Email" formControlName="username" id="username">
                             <span class="focus-input100"></span>
                             <span class="symbol-input100">
                                 <i class="fa fa-envelope" aria-hidden="true"></i>
@@ -34,7 +34,7 @@
                         </div>
     
                         <div class="wrap-input100 validate-input" data-validate = "Password is required">
-                            <input class="input100" type="password" name="pass" placeholder="Password">
+                            <input class="input100" formControlName="password" id="password" type="password" name="login-password" placeholder="Password">
                             <span class="focus-input100"></span>
                             <span class="symbol-input100">
                                 <i class="fa fa-lock" aria-hidden="true"></i>
@@ -42,7 +42,7 @@
                         </div>
                         
                         <div class="container-login100-form-btn">
-                            <a class="login100-form-btn" href="/workspace">
+                            <a (click)="submit()" value="Log in" class="login100-form-btn" href="/workspace">
                                 Login
                             </a>
                         </div>
@@ -55,6 +55,9 @@
                                 Username / Password?
                             </a>
                         </div>
+                        
+                        <p *ngIf="showError" class="validation-summary-errors text-danger">Please enter a correct user name and password.</p>
+
     
                         <div class="text-center p-t-136">
                             <a class="txt2" routerLink="/register">
@@ -63,6 +66,7 @@
                             </a>
                         </div>
                     </form>
+                    
                 </div>
 	
 			</div>
