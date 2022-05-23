@@ -1,6 +1,15 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
-# Create your models here.
+class User(AbstractUser):
+
+    name = models.CharField(max_length=255)
+    email = models.CharField(max_length=255, unique=True)
+    password = models.CharField(max_length=255)
+    username = None
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
 
 # Institution -> Medical institution that can be divided in two different categories: Providence and RevisionCenter
 class Institution(models.Model):
@@ -9,7 +18,7 @@ class Institution(models.Model):
     email = models.EmailField()
     address = models.CharField(max_length=300)
     telephone = models.CharField(max_length=20)
-
+    
     def __str__(self) -> str:
         return f'{self.name}'
 
@@ -68,7 +77,8 @@ class Patient(Person):
 # Doctor -> A Doctor can work in more than one Revision Center. He's responsible for visualizing, monitoring and reporting an EEG exam.
 class Doctor(Person):
 
-    medical_number = models.CharField(max_length=20, unique=True)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    medical_number = models.CharField(max_length=20)
 
     def __str__(self) -> str:
         return 'Doctor: ' + super().__str__() + f' {self.medical_number}'
@@ -78,9 +88,10 @@ class Doctor(Person):
 # into the platform to be seen by the Revision Center that holds a contract with his Providence.
 class Operator(Person):
 
-    operator_number = models.CharField(max_length=20, unique=True)
+    operator_number = models.CharField(max_length=20)
     providence = models.ForeignKey(Providence, verbose_name=('providence'), on_delete=models.CASCADE, related_name='%(class)s_providence')
-
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    
     def __str__(self) -> str:
         return 'Operator: ' + super().__str__() + f' {self.health_number}'
     

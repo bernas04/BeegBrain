@@ -1,5 +1,9 @@
 from rest_framework import serializers
+from django.contrib.auth.models import User
 from app.models import *
+from django.contrib.auth import authenticate
+from rest_framework.authtoken.models import Token
+
 
 class InstitutionSerializer(serializers.ModelSerializer):
     class Meta:
@@ -40,17 +44,36 @@ class DoctorSerializer(serializers.ModelSerializer):
     class Meta:
         model = Doctor
         fields = "__all__"
+    def create(self, val_data):
+        print(val_data)
+        user = User.objects.create_user(val_data['username'], val_data['password'])
+        user.set_password(val_data['password'])
+        user.is_active = True
+        user.save()
+        return Token.objects.get(user=user)
+
+
 
 class OperatorSerializer(serializers.ModelSerializer):
     parent_person = PersonSerializer(many=False, read_only = True)
     class Meta:
         model = Operator
         fields = "__all__"
+        
+    def create(self, val_data):
+        user = User.objects.create_user(val_data['email'], val_data['password'])
+        user.set_password(val_data['password'])
+        user.is_active = True
+        user.save()
+        return Token.objects.get(user=user)
+        
+
 
 class DoctorRevisionCenterSerializer(serializers.ModelSerializer):
     class Meta:
         model = DoctorRevisionCenter
         fields = "__all__"
+    
 
 class ReportSerializer(serializers.ModelSerializer):
     class Meta:

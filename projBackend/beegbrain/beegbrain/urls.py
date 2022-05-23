@@ -2,6 +2,7 @@ from django.urls import path
 from django.contrib import admin
 
 from app import views
+from rest_framework.authtoken import views as auth_views
 
 
 urlpatterns = [
@@ -19,6 +20,12 @@ urlpatterns = [
     path('api/doctors', views.getDoctors),
     path('api/createDoctor', views.createDoctor),
     path('api/doctor', views.getDoctorById),
+
+    path('api/login_token', auth_views.ObtainAuthToken.as_view()),
+    path('api/profile', views.create_user),
+    #path('api/login_user', views.login_view),
+    path('api/login_doctor', views.createDoctor),
+
 
     path('api/proveniences', views.getProvidence),
     path('api/createProveniences', views.createProvidence),

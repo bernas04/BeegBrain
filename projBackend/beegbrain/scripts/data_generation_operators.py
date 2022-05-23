@@ -14,6 +14,6 @@ def run():
             if rng%2==0:
                 rng-=1
 
-            d_object = Operator(health_number=doctor['health_number'], name=doctor['name'], email=doctor['email'], address=doctor['address'], telephone=doctor['telephone'], birthday=doctor['birthday'], 
+            d_object = Operator(health_number=doctor['health_number'], name=doctor['name'], email=doctor['email'],password=['password'], address=doctor['address'], telephone=doctor['telephone'], birthday=doctor['birthday'], 
                 gender=doctor['gender'], operator_number=doctor['operator_number'], providence=Providence.objects.get(institution_ptr_id=rng))
             d_object.save()
