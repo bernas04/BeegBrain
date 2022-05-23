@@ -344,7 +344,7 @@ def decompress(filename):
 
     
 @api_view(['GET'])
-def getEegById(request, id):
+def getEegById(request):
     """GET de um EEG pelo seu id"""
     eeg_id = int(request.GET['id'])
     try:

@@ -12,11 +12,14 @@
         <ng-multiselect-dropdown
         [settings] = "dropdownSettings"
         [data] = "dropdownList"
+        (onSelect)="onItemSelect($event)"
+        (onSelectAll)="onSelectAll($event)"
+        (onDeSelect)="onItemDeselect($event)"
+        
         >
-    
         </ng-multiselect-dropdown>
     </div>
 </div>
 
 
-<app-eeg-viewer [speed]=speed [interval]=window_size></app-eeg-viewer> 
+<app-eeg-viewer [speed]=speed [eegInfo]='eegInfo' [labelsSignal]="labelsSignal" [interval]=window_size></app-eeg-viewer> 

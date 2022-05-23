@@ -20,6 +20,5 @@ export class EEGService {
     return this.http.post<EEG>(this.BASE_URL + 'createEEG', formData);
   }
 
-  
 
 }

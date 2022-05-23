@@ -12,29 +12,34 @@ import { ChannelService } from 'src/app/services/channel.service';
 export class EegComponent implements OnInit {
   dropdownSettings:IDropdownSettings={};
   dropdownList!:String[];
-  public listOfLabels: String[] = [];
+  labels:String[]=[];
+  public eegInfo:Object=[];
+  labelsSignal= new Map();
+
 
   constructor(private services:ChannelService) { }
 
   
 
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.getLabelsFromEEG();
+    this.services.getEEGinfo(15).subscribe((info) => {
+      this.eegInfo = info;
+    })
     this.dropdownSettings = {
       singleSelection: false,
       idField : 'item_id',
       textField : 'item_text',
       selectAllText : 'Select all',
       unSelectAllText : 'Unselect all'
-    };
+    };    
   }
 
-  
+
 
   getLabelsFromEEG(){
     this.services.getLabelsFromEEG(15).subscribe((info) => {
-      this.listOfLabels=info;
       this.dropdownList=info;
     })
   }
@@ -52,7 +57,29 @@ export class EegComponent implements OnInit {
   
   window_size: number=30;
   
-  
+  onItemSelect(item: any) {
+    this.labels.push(item);
+    this.services.getDataAboutLabel(15, item).subscribe((info) => {
+      this.labelsSignal.set(item, info);
+    });
+  }
+
+  onItemDeselect(item:any){
+    let indx = this.labels.indexOf(item);
+    if (this.labels.length==1){
+      this.labels=[];
+    }
+    else{
+      this.labels.splice(indx, 1);
+    }
+  }
+
+
+  onSelectAll(items: any) {
+    this.labels= items;
+  }
+
+
   getInputValue(event:any){
     this.window_size = event.target.value;
   }
@@ -61,4 +88,5 @@ export class EegComponent implements OnInit {
     console.log("new speed value: "+ this.speed)
   }
 
+  
 }

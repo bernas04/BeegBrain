@@ -21,6 +21,11 @@ export class ChannelService {
       return this.http.get<String[]>(this.BASE_URL+'labels?eeg='+id);
   }
 
+  getDataAboutLabel(eegId : any, channel: any): Observable<Number[]>{
+    return this.http.get<Number[]>(this.BASE_URL+'channel?eeg='+eegId+'&label='+channel)
+  }
   
-
+  getEEGinfo(id:number) : Observable<EEG>{
+    return this.http.get<EEG>(this.BASE_URL+'eeg?id='+id);
+  }
 }

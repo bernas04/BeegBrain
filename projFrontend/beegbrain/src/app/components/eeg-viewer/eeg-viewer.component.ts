@@ -36,6 +36,8 @@ export class EEGViewerComponent implements OnChanges {
   lst_intervalId: any[] = [];
 
   @Input('interval') interval!: number;
+  @Input('eegInfo') eegInfo!: Object;
+  @Input('labelsSignal') labelsSignal!: any;
 
   
   yData: number[] = [];
@@ -49,19 +51,22 @@ export class EEGViewerComponent implements OnChanges {
   ngOnChanges(model: any) {
     this.changeSpeed();
   }
+  
 
-  ngOnInit(): void {
 
+  ngOnInit() {
     // Wait for DOM to load (maybe use other NG event)!!!! ngOnDomLoaded or something
     setTimeout(() => {
       this.chartDom = document.getElementById('chart')!;
       this.myChart = echarts.init(this.chartDom);
-    },500);
+    }, 500);
     // Vai gerar dados este número de vezes
+
     for (let i = 0; i < 3; i++) {
       this.yData.push(this.randomData());
       this.xData.push(this.weekDays());
     }
+
     this.option = {
       title: {
         text: 'EEG',
@@ -125,11 +130,12 @@ export class EEGViewerComponent implements OnChanges {
           
         }
       ]
+      
     };
 
     this.start(this.speed);
     this.changeSpeed(); // This line is to adjust data
-    this.option && this.myChart.setOption(this.option);
+    this.option;
   }
 
 
@@ -143,9 +149,10 @@ export class EEGViewerComponent implements OnChanges {
     return days[this.seconds%days.length]
   }
 
+ 
+
   /* Esta é a função que vai estar sempre a ser chamada */
   start(speed: number) {
-    
     
     this.intervalId = setInterval(() => {
       //this.yData = []
@@ -180,6 +187,7 @@ export class EEGViewerComponent implements OnChanges {
 
   changeSpeed() {
     // clear the existing interval
+
     for (var id in this.lst_intervalId)
       clearInterval( parseInt(id) );
 
