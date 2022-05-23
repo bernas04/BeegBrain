@@ -21,7 +21,12 @@ const routes: Routes = [
     ]
   },
 
-  { path: 'patients', component: PatientsComponent },
+  { 
+    path: 'patients', children: [
+      { path: '', component: PatientsComponent },
+      { path: ':id', component: PatientsComponent }
+    ]
+  },
 
   { path: 'profile', component: ProfileComponent },
   

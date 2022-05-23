@@ -11,6 +11,7 @@ import * as echarts from 'echarts';
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
 import { DataItem } from './DataItem';
 import { Options } from '@angular-slider/ngx-slider';
+import { EEGService } from 'src/app/services/eeg.service';
 
 type EChartsOption = echarts.ComposeOption<
   | TitleComponentOption
@@ -30,14 +31,15 @@ export class EEGViewerComponent implements OnChanges {
   chartDom! : HTMLElement;
   myChart! : echarts.ECharts;
   option!: echarts.EChartsOption;
-
+  eegInfo: Object = [];
   @Input('speed') speed!: number;
   intervalId! : any;
   lst_intervalId: any[] = [];
 
   @Input('interval') interval!: number;
-  @Input('eegInfo') eegInfo!: Object;
   @Input('labelsSignal') labelsSignal!: any;
+
+  constructor(private services:EEGService) { }
 
   
   yData: number[] = [];
@@ -55,18 +57,19 @@ export class EEGViewerComponent implements OnChanges {
 
 
   ngOnInit() {
+    this.getInformation();
     // Wait for DOM to load (maybe use other NG event)!!!! ngOnDomLoaded or something
     setTimeout(() => {
       this.chartDom = document.getElementById('chart')!;
       this.myChart = echarts.init(this.chartDom);
     }, 500);
     // Vai gerar dados este número de vezes
-
     for (let i = 0; i < 3; i++) {
       this.yData.push(this.randomData());
       this.xData.push(this.weekDays());
     }
-
+    
+    
     this.option = {
       title: {
         text: 'EEG',
@@ -144,6 +147,13 @@ export class EEGViewerComponent implements OnChanges {
     return this.seconds;
   }
 
+  getInformation(): any{
+    this.services.getEEGinfo(15).subscribe((info) => {
+      this.eegInfo = info;
+      console.log(this.eegInfo);
+    })
+  }
+
   weekDays() : string{
     let days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     return days[this.seconds%days.length]
@@ -153,7 +163,7 @@ export class EEGViewerComponent implements OnChanges {
 
   /* Esta é a função que vai estar sempre a ser chamada */
   start(speed: number) {
-    
+
     this.intervalId = setInterval(() => {
       //this.yData = []
       let convertedInterval = Math.floor(this.interval/10);

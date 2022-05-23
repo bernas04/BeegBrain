@@ -7,14 +7,11 @@ export class EEG {
 
     id!: number;
     status!: string;
-    date!: Date;
+    timestamp!: Date;
     report!: Report;
     operator!: Operator;
-    patient!: Patient;
-    timestamp!: Timestamp<any>;
-    priority!: number;
-    duration!: number;
-
+    patient!: number;       // antes estava Patient, mas recebe um number no backend
+    priority!: string;
     // adicionar o nivel de urgência, metadados já aqui para não ter de carregar o ficheiro para saber a data e isso tudo...
 
 }

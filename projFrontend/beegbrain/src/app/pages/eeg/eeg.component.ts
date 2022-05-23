@@ -24,9 +24,7 @@ export class EegComponent implements OnInit {
 
   ngOnInit() {
     this.getLabelsFromEEG();
-    this.services.getEEGinfo(15).subscribe((info) => {
-      this.eegInfo = info;
-    })
+    
     this.dropdownSettings = {
       singleSelection: false,
       idField : 'item_id',

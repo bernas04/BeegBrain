@@ -299,6 +299,8 @@ def createEEG(request):
     except Patient.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+    print("PACIENTE:", patient)
+
     eeg = {
         "operator": operator,
         "patient": patient,
@@ -308,6 +310,8 @@ def createEEG(request):
         "report": None,
         "duration": duration,
     }
+
+    print("EEG ", eeg)
 
     # Criar o objeto EEG
     idEEG = None
@@ -343,18 +347,32 @@ def decompress(filename):
     return np.load(file)
 
     
-@api_view(['GET'])
+@api_view(['GET', 'DELETE'])
 def getEegById(request):
-    """GET de um EEG pelo seu id"""
-    eeg_id = int(request.GET['id'])
-    try:
-        ret = EEG.objects.get(id=eeg_id)
+    """GET ou DELETE de um EEG pelo seu id"""
+
+    if request.method == 'GET':
+        eeg_id = int(request.GET['id'])
+        try:
+            ret = EEG.objects.get(id=eeg_id)
+            
+        except EEG.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         
-    except EEG.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    
-    serializer = serializers.EEGSerializer(ret)
-    return Response(serializer.data)
+        serializer = serializers.EEGSerializer(ret)
+        return Response(serializer.data)
+
+    elif request.method == 'DELETE':
+
+        eeg_id = int(request.GET['id'])
+        try:
+            ret = EEG.objects.get(id=eeg_id)
+            
+        except EEG.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        ret.delete()
+        return True
 
 
 # ############################### CHANNEL ###############################
@@ -387,6 +405,7 @@ def getAllEegChannels(request):
     eeg_id = int(request.GET['eeg'])
     data = { channel.label : decompress(channel.file.name) for channel in Channel.objects.filter(eeg_id=eeg_id) }
     return Response(data,)
+
 
 # ############################### EVENT ###############################
 @api_view(['GET'])

@@ -1,50 +1,25 @@
 <app-navbar></app-navbar>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-
+ -->
 
 
 <div class="container h-100">
-    <!--  <div class="row " style="padding: 30px;">
-        <h3><strong> Information about your patient </strong> </h3>
-    </div> -->
-    <!-- <div class="row align-items-center h-100">
-        <div class="col-12 mx-auto">
-
-            <div class="input-group my-3 d-flex">
-                <div class="col-6">
-                    <input type="search" class="form-control rounded" id="patient_search"
-                    placeholder="Search by patient's name or SSN" aria-label="Search"
-                    aria-describedby="search-addon" />
-                </div>
-                <div class="col-4">
-                    <button class="button-18 ml-3" role="button" (keyup)="getPatientsbySSN()" (click)="getPatientsbySSN()">
-                        <i class="fa fa-search"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div> -->
-
     <div class="container">
-
         <div class="row height d-flex justify-content-center align-items-center">
-
             <div class="col-md-8">
 
-            <div class="search">
-                <i class="fa fa-search"></i>
-                <input type="text" id="patient_search" class="form-control" placeholder="Search by patient's name or SSN" (keyup.enter)="getPatientsbySSN()">
-                <button class="btn btn-primary" style="font-weight:bold" (click)="getPatientsbySSN()">Search</button>
+                <div class="search">
+                    <i class="fa fa-search"></i>
+                    <input type="text" id="patient_search" class="form-control" placeholder="Search by patient's name or SSN" (keyup.enter)="getPatientsbySSN()">
+                    <button class="btn btn-primary" style="font-weight:bold" (click)="getPatientsbySSN()">Search</button>
+                </div>
+                
             </div>
-            
-            </div>
-            
         </div>
     </div>
-
 </div>
 
 <hr>

@@ -8,7 +8,7 @@
             <div class="row">
 
                 <div class="col-lg-6 d-flex align-items-center">
-                    <div class="col-lg-3 col-sm-6 col-md-4">
+                    <div class="col-lg-4 col-sm-6 col-md-4">
                         <label>Name</label>
                     </div>
                     <div class="col-lg-6 col-sm-6">
@@ -30,11 +30,11 @@
             <div class="row">
 
                 <div class="col-lg-6 d-flex align-items-center">
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <label>Health Number</label>
                     </div>
                     
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <h5 class="form-control" id="health_number" style="margin-left: 2em;"> {{patient.health_number}} </h5>
                     </div>
                     
@@ -56,11 +56,11 @@
             <div class="row">
 
                 <div class="col-lg-6 d-flex align-items-center">
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <label>Phone Number</label>
                     </div>
                     
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <h5 class="form-control" id="numberHealth" style="margin-left: 2em;"> {{patient.telephone}} </h5>
                     </div>
                 </div>
@@ -71,7 +71,7 @@
                         <label>Birthday</label>
                     </div>
                     
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <h5 class="form-control" id="birthday" style="margin-left: 2em;"> {{patient.birthday}} </h5>
                     </div>
                 </div>
@@ -80,14 +80,14 @@
             <div class="row">
 
                 <div class="col-lg-6 d-flex align-items-center">
-                    <div class="col-lg-3">
+                    <div class="col-lg-4">
                         <label>Gender</label>
                     </div>
                     
                     <div class="col-lg-6">
                         <button *ngIf="patient.gender == 'F'" type="button" class="btn btn-dark" style="font-weight: bold; margin-left: 2em;" disabled> {{patient.gender}} </button>
                         <button *ngIf="patient.gender == 'M'" type="button" class="btn btn-info" style="font-weight: bold; margin-left: 2em;" disabled> {{patient.gender}} </button>
-                        <button *ngIf="patient.gender == 'Other'" type="button" class="btn btn-warning" style="font-weight: bold; margin-left: 2em;color: white" disabled> {{patient.gender}} </button>
+                        <button *ngIf="patient.gender == 'Other'" type="button" class="btn btn-warning" style="font-weight: bold; margin-left: 2em;color: white" disabled> Other </button>
                     </div>
                 </div>
 

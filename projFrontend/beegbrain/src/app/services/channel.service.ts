@@ -25,7 +25,5 @@ export class ChannelService {
     return this.http.get<Number[]>(this.BASE_URL+'channel?eeg='+eegId+'&label='+channel)
   }
   
-  getEEGinfo(id:number) : Observable<EEG>{
-    return this.http.get<EEG>(this.BASE_URL+'eeg?id='+id);
-  }
+  
 }
