@@ -2,46 +2,37 @@
     <div class="card-body">
         <!-- title -->
 
-        <h4 class="card-title"><strong>   EEG Exams </strong></h4>
+        <!-- <h4 class="card-title"><strong>   EEG Exams </strong></h4> -->
         <!-- <h5 class="card-subtitle mt-1">Overview of the projects</h5> -->
 
           
         <!-- title -->
-        <div class="table-responsive">
-            <table class="table align-middle">
+        <div class="table-responsive" *ngIf="map.size != 0" style="margin-top: 1em;">
+            <table id="eeg_table" class="table align-middle table-striped ">
                 <thead>
                     <tr>
-                        <th class="text-dark font-medium fs-4">ID</th>
-                        <th class="text-dark font-medium fs-4">Date</th>
-                        <th class="text-dark font-medium fs-4">Patient</th>
-                        <th class="text-dark font-medium fs-4">Priority</th>
-                        <th class="text-dark font-medium fs-4">Report</th>
+                        <th></th>
+                        <th class="text-dark font-medium fs-4"> <i class="bi bi-file-person-fill" style="margin-right: 0.3em;"></i> Patient</th>
+                        <th class="text-dark font-medium fs-4"> <i class="bi bi-calendar-week-fill" style="margin-right: 0.3em;"></i> Date</th>
+                        <th class="text-dark font-medium fs-4"> <i class="bi bi-exclamation-diamond-fill" style="margin-right: 0.3em;"></i> Priority</th>
+                        <th class="text-dark font-medium fs-4"> <i class="bi bi-file-earmark-text-fill" style="margin-right: 0.3em;"></i> Report</th>
                         <th></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor='let eeg of lst_EEG'>
 
-                        <!-- <td>
-                            <div class="d-flex align-items-center">
-                                <div class="ms-3">
-                                    <h5 class="mb-0 font-medium">{{ts.uname}}</h5>
-                                    <span class="text-muted">{{ts.gmail}}</span>
-                                </div>
-                            </div>
-                        </td> 
-
-                        <td>
-                            <span class="p-2 bg-{{ts.status}} rounded-circle d-inline-block ms-3"></span>
-                        </td>
-                        
-                        <td>
-                            <a href="/workspace/${eeg.id}">
-                                <button type="button" class="btn btn-primary"> <i class="bi bi-eye-fill"></i> </button>
-                            </a>
-                        </td>-->
-
                         <td class="fs-4">{{eeg.id}}</td>
+
+                        <td>
+                            <a href="/patients/{{eeg.patient}}">
+                                <!-- <button type="button" class="btn btn-primary btn-sm" style="font-size: medium;"> {{map.get(eeg.id)}} </button> -->
+                                <button type="button" class="btn btn-primary"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                                {{map.get(eeg.id)}}
+                                </button>
+                            </a>
+                        </td>
 
                         <td>
                             <!-- <h5 class="mb-0 font-medium">{{eeg.timestamp | date:'dd/MM/yyyy'}}</h5> -->
@@ -49,24 +40,22 @@
                         </td>
 
                         <td>
-                            <a href="/patients/{{eeg.patient}}">
-                                <button type="button" class="btn btn-success"> {{eeg.patient}}</button>
-                            </a>
-                        </td>
-
-                        <td class="fs-4">{{eeg.priority}}</td>
-
-                        <td>
-                            <span *ngIf="eeg.report == null" class="badge rounded-pill text-bg-secondary"> to do </span>
-                            <span *ngIf="eeg.report != null" class="badge rounded-pill text-bg-primary"> in progress </span>
+                            <span *ngIf="eeg.priority == '1'" class="badge text-bg-success"> very low </span>
+                            <span *ngIf="eeg.priority == '2'" class="badge text-bg-info"> low </span>
+                            <span *ngIf="eeg.priority == '3'" class="badge text-bg-secondary" style="font-size:medium;"> medium </span>
+                            <span *ngIf="eeg.priority == '4'" class="badge text-bg-light"> high </span>
+                            <span *ngIf="eeg.priority == '5'" class="badge text-bg-dark"> very high </span> 
                         </td>
 
                         <td>
-                            <a href="/workspace/{{eeg.id}}">
-                                <button type="button" class="btn btn-primary"> <i class="bi bi-eye-fill"></i> </button>
-                            </a>
+                            <span *ngIf="eeg.report == null" class="badge rounded-pill text-bg-secondary" style="font-size:medium;"> to do </span>
+                            <span *ngIf="eeg.report != null" class="badge rounded-pill text-bg-primary" style="font-size:medium;"> in progress </span>
+                        </td>
 
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#my-modal" (click)="save2delete( eeg.id )"> <i class="bi bi-trash-fill"></i> </button>
+                        <td style="text-align: right; vertical-align: middle;">
+
+                            <button type="button" class="btn btn-primary" (click)="redirect(eeg.id)" style="margin-right: 1em;"> <i class="bi bi-eye-fill" ></i> </button>
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#my-modal" style="margin-right: 1em;" (click)="save2delete( eeg.id )"> <i class="bi bi-trash-fill"></i> </button>
 
                         </td>
 
@@ -82,13 +71,13 @@
 <!-- ------------------------------------------- ARE YOU SURE U WANNA DELETE THE EXAM ------------------------------------------- -->
 <div id="my-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content border-0">   
+        <div class="modal-content border-0">
             <div class="modal-body p-0">
                 <div class="card border-0 p-sm-3 p-2 justify-content-center">
 
                     <div class="card-header pb-0 bg-white border-0 ">
                         <h4> Are you sure you wanna delete this exam?</h4>
-                        <span class="text-muted "> This change cannot be reversed, be careful.</span>     
+                        <span class="text-muted "> This change cannot be reversed, be careful.</span>
                     </div>
 
                     <div class="card-body px-sm-4 mb-2 pt-1 pb-0"> 

@@ -143,6 +143,18 @@ def getPatientBySSN(request):
     return Response(serializer.data)
 
 
+@api_view(['GET'])
+def getPatientById(request, id):
+    """GET de um paciente pelo seu id"""
+    try:
+        ret = Patient.objects.get(id=id)
+    except Patient.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = serializers.PatientSerializer(ret)
+    return Response(serializer.data)
+
+
 # ############################### Operators ###############################
 @api_view(['GET'])
 def getOperators(request):
@@ -273,6 +285,18 @@ def getEeg(request):
     return Response(serializer.data)
 
 
+@api_view(['GET'])
+def getEegByPatient(request, id):
+    """GET de todos os EEG's de um determinado paciente"""
+    try:
+        eegs = EEG.objects.filter(patient=id)
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    serializer = serializers.EEGSerializer(eegs, many=True)
+    return Response(serializer.data)
+
+
 @api_view(['POST'])
 def createEEG(request):
 
@@ -299,8 +323,6 @@ def createEEG(request):
     except Patient.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    print("PACIENTE:", patient)
-
     eeg = {
         "operator": operator,
         "patient": patient,
@@ -311,7 +333,6 @@ def createEEG(request):
         "duration": duration,
     }
 
-    print("EEG ", eeg)
 
     # Criar o objeto EEG
     idEEG = None

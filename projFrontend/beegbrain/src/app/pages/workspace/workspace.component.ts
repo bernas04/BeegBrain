@@ -25,30 +25,6 @@ export class WorkspaceComponent implements OnInit {
   getEEG() {
     this.service.getAllEEG().subscribe((info) => {
       this.lst_eeg = info;
-      
-      /* 
-      this.patient_service.getPatients().subscribe((info1) => {
-        this.lst_patient = info1;
-      });
-
-      console.log(this.lst_eeg)
-      console.log(this.lst_patient)
-
-      let patient!: Patient;
-
-      this.lst_eeg.forEach( (eeg) => {
-        let id = eeg.patient
-        console.log(id)
-        this.lst_patient.forEach( (pat) => { 
-          console.log(pat.id )
-          if (pat.id == id) patient = pat
-        })
-        console.log("aqui "+ patient)
-      })
-
-      console.log("aqui "+ patient) 
-      */
-
     });
   }
 
@@ -59,12 +35,6 @@ export class WorkspaceComponent implements OnInit {
     });
   }
 
-  /*   
-  getPatientByID(identifier : string) {
-    const id = parseInt(identifier)
-    const p = this.lst_patient.find(elem => elem.id == id)
-  } 
-  */
 
   onDelete(id : number) {
     this.service.deleteEEG(id).subscribe();
