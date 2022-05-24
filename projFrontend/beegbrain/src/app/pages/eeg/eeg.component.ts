@@ -2,6 +2,10 @@ import { Options } from '@angular-slider/ngx-slider';
 import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { ChannelService } from 'src/app/services/channel.service';
+import { Router } from '@angular/router';
+import { EEGService } from 'src/app/services/eeg.service';
+import { EEG } from 'src/app/classes/EEG';
+
 
 @Component({
   selector: 'app-eeg',
@@ -13,17 +17,20 @@ export class EegComponent implements OnInit {
   dropdownSettings:IDropdownSettings={};
   dropdownList!:String[];
   labels:String[]=[];
-  public eegInfo:Object=[];
+  public eegInfo!:EEG;
   labelsSignal= new Map();
+  id!: number 
 
-
-  constructor(private services:ChannelService) { }
+  constructor(private services:ChannelService, private router: Router, private EEGservices:EEGService) { }
 
   
-
-
+  
   ngOnInit() {
-    this.getLabelsFromEEG();
+    const url_array = this.router.url.split("/");
+    let eegId = +url_array[url_array.length - 1];
+    this.id=eegId;
+    this.getLabelsFromEEG(eegId);
+    this.getInformation(eegId);
     
     this.dropdownSettings = {
       singleSelection: false,
@@ -34,10 +41,15 @@ export class EegComponent implements OnInit {
     };    
   }
 
+  getInformation(eegId:number): any{
+    this.EEGservices.getEEGinfo(eegId).subscribe((info) => {
+      this.eegInfo = info;
+    })
+  }
 
 
-  getLabelsFromEEG(){
-    this.services.getLabelsFromEEG(15).subscribe((info) => {
+  getLabelsFromEEG(eegId:number){
+    this.services.getLabelsFromEEG(eegId).subscribe((info) => {
       this.dropdownList=info;
     })
   }
@@ -57,8 +69,9 @@ export class EegComponent implements OnInit {
   
   onItemSelect(item: any) {
     this.labels.push(item);
-    this.services.getDataAboutLabel(15, item).subscribe((info) => {
+    this.services.getDataAboutLabel(this.id, item).subscribe((info) => {
       this.labelsSignal.set(item, info);
+      
     });
   }
 

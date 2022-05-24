@@ -15,11 +15,10 @@
         (onSelect)="onItemSelect($event)"
         (onSelectAll)="onSelectAll($event)"
         (onDeSelect)="onItemDeselect($event)"
-        
         >
         </ng-multiselect-dropdown>
     </div>
 </div>
 
 
-<app-eeg-viewer [speed]=speed [labelsSignal]="labelsSignal" [interval]=window_size></app-eeg-viewer> 
+<app-eeg-viewer *ngIf="labelsSignal.size != 0" [speed]=speed [eegInfo]="eegInfo" [labelsSignal]="labelsSignal" [interval]=window_size></app-eeg-viewer> 
