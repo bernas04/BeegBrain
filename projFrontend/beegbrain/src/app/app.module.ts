@@ -26,6 +26,8 @@ import { UploadingComponent } from './components/uploading/uploading.component';
 import { DndDirective } from './dnd.directive';
 import { ProgressComponent } from './components/progress/progress.component';
 import { RegisterComponent } from './components/register/register.component';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+
 
 @NgModule({
   declarations: [
@@ -56,6 +58,7 @@ import { RegisterComponent } from './components/register/register.component';
 		FormsModule,
 		ReactiveFormsModule,
 		HttpClientModule,
+    NgMultiSelectDropDownModule.forRoot(),
     NgxEchartsModule.forRoot({
       echarts,
     }),

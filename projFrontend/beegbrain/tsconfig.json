@@ -28,5 +28,9 @@
     "strictInjectionParameters": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "include": [
+    "src/**/*",
+    "node_modules/ng-multiselect-dropdown/index.ts"
+  ]
 }

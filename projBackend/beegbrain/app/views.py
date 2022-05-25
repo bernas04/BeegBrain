@@ -69,8 +69,6 @@ def login_view(request):
 
 # ############################### PROVENIENCIAS ###############################
 @api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def getProvidence(request):
     """GET de todas as Proveniencias"""
     providences = Providence.objects.all()
@@ -79,8 +77,6 @@ def getProvidence(request):
 
 
 @api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def createProvidence(request):
     """POST de uma Proveniencia"""
     serializer = serializers.ProvidenceSerializer(data=request.data)
@@ -92,8 +88,6 @@ def createProvidence(request):
 
 
 @api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def getProvidenceById(request):
     """GET de uma Proveniencia pelo seu id"""
     prov_id = int(request.GET['id'])
