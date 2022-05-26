@@ -1,15 +1,44 @@
-from django.db import models
-from django.contrib.auth.models import AbstractUser
+from django.db import models    
+from django.apps import apps
+from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.auth.hashers import make_password
+
+
+class CustomUserManager(UserManager):
+    
+    def create_user(self, username=None, email=None, password=None, **extra_fields):
+        return super(CustomUserManager, self).create_user(username, email, password, **extra_fields)
+
+    def create_superuser(self, username=None, email=None, password=None, **extra_fields):
+        return super(CustomUserManager, self).create_superuser(username, email, password, **extra_fields)
+
+    def _create_user(self, username, email, password, **extra_fields):
+        email = self.normalize_email(email)
+        GlobalUserModel = apps.get_model(self.model._meta.app_label, self.model._meta.object_name)
+        username = GlobalUserModel.normalize_username(username)
+        user = self.model(username=username, email=email, **extra_fields)
+        user.password = make_password(password)
+        user.save(using=self._db)
+        return user
+
 
 class User(AbstractUser):
 
-    name = models.CharField(max_length=255)
-    email = models.CharField(max_length=255, unique=True)
-    password = models.CharField(max_length=255)
-    username = None
+    email = models.EmailField(null=False, unique=True)
+    name = models.CharField(max_length=100, null=False)
+    username = models.CharField(max_length=50, null=True)
+    password = models.CharField(max_length=256, null=False)
+
+    objects = CustomUserManager()
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
+    def create_superuser(self, email, username, password):  
+
+        user = self.create_user(
+            username=username,
+            email=self.normalize_email(email),
+            password=password)
 
 # Institution -> Medical institution that can be divided in two different categories: Providence and RevisionCenter
 class Institution(models.Model):
@@ -77,7 +106,6 @@ class Patient(Person):
 # Doctor -> A Doctor can work in more than one Revision Center. He's responsible for visualizing, monitoring and reporting an EEG exam.
 class Doctor(Person):
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
     medical_number = models.CharField(max_length=20)
 
     def __str__(self) -> str:
@@ -90,7 +118,6 @@ class Operator(Person):
 
     operator_number = models.CharField(max_length=20)
     providence = models.ForeignKey(Providence, verbose_name=('providence'), on_delete=models.CASCADE, related_name='%(class)s_providence')
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
     
     def __str__(self) -> str:
         return 'Operator: ' + super().__str__() + f' {self.health_number}'

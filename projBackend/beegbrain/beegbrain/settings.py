@@ -43,8 +43,7 @@ INSTALLED_APPS = [
     'beegbrain',
     'app.apps.AppConfig',
     'django_extensions',
-    'rest_framework.authtoken'
-    
+    'rest_framework.authtoken',
 ]
 
 MIDDLEWARE = [
@@ -58,15 +57,10 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
-        'rest_framework.authentication.BasicAuthentication',
-    ),
-    'NON_FIELD_ERRORS_KEY': 'global',
+REST_FRAMEWORK={
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
 }
 
 ALLOWED_HOSTS=['*']
@@ -165,4 +159,4 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = 'beegbrain.User'
+AUTH_USER_MODEL = 'app.User'

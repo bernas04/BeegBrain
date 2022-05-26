@@ -35,44 +35,10 @@ from rest_framework.views import APIView
 import pyedflib
 from django.contrib.auth import get_user_model
 
-
-''' @receiver(post_save, sender=settings.AUTH_USER_MODEL)
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
-
-
-
-@api_view(['POST'])
-def create_user(request):
-    print(request.data)
-    serializer = serializers.UserSerializer(data=request.data)
-    print(request)
-    if serializer.is_valid():
-        ret = serializer.create(request.data)
-        token = serializers.TokenSerializer(data={'key': ret.key})
-        return Response(token.initial_data)
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-@csrf_exempt
-@api_view(['POST'])
-def login_view(request):
-    
-    print(request.data)
-    email = request.POST.get('email')
-    password = request.POST.get('password')
-    user = User.objects.create_user('', email, password)
-
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        login(request, user)
-        print("success")
-        return Response(user)
-    else:
-        print("invalid login")
-        
-        # Return an 'invalid login' error message.
-'''
 
 
 # ############################### PROVENIENCIAS ###############################
@@ -252,13 +218,11 @@ def getOperators(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def createOperator(request):
-    """POST de um Operator"""
-    serializer = serializers.OperatorSerializer(data=request.data)
+    serializer = serializers.UserSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.create()
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
+        resp = serializer.createOperator()
+        token = serializers.TokenSerializer(data={'key': resp.key})
+        return Response(token.initial_data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -301,15 +265,11 @@ def getDoctors(request):
 
 @api_view(['POST'])
 def createDoctor(request):
-    """POST de um Doctor"""
-    print("chegO??????????????''")
-    serializer = serializers.DoctorSerializer(data=request.data)
+    serializer = serializers.UserSerializer(data=request.data)
     if serializer.is_valid():
-        serializer.create()
-        serializer.save()
-
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
+        resp = serializer.createDoctor(request.data)   
+        token = serializers.TokenSerializer(data={'key': resp.key})
+        return Response(token.initial_data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -456,10 +416,6 @@ def createEEG(request):
 
     PRIORITIES = {'Very Low':1,'Low':2,'Medium':3,'High':4,'Very High':5}
 
-    # permitir a adição de mais que um EEG
-
-    print(request.data)
-
     try:
         operator = Operator.objects.get(health_number=request.data['operatorID'])
     except Operator.DoesNotExist:
@@ -557,6 +513,7 @@ def getChannelLabels(request):
     eeg_id = int(request.GET['eeg'])
     channels = Channel.objects.filter(eeg_id=eeg_id)
     channelsLabels = [chn.label for chn in channels]
+    print(channelsLabels)
     return Response(channelsLabels)
 
 """Retorna um array com os valores de um canal de um EEG, desde o momento de início (start - numero do tick inicial) até ao start + timeInterval (em segundos)"""
