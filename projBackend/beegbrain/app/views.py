@@ -203,6 +203,20 @@ def getPatientBySSN(request):
     return Response(serializer.data)
 
 
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def getPatientById(request, id):
+    """GET de um paciente pelo seu id"""
+    try:
+        ret = Patient.objects.get(id=id)
+    except Patient.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    serializer = serializers.PatientSerializer(ret)
+    return Response(serializer.data)
+
+
 # ############################### Operators ###############################
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -399,12 +413,25 @@ def getReportById(request):
 
 
 # ############################### EEG ###############################
+
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def getEeg(request):
     """GET de todos os EEG's"""
     eegs = EEG.objects.all()
+    serializer = serializers.EEGSerializer(eegs, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+def getEegByPatient(request, id):
+    """GET de todos os EEG's de um determinado paciente"""
+    try:
+        eegs = EEG.objects.filter(patient=id)
+    except:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
     serializer = serializers.EEGSerializer(eegs, many=True)
     return Response(serializer.data)
 
@@ -489,21 +516,27 @@ def decompress(filename):
     return np.load(file)
 
     
-@api_view(['GET'])
+@api_view(['GET', 'DELETE'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def getEegById(request, id):
-    """GET de um EEG pelo seu id"""
-    eeg_id = int(request.GET['id'])
-    try:
-        ret = EEG.objects.get(id=eeg_id)
-        
-    except EEG.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    
-    serializer = serializers.EEGSerializer(ret)
-    return Response(serializer.data)
-
+def getEegById(request):
+    """GET ou DELETE de um EEG pelo seu id"""
+    if request.method == 'GET':
+        eeg_id = int(request.GET['id'])
+        try:
+            ret = EEG.objects.get(id=eeg_id)
+        except EEG.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND) 
+        serializer = serializers.EEGSerializer(ret)
+        return Response(serializer.data)
+    elif request.method == 'DELETE':
+        eeg_id = int(request.GET['id'])
+        try:
+            ret = EEG.objects.get(id=eeg_id)
+        except EEG.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        ret.delete()
+        return True
 
 # ############################### CHANNEL ###############################
 

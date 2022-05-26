@@ -13,6 +13,7 @@ urlpatterns = [
     path('api/patients', views.getPatients),
     path('api/createPatient', views.createPatient),
     path('api/patient', views.getPatientBySSN),
+    path('api/patient/<int:id>', views.getPatientById),
 
     path('api/operators', views.getOperators),
     path('api/createOperator', views.createOperator),
@@ -47,6 +48,7 @@ urlpatterns = [
     path('api/eegs', views.getEeg),
     path('api/createEEG', views.createEEG),
     path('api/eeg', views.getEegById),
+    path('api/eegs/<int:id>', views.getEegByPatient),
 
     path('api/channel', views.getChannelByLabel),
     path('api/labels', views.getChannelLabels),

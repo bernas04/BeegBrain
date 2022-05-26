@@ -1,0 +1,49 @@
+.text-bg-dark, .text-bg-dark:hover, .text-bg-dark:active, .text-bg-dark:visited {
+    background-color: #C41E3A !important;
+    border-color: #C41E3A !important;
+    font-size:medium;
+}
+.text-bg-light, .text-bg-light:hover, .text-bg-light:active, .text-bg-light:visited {
+    background-color: #F28C28 !important;
+    border-color: #F28C28 !important;
+    font-size:medium;
+}
+.text-bg-info, .text-bg-info:hover, .text-bg-info:active, .text-bg-info:visited {
+    background-color: #6495ED !important;
+    border-color: #6495ED !important;
+    font-size:medium;
+}
+.text-bg-success, .text-bg-success:hover, .text-bg-success:active, .text-bg-success:visited {
+    background-color: #5D3FD3 !important;
+    border-color: #5D3FD3 !important;
+    font-size:medium;
+}
+
+td, th {
+    text-align: center; 
+    vertical-align: middle;
+}
+
+/* ********************************************************************** */
+
+.example-container {
+    display: flex;
+    flex-direction: column;
+    min-width: 300px;
+}
+
+.example-header {
+    min-height: 64px;
+    padding: 8px 24px 0;
+}
+
+.mat-form-field {
+    font-size: 14px;
+    width: 100%;
+}
+
+.mat-table {
+    overflow: auto;
+    max-height: 500px;
+}
+  

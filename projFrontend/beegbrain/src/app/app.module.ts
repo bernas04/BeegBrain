@@ -7,7 +7,6 @@ import { LoginComponent } from './pages/login/login.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { WorkspaceComponent } from './pages/workspace/workspace.component';
 import { PatientsComponent } from './pages/patients/patients.component';
-import { PatientComponent } from './pages/patient/patient.component';
 import { EegComponent } from './pages/eeg/eeg.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { EegTableComponent } from './components/eeg-table/eeg-table.component';
@@ -27,6 +26,10 @@ import { DndDirective } from './dnd.directive';
 import { ProgressComponent } from './components/progress/progress.component';
 import { RegisterComponent } from './components/register/register.component';
 
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ReportEditorComponent } from './components/report-editor/report-editor.component';
+import { NgxEditorModule } from "ngx-editor";
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -35,7 +38,6 @@ import { RegisterComponent } from './components/register/register.component';
     DashboardComponent,
     WorkspaceComponent,
     PatientsComponent,
-    PatientComponent,
     EegComponent,
     ProfileComponent,
     EegTableComponent,
@@ -48,7 +50,8 @@ import { RegisterComponent } from './components/register/register.component';
     UploadingComponent,
     DndDirective,
     ProgressComponent,
-    RegisterComponent
+    RegisterComponent,
+    ReportEditorComponent,
   ],
   imports: [
 		BrowserModule,
@@ -59,6 +62,8 @@ import { RegisterComponent } from './components/register/register.component';
     NgxEchartsModule.forRoot({
       echarts,
     }),
+    BrowserAnimationsModule,
+    NgxEditorModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,0 +1,12 @@
+.btn-dark, .btn-dark:hover, .btn-dark:active, .btn-dark:visited {
+    background-color: #cc99a2 !important;
+    border-color: #cc99a2 !important;
+}
+.btn-info, .btn-info:hover, .btn-info:active, .btn-info:visited {
+    background-color: #6495ED !important;
+    border-color: #6495ED !important;
+}
+.btn-primary, .btn-primary:hover, .btn-primary:active, .btn-primary:visited {
+    background-color: #888888 !important;
+    border-color: #888888 !important;
+}

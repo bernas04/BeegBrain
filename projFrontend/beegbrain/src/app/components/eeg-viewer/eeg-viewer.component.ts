@@ -43,27 +43,25 @@ export class EEGViewerComponent {
       this.myChart = echarts.init(this.chartDom);
     },1000);
 
-    console.log(document.getElementById('chart'));
-
     for (let i = 0; i < 1000; i++) {
       this.data.push(this.randomData());
     }
     
     this.option = {
       title: {
-        text: 'EEG',
+        /* text: 'EEG',
         subtext: 'Electroencephalogram exam',
         textStyle: {
           fontFamily: "Arial",
           fontSize: 20,
           fontWeight: "bolder"
-        }
+        } */
       },
       animation: true,
       grid: {
         show: true,
         //backgroundColor: "black",
-        borderWidth: 10
+        borderWidth: 10,
       },
       tooltip: {
         trigger: 'axis',
@@ -87,7 +85,7 @@ export class EEGViewerComponent {
       toolbox: {
         show: true,
         orient: "horizontal",
-        itemSize: 20,
+        itemSize: 15,
         itemGap: 10,
         feature: {
           dataZoom: {
@@ -98,6 +96,20 @@ export class EEGViewerComponent {
           }
         }
       },
+      dataZoom: [
+        {
+            id: 'dataZoomX',
+            type: 'slider',
+            xAxisIndex: [0],
+            filterMode: 'filter'
+        },
+        {
+            id: 'dataZoomY',
+            type: 'slider',
+            yAxisIndex: [0],
+            filterMode: 'empty'
+        }
+      ],
       xAxis: {
         type: 'time',
         splitLine: {
@@ -137,8 +149,6 @@ export class EEGViewerComponent {
         this.data.shift();
         this.data.push(this.randomData());
       }
-
-      console.log(this.myChart);
   
       this.myChart.setOption<echarts.EChartsOption>({
         series: [
