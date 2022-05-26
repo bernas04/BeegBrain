@@ -508,6 +508,8 @@ def getEegById(request, id):
 # ############################### CHANNEL ###############################
 
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getChannelLabels(request):
     """GET da LISTA (labels apenas) de um EEG"""
     eeg_id = int(request.GET['eeg'])
@@ -533,6 +535,8 @@ def getChannelIntervalValues(eeg_id,label,timeInterval,start):
     return data
 
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getChannelByLabel(request):
     """GET de um channel pela sua label e id do EEG"""
     eeg_id = int(request.GET['eeg'])
@@ -545,6 +549,8 @@ def getChannelByLabel(request):
     return Response(data)
 
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getChannelsByLabels(request):
     """GET de channels por um array de labels e id do EEG"""
     poolSize = 8
@@ -564,6 +570,8 @@ def channelWorker(data,label,eeg_id):
     data[label] = decompress(channel.file.name)
 
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getAllEegChannels(request):
     """GET de todos os channels de um eeg"""
     poolSize = 8
