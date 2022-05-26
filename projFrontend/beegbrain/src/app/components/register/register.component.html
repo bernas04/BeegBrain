@@ -120,15 +120,7 @@
                                 <option *ngFor='let ts of listProvidences; let i = index' [value]="listProvidences[i].address">Providence: 
                                 {{listProvidences[i].name}} </option>
                             </select>
-                            <ng-multiselect-dropdown
-                                [placeholder]="'Select the institutions you work for'"
-                                [settings]="dropdownSettings"
-                                [data]="dropdownList"
-                                [(ngModel)]="selectedItems"
-                                (onSelect)="onItemSelect($event)"
-                                (onSelectAll)="onSelectAll($event)"
->
-</ng-multiselect-dropdown>
+               
                         </div>
 
                     <div class="wrap-input100 validate-input" data-validate="Enter your medical number">

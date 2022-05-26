@@ -5,7 +5,6 @@ import { Providence } from './../../classes/Providence';
 import { Doctor } from './../../classes/Doctor';
 import { Operator } from './../../classes/Operator';
 import { Component, OnInit } from '@angular/core';
-import { IDropdownSettings } from 'ng-multiselect-dropdown';
 
 @Component({
   selector: 'app-register',
@@ -15,7 +14,6 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 export class RegisterComponent implements OnInit {
   dropdownList: Providence[] = [];
   selectedItems: Providence[] = [];
-  dropdownSettings: IDropdownSettings={};
 
   
   constructor(private service: RegistrationService) { }
@@ -26,27 +24,9 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
     this.getProvidence()
     
-    this.dropdownList = this.listProvidences;
-
-
-    this.selectedItems = [];
     
-    this.dropdownSettings = {
-      singleSelection: false,
-      idField: 'item_id',
-      textField: 'item_text',
-      selectAllText: 'Select All',
-      unSelectAllText: 'UnSelect All',
-      itemsShowLimit: 3,
-      allowSearchFilter: true
-    };
   }
-  onItemSelect(item: any) {
-    console.log(item);
-  }
-  onSelectAll(items: any) {
-    console.log(items);
-  }
+  
 
   operator_check: boolean = false;
   doctor_check: boolean = false;
