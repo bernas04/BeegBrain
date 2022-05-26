@@ -27,6 +27,8 @@ import { ProgressComponent } from './components/progress/progress.component';
 import { RegisterComponent } from './components/register/register.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ReportEditorComponent } from './components/report-editor/report-editor.component';
+import { NgxEditorModule } from "ngx-editor";
 
 @NgModule({
   declarations: [
@@ -49,6 +51,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     DndDirective,
     ProgressComponent,
     RegisterComponent,
+    ReportEditorComponent,
   ],
   imports: [
 		BrowserModule,
@@ -60,6 +63,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
       echarts,
     }),
     BrowserAnimationsModule,
+    NgxEditorModule
   ],
   providers: [],
   bootstrap: [AppComponent]
