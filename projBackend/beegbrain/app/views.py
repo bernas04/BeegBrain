@@ -220,7 +220,7 @@ def getOperators(request):
 def createOperator(request):
     serializer = serializers.UserSerializer(data=request.data)
     if serializer.is_valid():
-        resp = serializer.createOperator()
+        resp = serializer.createOperator(request.data)
         token = serializers.TokenSerializer(data={'key': resp.key})
         return Response(token.initial_data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
