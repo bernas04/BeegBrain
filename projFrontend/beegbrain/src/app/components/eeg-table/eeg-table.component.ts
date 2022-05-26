@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { EEG } from 'src/app/classes/EEG';
 import { Patient } from 'src/app/classes/Patient';
+import { TableService } from 'src/app/services/table.service'
 
 @Component({
   selector: 'app-eeg-table',
@@ -15,6 +16,7 @@ export class EegTableComponent implements OnInit {
   private id! : number;
   public map = new Map<number, string>();
 
+
   constructor() { }
 
   ngOnInit(): void {
@@ -25,6 +27,7 @@ export class EegTableComponent implements OnInit {
     });
 
   }
+
 
   delete() {
     this.eeg_deleted.emit(this.id);

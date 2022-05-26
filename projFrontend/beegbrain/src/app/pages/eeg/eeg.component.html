@@ -5,12 +5,24 @@
     <i class="bi bi-speedometer2" style="margin-left: 3px; margin-right: 3px; width: 2em; height: 2em"></i>
 
     <ngx-slider class="slider" invert [(value)]="speed" [options]="options" (userChangeEnd)="update()" ></ngx-slider>
-
+    <label style="margin-left: 2em;">Time: 
+        <input (keyup)="getInputValue($event)" (click)="getInputValue($event)" id="window_interval" type="number" min="1" max="60" value="30"><br>
+    </label>
+    <div class="drop-container col-lg-3">
+        <ng-multiselect-dropdown
+        [settings] = "dropdownSettings"
+        [data] = "dropdownList"
+        (onSelect)="onItemSelect($event)"
+        (onSelectAll)="onSelectAll($event)"
+        (onDeSelect)="onItemDeselect($event)"
+        >
+        </ng-multiselect-dropdown>
+    </div>
 </div>
 
 <div class="row">
     <div class="col-lg-8">
-        <app-eeg-viewer [speed]="speed"></app-eeg-viewer> 
+        <app-eeg-viewer *ngIf="labelsSignal.size != 0" [speed]=speed [eegInfo]="eegInfo" [labelsSignal]="labelsSignal" [interval]=window_size></app-eeg-viewer> 
     </div>
 
     <div class="col-lg-3">

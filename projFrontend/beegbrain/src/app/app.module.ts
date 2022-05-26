@@ -18,6 +18,7 @@ import { UploadComponent } from './pages/upload/upload.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxEchartsModule } from 'ngx-echarts';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 
 import * as echarts from 'echarts';
 import { PatientinfoComponent } from './components/patientinfo/patientinfo.component';
@@ -63,6 +64,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     NgxEchartsModule.forRoot({
       echarts,
     }),
+    NgMultiSelectDropDownModule.forRoot(),
     BrowserAnimationsModule,
     NgxEditorModule
   ],

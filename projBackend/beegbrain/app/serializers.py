@@ -157,14 +157,14 @@ Ver para n ser preciso fazer parsing dos dados na view
         data['operator'] = OperatorSerializer(Operator.objects.get(id=data['operator'])).data
         data['patient'] = PatientSerializer(Patient.objects.get(id=data['patient'])).data
         return data
-"""
 
-""" class AccessEEGSerializer(serializers.ModelSerializer):
+
+class AccessEEGSerializer(serializers.ModelSerializer):
     class Meta:
         model = AccessEEG
         fields = "__all__"
- """
- 
+"""
+
 class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
