@@ -1,8 +1,16 @@
 <app-navbar></app-navbar>
 
+<div class="speed">
+
+    <i class="bi bi-speedometer2" style="margin-left: 3px; margin-right: 3px; width: 2em; height: 2em"></i>
+
+    <ngx-slider class="slider" invert [(value)]="speed" [options]="options" (userChangeEnd)="update()" ></ngx-slider>
+
+</div>
+
 <div class="row">
     <div class="col-lg-8">
-        <app-eeg-viewer></app-eeg-viewer> 
+        <app-eeg-viewer [speed]="speed"></app-eeg-viewer> 
     </div>
 
     <div class="col-lg-3">
@@ -11,4 +19,3 @@
     </div>
 
 </div>
-

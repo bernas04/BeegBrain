@@ -10,6 +10,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular-slider/ngx-slider": "^2.0.4",
     "@angular/animations": "~13.2.0",
     "@angular/cdk": "^13.3.7",
     "@angular/common": "~13.2.0",
@@ -40,6 +41,7 @@
     "jszip": "^3.7.1",
     "minireset.css": "~0.0.4",
     "ng-apexcharts": "^1.7.1",
+    "ng5-slider": "^1.2.6",
     "ngx-echarts": "^8.0.1",
     "ngx-editor": "^12.4.1",
     "ngx-quill": "^1.6.0",
@@ -61,6 +63,7 @@
     "@types/html-to-pdfmake": "^2.1.0",
     "@types/jasmine": "~3.10.0",
     "@types/node": "^12.11.1",
+    "@types/parse5": "^6.0.3",
     "jasmine-core": "~4.0.0",
     "karma": "~6.3.0",
     "karma-chrome-launcher": "~3.1.0",

@@ -425,6 +425,8 @@ def getEeg(request):
 
 
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getEegByPatient(request, id):
     """GET de todos os EEG's de um determinado paciente"""
     try:

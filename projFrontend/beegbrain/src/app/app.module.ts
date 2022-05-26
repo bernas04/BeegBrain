@@ -25,10 +25,10 @@ import { UploadingComponent } from './components/uploading/uploading.component';
 import { DndDirective } from './dnd.directive';
 import { ProgressComponent } from './components/progress/progress.component';
 import { RegisterComponent } from './components/register/register.component';
-
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReportEditorComponent } from './components/report-editor/report-editor.component';
 import { NgxEditorModule } from "ngx-editor";
+import { NgxSliderModule } from '@angular-slider/ngx-slider';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -59,6 +59,7 @@ import { NgxEditorModule } from "ngx-editor";
 		FormsModule,
 		ReactiveFormsModule,
 		HttpClientModule,
+    NgxSliderModule,
     NgxEchartsModule.forRoot({
       echarts,
     }),
