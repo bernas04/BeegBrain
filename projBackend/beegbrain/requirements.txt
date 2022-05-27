@@ -4,8 +4,7 @@ requests==2.24.0
 markdown
 django-filter
 django-cors-headers
-mysqlclient
+mysqlclient==1.4.6
 django_extensions
-#libmysqlclient-dev==5.7.38
-pyedflib
+pyedflib==0.1.23
 numpy

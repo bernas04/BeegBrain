@@ -24,11 +24,6 @@ SECRET_KEY = 'django-insecure-yt_g8b3=l+=^(xb#vu_#1+0$pecvklfx)ae15hwq8b9_b&=r62
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    '*'
-]
-
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -65,9 +60,13 @@ REST_FRAMEWORK={
 
 ALLOWED_HOSTS=['*']
 CORS_ORIGIN_ALLOW_ALL = True
-AUTH_USER_MODEL = 'app.User'
+
 
 ROOT_URLCONF = 'beegbrain.urls'
+
+FILE_UPLOAD_HANDLERS = [
+    'django.core.files.uploadhandler.TemporaryFileUploadHandler',
+]
 
 TEMPLATES = [
     {
@@ -94,15 +93,14 @@ WSGI_APPLICATION = 'beegbrain.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'information_schema',
-        'HOST': '127.0.0.1',
+        'NAME': 'beegbrain',
+        'HOST': 'localhost',
         'PORT': '3306',
         'USER': 'root',
         'PASSWORD': 'root',
+        'CONN_MAX_AGE': 3600,
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES';\
-                            CREATE DATABASE IF NOT EXISTS beegbrain;\
-                            USE beegbrain;",
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1;",
         }
     }
 }
