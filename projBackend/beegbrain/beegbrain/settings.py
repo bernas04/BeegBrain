@@ -94,18 +94,21 @@ WSGI_APPLICATION = 'beegbrain.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'information_schema',
-        'HOST': '127.0.0.1',
+        'NAME': 'beegbrain',
+        'HOST': 'localhost',
         'PORT': '3306',
         'USER': 'root',
         'PASSWORD': 'root',
+        'CONN_MAX_AGE': 3600,
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES';\
-                            CREATE DATABASE IF NOT EXISTS beegbrain;\
-                            USE beegbrain;",
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1;",
         }
     }
 }
+
+FILE_UPLOAD_HANDLERS = [
+    'django.core.files.uploadhandler.TemporaryFileUploadHandler',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
