@@ -289,7 +289,6 @@ def getOperatorById(request):
 
 @api_view(['POST'])
 def create_operator_user(request):
-    print(request.data)
     serializer = serializers.OperatorSerializer(data=request.data)
     if serializer.is_valid():
         ret = serializer.create(request.data)
@@ -335,7 +334,6 @@ def getDoctorById(request):
 
 @api_view(['POST'])
 def create_doctor_user(request):
-    print(request.data)
     serializer = serializers.DoctorSerializer(data=request.data)
     if serializer.is_valid():
         ret = serializer.create(request.data)
@@ -372,7 +370,6 @@ def get_user_by_email(request):
 # Métodos do User
 @api_view(['POST'])
 def create_user(request):
-    print(request.data)
     serializer = serializers.DoctorSerializer(data=request.data)
     if serializer.is_valid():
         ret = serializer.create(request.data)
@@ -482,9 +479,6 @@ def getEegByPatient(request, id):
 # @authentication_classes([TokenAuthentication])
 # @permission_classes([IsAuthenticated])
 def createEEG(request):
-
-    print("create eeg")
-    print(request.data)
     
     PRIORITIES = {'Very Low':1,'Low':2,'Medium':3,'High':4,'Very High':5}
 
@@ -528,18 +522,12 @@ def createEEG(request):
 
         eegObject = EEG.objects.get(id=idEEG)
 
-        print("annotations " + str(len(annotations[0])))
-        print("channel " + str(n))
-        print(eegObject)
-
         # Create annotations
         for i in range(len(annotations[0])):
             start = annotations[0][i]
             duration = annotations[1][i]
             description = annotations[2][i]    
             Annotation.objects.create(start=start,duration=duration,description=description,eeg=eegObject)
-
-        print("annotations done")
 
         # Split EEG by channels
         poolSize = 6
@@ -554,15 +542,9 @@ def createEEG(request):
 def saveChannel(label,eeg,array):
     filename = str(eeg.id) + '_' + label
     compressChannel(filename,array)
-    try:
-        chn = Channel.objects.create(label=label,eeg=eeg)
-    except Exception as e:
-        print("asasas")
-        print(e)
+    chn = Channel.objects.create(label=label,eeg=eeg)
     chn.file.name = filename + ".npy"
     chn.save()
-    print(chn)
-    print("saved ===============================================")
 
 def worker(label,eeg,signal):
     saveChannel(label,eeg,signal)
@@ -608,7 +590,6 @@ def getChannelLabels(request):
     eeg_id = int(request.GET['eeg'])
     channels = Channel.objects.filter(eeg_id=eeg_id)
     channelsLabels = [chn.label for chn in channels]
-    print(channelsLabels)
     return Response(channelsLabels)
 
 """Retorna um array com os valores de um canal de um EEG, desde o momento de início (start - numero do tick inicial) até ao start + timeInterval (em segundos)"""
