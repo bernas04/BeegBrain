@@ -1,13 +1,11 @@
-from bz2 import compress
 import multiprocessing
 from rest_framework.decorators import api_view
 from datetime import datetime
+from django.db.models import Q
 from django.shortcuts import render
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
 from django.db.models.signals import post_save
 from app.models import *
 from app import serializers
@@ -15,25 +13,12 @@ from rest_framework import status
 import numpy as np
 import pyedflib
 import gzip
-
-import time
-from django.contrib.auth.forms import UserCreationForm
-import tempfile
 from django.dispatch import receiver
 from django.conf import settings
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
-
-from rest_framework import authentication
-from rest_framework import exceptions
-from django.views.decorators.csrf import csrf_exempt
-
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 import pyedflib
-from django.contrib.auth import get_user_model
+import re
+
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -41,7 +26,37 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         Token.objects.create(user=instance)
 
 
+# ############################### INSTITUTIONS ###############################
+
+@api_view(['GET'])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+def getAllInstitutions(request):
+    """GET de todas as instituições"""
+    institutions = Institution.objects.all()
+    serializer = serializers.InstitutionSerializer(institutions, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+def getInstitutionById(request):
+    """GET de instituição por id"""
+    institution_id = int(request.GET['id'])
+    try:
+        institution = Institution.objects.get(id=institution_id)
+    except Institution.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = serializers.InstitutionSerializer(institution)
+    return Response(serializer.data)
+
+
+# get da instituição por nome!!!!!!!!!
+
+
 # ############################### PROVENIENCIAS ###############################
+
 @api_view(['GET'])
 # @authentication_classes([TokenAuthentication])
 # @permission_classes([IsAuthenticated])
@@ -218,6 +233,7 @@ def getPatientById(request, id):
 
 
 # ############################### Operators ###############################
+
 @api_view(['GET'])
 # @authentication_classes([TokenAuthentication])
 # @permission_classes([IsAuthenticated])
@@ -257,7 +273,6 @@ def getOperatorById(request):
 
 @api_view(['POST'])
 def create_operator_user(request):
-    print(request.data)
     serializer = serializers.OperatorSerializer(data=request.data)
     if serializer.is_valid():
         ret = serializer.create(request.data)
@@ -303,7 +318,6 @@ def getDoctorById(request):
 
 @api_view(['POST'])
 def create_doctor_user(request):
-    print(request.data)
     serializer = serializers.DoctorSerializer(data=request.data)
     if serializer.is_valid():
         ret = serializer.create(request.data)
@@ -340,7 +354,6 @@ def get_user_by_email(request):
 # Métodos do User
 @api_view(['POST'])
 def create_user(request):
-    print(request.data)
     serializer = serializers.DoctorSerializer(data=request.data)
     if serializer.is_valid():
         ret = serializer.create(request.data)
@@ -348,14 +361,22 @@ def create_user(request):
         return Response(token.initial_data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# ############################### DOCTOR_REVISON _CENTER ###############################
+# ############################### DOCTOR_REVISON_CENTER ###############################
+
 @api_view(['GET'])
 # @authentication_classes([TokenAuthentication])
 # @permission_classes([IsAuthenticated])
-def getDoctorRevisionCenter(request):
+def getDoctorRevisionCenters(request):
     """GET de todos os doctor_revision_center"""
-    doctor_revision_center = DoctorRevisionCenter.objects.all()
-    serializer = serializers.DoctorRevisionCenterSerializer(doctor_revision_center, many=True)
+
+    doctor_id = int(request.GET['id'])
+    try:
+        doctor = Doctor.objects.get(id=doctor_id)
+    except Doctor.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    doctor_revision_centers = DoctorRevisionCenter.objects.filter(doctor=doctor)
+    serializer = serializers.DoctorRevisionCenterSerializer(doctor_revision_centers, many=True)
     return Response(serializer.data)
 
 
@@ -442,7 +463,7 @@ def getEegByPatient(request, id):
 # @authentication_classes([TokenAuthentication])
 # @permission_classes([IsAuthenticated])
 def createEEG(request):
-
+    
     PRIORITIES = {'Very Low':1,'Low':2,'Medium':3,'High':4,'Very High':5}
 
     try:
@@ -464,7 +485,8 @@ def createEEG(request):
         duration = f.getFileDuration()
         n = f.signals_in_file-1 
         signal_labels = f.getSignalLabels()
-
+        annotations = f.readAnnotations()
+        
         eeg = {
             "operator": operator,
             "patient": patient,
@@ -479,19 +501,24 @@ def createEEG(request):
         idEEG = None
         serializer_eeg = serializers.EEGSerializer(data=eeg)
         if serializer_eeg.is_valid():
-
             serializer_eeg.save()
             idEEG = EEG.objects.latest('id').id
 
         eegObject = EEG.objects.get(id=idEEG)
 
+        # Create annotations
+        for i in range(len(annotations[0])):
+            start = annotations[0][i]
+            duration = annotations[1][i]
+            description = annotations[2][i]    
+            Annotation.objects.create(start=start,duration=duration,description=description,eeg=eegObject)
+
+        # Split EEG by channels
         poolSize = 6
         pool = multiprocessing.Pool(poolSize)
-
         for i in np.arange(n):
-
             signal = f.readSignal(i) 
-            channelLabel = signal_labels[i]
+            channelLabel = re.sub('[^0-9a-zA-Z]+', '', signal_labels[i])
             pool.apply_async(worker,(channelLabel,eegObject,signal,))
 
     return Response(serializer_eeg.data, status=status.HTTP_201_CREATED)
@@ -507,17 +534,14 @@ def worker(label,eeg,signal):
     saveChannel(label,eeg,signal)
 
 def compressChannel(filename, channelArray):
-    start = time.time()
     file = gzip.GzipFile('./media/' + filename + ".npy.gz", "wb")
     np.save(file, channelArray)
     file.close()
-    #print("elapsed time (compression): " + str(time.time() - start))
 
 def decompress(filename):
     file = gzip.GzipFile('./media/' + filename + '.gz', "rb")
     return np.load(file)
 
-    
 @api_view(['GET', 'DELETE'])
 # @authentication_classes([TokenAuthentication])
 # @permission_classes([IsAuthenticated])
@@ -550,7 +574,6 @@ def getChannelLabels(request):
     eeg_id = int(request.GET['eeg'])
     channels = Channel.objects.filter(eeg_id=eeg_id)
     channelsLabels = [chn.label for chn in channels]
-    print(channelsLabels)
     return Response(channelsLabels)
 
 """Retorna um array com os valores de um canal de um EEG, desde o momento de início (start - numero do tick inicial) até ao start + timeInterval (em segundos)"""
@@ -635,14 +658,53 @@ def createAccessEeg(request):
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# ############################### ANNOTATIONS ###############################
+
+@api_view(['GET'])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+def getEegAnnotations(request):
+    """GET de todas as annotations de um EEG"""
+    eeg_id = int(request.GET['eeg'])
+    try:
+        eeg = EEG.objects.get(id=eeg_id)
+    except EEG.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    annotations = Annotation.objects.filter(eeg=eeg)
+    serializer = serializers.AnnotationSerializer(annotations, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['POST'])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+def createAnnotation(request):
+    """POST de uma annotation"""
+    serializer = serializers.AnnotationSerializer(data=request.data)
+    if serializer.is_valid():
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 # ############################### EVENT ###############################
+
 @api_view(['GET'])
 # @authentication_classes([TokenAuthentication])
 # @permission_classes([IsAuthenticated])
 def getEvent(request):
     """GET de todos os eventos"""
     events = Event.objects.all()
+    serializer = serializers.EventSerializer(events, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+def getEegEvents(request):
+    """GET de todos os eventos de um eeg"""
+    events = Event.objects.filter(eeg=request.data['eeg'])
     serializer = serializers.EventSerializer(events, many=True)
     return Response(serializer.data)
 
@@ -681,10 +743,26 @@ def getEventById(request, id):
 @api_view(['GET'])
 # @authentication_classes([TokenAuthentication])
 # @permission_classes([IsAuthenticated])
-def sharedFolder(request):
+def getDoctorSharedFolder(request):
     """GET de todas as pastas partilhadas"""
-    shared_folders = SharedFolder.objects.all()
-    serializer = serializers.SharedFolderSerializer(shared_folders, many=True)
+    doctor_revision_centers = getDoctorRevisionCenters(request)
+    query = Q()
+    for revision_center in doctor_revision_centers:
+        query = query | Q(institution=revision_center)
+    doctor_shared_folders = SharedFolder.objects.filter(query)
+    serializer = serializers.SharedFolderSerializer(doctor_shared_folders, many=True)
+    return Response(serializer.data)
+
+
+@api_view(['GET'])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+def getInstitutionSharedFolder(request):
+    """GET de todas as pastas partilhadas"""
+
+    institution = getInstitutionById(request)
+    institution_shared_folder = SharedFolder.objects.filter(institution=institution)
+    serializer = serializers.SharedFolderSerializer(institution_shared_folder, many=True)
     return Response(serializer.data)
 
 
