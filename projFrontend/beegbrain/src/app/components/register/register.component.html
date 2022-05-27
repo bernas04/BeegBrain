@@ -114,12 +114,21 @@
                             </select>
                         </div>
 
-                        <div *ngIf="doctor_check" class="wrap-input100 validate-input" data-validate="Select your Medical Revision Center">
+                        <div (click)="revision()" *ngIf="doctor_check" class="wrap-input100 validate-input" data-validate="Select your Revision Center">
                             <span class="focus-input100"></span>
-                            <select  id="providence" class="form-select" multiple style="width:99%" aria-label="Default select example">
-                                <option *ngFor='let ts of listProvidences; let i = index' [value]="listProvidences[i].address">Providence: 
-                                {{listProvidences[i].name}} </option>
+                            <select  id="revision" class="form-select" multiple style="width:99%" aria-label="Default select example">
+                                <option *ngFor='let ts of listRevisions; let i = index' [value]="listRevisions[i].address">Revision: 
+                                    
+                                {{listRevisions[i].name}} </option>
+
                             </select>
+                            <ng-multiselect-dropdown
+                            [settings]="dropdownSettings"
+                            [data]="dropdownList"
+                            (onSelect)="onItemSelect($event)"
+                            (onSelectAll)="onSelectAll($event)"
+                            >
+                            </ng-multiselect-dropdown>
                
                         </div>
 

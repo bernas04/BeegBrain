@@ -1,3 +1,4 @@
+import { RevisionCenter } from './../classes/RevisionCenter';
 import { Institution } from './../classes/Institution';
 import { Providence } from './../classes/Providence';
 import { Injectable } from '@angular/core';
@@ -17,7 +18,9 @@ export class RegistrationService {
   getInstituitions() : Observable<Providence[]> {
     return this.http.get<Providence[]>(this.BASE_URL + 'proveniences');
   }
- 
+  getRevisionCenter() : Observable<RevisionCenter[]> {
+    return this.http.get<Providence[]>(this.BASE_URL + 'revisioncenters');
+  }
 
  
 }
