@@ -1,13 +1,7 @@
-from bz2 import compress
 import multiprocessing
 from rest_framework.decorators import api_view
-from datetime import datetime
-from django.shortcuts import render
-from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
 from django.db.models.signals import post_save
 from app.models import *
 from app import serializers
@@ -15,25 +9,12 @@ from rest_framework import status
 import numpy as np
 import pyedflib
 import gzip
-
 import time
-from django.contrib.auth.forms import UserCreationForm
-import tempfile
 from django.dispatch import receiver
 from django.conf import settings
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
-
-from rest_framework import authentication
-from rest_framework import exceptions
-from django.views.decorators.csrf import csrf_exempt
-
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.views import APIView
 import pyedflib
-from django.contrib.auth import get_user_model
+
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -42,6 +23,7 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 
 
 # ############################### PROVENIENCIAS ###############################
+
 @api_view(['GET'])
 # @authentication_classes([TokenAuthentication])
 # @permission_classes([IsAuthenticated])
@@ -218,6 +200,7 @@ def getPatientById(request, id):
 
 
 # ############################### Operators ###############################
+
 @api_view(['GET'])
 # @authentication_classes([TokenAuthentication])
 # @permission_classes([IsAuthenticated])
