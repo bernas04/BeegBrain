@@ -58,11 +58,14 @@ urlpatterns = [
     path('api/createEvent', views.createEvent),
     path('api/event', views.getEventById),
 
-    path('api/sharedFolders', views.sharedFolder),
+    path('api/createAnnotation', views.createAnnotation),
+    path('api/eegAnnotations', views.getEegAnnotations),
+
+    path('api/doctorSharedFolders', views.getDoctorSharedFolder),
     path('api/createSharedFolder', views.createSharedFolder),
-    path('api/sharedFolder', views.getSharedFolderById),
+    path('api/institutionSharedFolder', views.getInstitutionSharedFolder),
     
-    path('api/doctorevisioncenter', views.getDoctorRevisionCenter),
+    path('api/doctorRevisionCenters', views.getDoctorRevisionCenters),
     path('api/createDoctorevisioncenter', views.createDoctorRevisionCenter),
     
 ]
