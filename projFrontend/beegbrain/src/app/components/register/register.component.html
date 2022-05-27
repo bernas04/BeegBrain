@@ -24,21 +24,26 @@
                     </span>
 
                     <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
-                        <input class="input100" type="text" name="email" placeholder="Email">
+                        <input class="input100" type="text" id="email" name="email" placeholder="Email">
                         <span class="focus-input100"></span>
 
                     </div>
 
                     <div class="wrap-input100 validate-input" data-validate="Password is required">
-                        <input class="input100" type="password" name="pass" placeholder="Password">
+                        <input class="input100" type="password" id="pass" name="pass" placeholder="Password">
+                        <span class="focus-input100"></span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input" data-validate="Health number is required">
+                        <input class="input100" type="text" id="healthnumber" name="healthnumber" placeholder="Health Number">
                         <span class="focus-input100"></span>
                     </div>
 
                     <div class="wrap-input100 validate-input" data-validate="Enter your birthday">
-                        <input class="input100" type="date" name="date" placeholder="Birthda">
+                        <input class="input100" type="date" id="birthday" name="date" placeholder="Birthday">
                         <span class="focus-input100"></span>
-
                     </div>
+
                     <div class="wrap-input100 validate-input" data-validate="Gender is required">
                         <div class="radio10">
                             <div class="row">
@@ -46,19 +51,19 @@
                                     <p class="description" type="text" name="gender" placeholder="Gender"> Gender</p>
                                 </div>
                                 <div class="col-3">
-                                    <input class="" type="radio" name="gender" id="gender">
+                                    <input class="" type="radio" name="gender" id="male">
                                     <label class="form-check-label" for="flexRadioDefault1">
                                         Male
                                     </label>
                                 </div>
                                 <div class="col-3">
-                                    <input class="" type="radio" name="gender" id="gender">
+                                    <input class="" type="radio" name="gender" id="female">
                                     <label class="form-check-label" for="flexRadioDefault1">
                                         Female
                                     </label>
                                 </div>
                                 <div class="col-3">
-                                    <input class="" type="radio" name="gender" id="gender">
+                                    <input class="" type="radio" name="gender" id="other">
                                     <label class="form-check-label" for="flexRadioDefault1">
                                         Other
                                     </label>
@@ -70,22 +75,64 @@
                     </div>
 
                     <div class="wrap-input100 validate-input" data-validate="Enter your phone number">
-                        <input class="input100" type="text" name="phonenumber" placeholder="Phone number">
+                        <input class="input100" type="text" id="phonenumber" name="phonenumber" placeholder="Phone number">
                         <span class="focus-input100"></span>
                     </div>
                     <div class="wrap-input100 validate-input" data-validate="Enter your address">
-                        <input class="input100" type="text" name="address" placeholder="Address">
+                        <input class="input100" type="text" name="address" id="address" placeholder="Address">
                         <span class="focus-input100"></span>
                     </div>
+                    <div class="wrap-input100 validate-input" data-validate="Profission is required">
+                        <div class="radio10">
+                            <div class="row">
+                                <div class="col-4">
+                                    <p class="description" type="text" name="gender" placeholder="Health Profession"> Profession</p>
+                                </div>
+                                <div class="col-4">
+                                    <input class="" type="radio" value="doctor" name="profession" id="doctor" (click)="update_doctor()">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Doctor
+                                    </label>
+                                </div>
+                                <div class="col-4">
+                                    <input class="" type="radio" name="profession" value="operator" id="operator" (click)="update_operator()">
+                                    <label class="form-check-label" for="flexRadioDefault1">
+                                        Operator
+                                    </label>
+                                </div>
+                            </div>
+                              
+                            </div>
+                        </div>
+                    
+
+                        <div *ngIf="operator_check" class="wrap-input100 validate-input" data-validate="Enter your providence">
+                            <span class="focus-input100"></span>
+                            <select id="providence" class="form-select" style="width:99%" aria-label="Default select example">
+                                <option *ngFor='let ts of listProvidences; let i = index' [value]="listProvidences[i].address">Providence: 
+                                {{listProvidences[i].name}} </option>
+                            </select>
+                        </div>
+
+                        <div *ngIf="doctor_check" class="wrap-input100 validate-input" data-validate="Select your Medical Revision Center">
+                            <span class="focus-input100"></span>
+                            <select  id="providence" class="form-select" multiple style="width:99%" aria-label="Default select example">
+                                <option *ngFor='let ts of listProvidences; let i = index' [value]="listProvidences[i].address">Providence: 
+                                {{listProvidences[i].name}} </option>
+                            </select>
+               
+                        </div>
+
                     <div class="wrap-input100 validate-input" data-validate="Enter your medical number">
-                        <input class="input100" type="text" name="medicalnumber" placeholder="Medical number">
+                        <input class="input100" type="text" name="healthprofnumber" id="healthprofnumber" placeholder="Health Professional number">
                         <span class="focus-input100"></span>
                     </div>
 
                     <div class="container-login100-form-btn">
-                        <a class="login100-form-btn" href="/workspace">
+
+                        <div (click)="register()" class="login100-form-btn" >
                             Register
-                        </a>
+                        </div>
                     </div>
 
 

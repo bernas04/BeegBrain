@@ -164,7 +164,7 @@ class Channel(models.Model):
 # Annotation -> Information about some event occured during the EEG exam (with start time, duration and description)
 class Annotation(models.Model):
 
-    timestamp = models.DateTimeField(null=False)
+    start = models.DateTimeField(null=False)
     duration = models.FloatField(null=False)
     description = models.TextField(null=False)              
     eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE, related_name='%(class)s_eeg', null=False)
@@ -184,7 +184,6 @@ class Event(models.Model):
 # SharedFolder -> Table responsible for defining the EEG exams that an institution (and its workers) is allowed to access.  
 class SharedFolder(models.Model):
     
-    path = models.CharField(max_length=300, null=True)
     institution = models.ForeignKey(Institution, verbose_name=('institution'), on_delete=models.CASCADE, related_name='%(class)s_institution')
     eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE, related_name='%(class)s_eeg')
 
