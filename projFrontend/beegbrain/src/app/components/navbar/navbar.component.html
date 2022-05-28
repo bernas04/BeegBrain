@@ -1,32 +1,37 @@
 <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
-	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark  navbar-static-top">
 
-    <a href="#">
-        <img src="../../../assets/beegbrain.png"  width="150" height="40" alt="">
+    <a href="/dashboard">
+        <img src="../../../assets/beegbrain.png"  width="150" height="40" alt=""> <!--  width="150" height="40" -->
     </a>
-    <ul class="navbar-nav mr-auto">
-        <li class="nav-item active">
-            <a class="nav-link" routerLink="/dashboard"><span class="sr-only">(current)</span>Dashboard</a>
+
+    <ul class="navbar-nav mr-auto align-items-center">
+        <li class="nav-item">
+            <!-- <a type="button" class="nav-link" >Dashboard</a> -->
+            <button type="button" class="btn btn-secondary btn-sm" routerLink="/dashboard">  Dashboard</button>
         </li>
         <li class="nav-item">
-            <a class="nav-link" routerLink="/workspace">Workspace</a>
+            <!-- <a class="nav-link" routerLink="/workspace">Workspace</a> -->
+            <button type="button" class="btn btn-secondary btn-sm" routerLink="/workspace/"> Workspace</button>
         </li>
         <li class="nav-item">
-            <a class="nav-link" routerLink="/patients">Patients</a>
+            <!-- <a class="nav-link" routerLink="/patients">Patients</a> -->
+            <button type="button" class="btn btn-secondary btn-sm" routerLink="/patients">Patients</button>
         </li>
-    </ul>
+    </ul> 
+
     <form class="form-inline">
         <button class="btn-lg" routerLink="/profile" style="size:1000px; background-color: Transparent; background-repeat:no-repeat; border: none; cursor:pointer; overflow: hidden; outline:none; color: white; " type="submit">
             <i  class="bi bi-person-circle"></i>
         </button>
     </form>
+
     <form class="form-inline">
         <button class="btn-lg" routerLink="/login" style="background-color: Transparent; background-repeat:no-repeat; border: none; cursor:pointer; overflow: hidden; outline:none; color: white; " type="submit">
             <i class="glyphicon glyphicon-log-out"></i>
         </button>
     </form>
-
 
 </nav>

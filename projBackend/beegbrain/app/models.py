@@ -136,9 +136,9 @@ class DoctorRevisionCenter(models.Model):
 # Report -> Content written by a Doctor related to a EEG.
 class Report(models.Model):
 
-    content = models.TextField()
+    content = models.TextField(null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
-    doctor = models.ForeignKey(Doctor, verbose_name=('doctor'), on_delete=models.CASCADE, related_name='%(class)s_doctor')
+    # doctor = models.ForeignKey(Doctor, verbose_name=('doctor'), on_delete=models.CASCADE, related_name='%(class)s_doctor')
 
 
 # EEG -> Has all the information about an EEG exam

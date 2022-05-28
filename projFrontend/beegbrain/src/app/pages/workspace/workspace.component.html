@@ -1,8 +1,9 @@
 <app-navbar></app-navbar>
 
-  <div class="col-lg-3">
+  <div class="col-lg-3 col-sm-12 col-md-4">
     <app-eeg-filters> </app-eeg-filters>
   </div>
+
   <div class="float-md-right mb-5 pr-4 d-flex">
 
     <button type="button" class="btn btn-success mb-5 text-center d-flex justify-content-center" (click)="refresh()"> <i class="bi bi-arrow-clockwise"></i> Refresh </button>
@@ -12,7 +13,9 @@
     </button>
 
   </div>
-  <div class="col-lg-8">
+
+  <div class="col-lg-8 col-sm-12 col-md-7">
+    
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item">
         <a class="nav-link active" id="allexams-tab" data-toggle="tab" href="#allexams" role="tab"
@@ -29,9 +32,8 @@
         <app-eeg-table *ngIf="lst_eeg.length != 0 && lst_patient.length != 0" [allEEG]="lst_eeg" [allPatients]="lst_patient" (eeg_deleted)="onDelete($event)"></app-eeg-table>
 
 
-        <div *ngIf="lst_eeg.length == 0" class="alert alert-warning d-flex align-items-center" role="alert" style="width: 20em;">
-          <i class="bi bi-exclamation-triangle-fill"></i>
-          <div> EEG's not found :/ Sorry </div>
+        <div *ngIf="lst_eeg.length == 0">
+          <img src="../../../assets/no-data-found.png" alt="no data found :("/>
         </div>
         
       </div>

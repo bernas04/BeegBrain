@@ -15,6 +15,7 @@ from rest_framework import status
 import numpy as np
 import pyedflib
 import gzip
+import json
 
 import time
 from django.contrib.auth.forms import UserCreationForm
@@ -410,6 +411,49 @@ def getReportById(request):
     
     serializer = serializers.ReportSerializer(ret)
     return Response(serializer.data)
+
+
+@api_view(['GET', 'POST'])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+def getReportByEEG(request, id):
+
+    if request.method == 'GET':
+        """GET de um relatório pelo seu EEG id"""
+
+        try:
+            eeg = EEG.objects.get(id=id)
+
+            if eeg.report:
+                report = eeg.report
+                report = Report.objects.get(id=report.id)
+
+            else:
+                report = Report.objects.create(content="")
+                eeg.report = report
+                eeg.save()
+                return Response(report)
+            
+        except Report.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = serializers.ReportSerializer(report)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        """POST de um relatório pelo seu EEG id""" 
+        recieved_report = json.loads(request.body.decode("utf-8"))
+
+        try:
+            report = Report.objects.get(id=id)
+            report.content = recieved_report["content"]
+            report.save()
+            
+        except Report.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = serializers.ReportSerializer(report)
+        return Response(serializer.data)
 
 
 # ############################### EEG ###############################
