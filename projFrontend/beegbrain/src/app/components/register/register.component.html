@@ -82,6 +82,11 @@
                         <input class="input100" type="text" name="address" id="address" placeholder="Address">
                         <span class="focus-input100"></span>
                     </div>
+                    <div class="wrap-input100 validate-input" data-validate="Enter your medical number">
+                        <input class="input100" type="text" name="healthprofnumber" id="healthprofnumber" placeholder="Health Professional number">
+                        <span class="focus-input100"></span>
+                    </div>
+                    
                     <div class="wrap-input100 validate-input" data-validate="Profission is required">
                         <div class="radio10">
                             <div class="row">
@@ -116,12 +121,7 @@
 
                         <div (click)="revision()" *ngIf="doctor_check" class="wrap-input100 validate-input" data-validate="Select your Revision Center">
                             <span class="focus-input100"></span>
-                            <select  id="revision" class="form-select" multiple style="width:99%" aria-label="Default select example">
-                                <option *ngFor='let ts of listRevisions; let i = index' [value]="listRevisions[i].address">Revision: 
-                                    
-                                {{listRevisions[i].name}} </option>
 
-                            </select>
                             <ng-multiselect-dropdown
                             [settings]="dropdownSettings"
                             [data]="dropdownList"
@@ -132,10 +132,7 @@
                
                         </div>
 
-                    <div class="wrap-input100 validate-input" data-validate="Enter your medical number">
-                        <input class="input100" type="text" name="healthprofnumber" id="healthprofnumber" placeholder="Health Professional number">
-                        <span class="focus-input100"></span>
-                    </div>
+                 
 
                     <div class="container-login100-form-btn">
 

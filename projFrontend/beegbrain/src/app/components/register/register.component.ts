@@ -23,11 +23,13 @@ export class RegisterComponent implements OnInit {
 
   public listProvidences: Providence[] = []
   public listRevisions: RevisionCenter[] = []
+  public listRevName: String[] = []
 
   ngOnInit(): void {
     this.getProvidence()
     this.getDoctorRevisionCenter()
-    this.dropdownList = this.getDoctorRevisionCenter();
+    this.getListRevisionCenter()
+    this.dropdownList = this.listRevName;
 
   }
 
@@ -73,26 +75,22 @@ export class RegisterComponent implements OnInit {
   getProvidence() {
     this.service.getInstituitions().subscribe((info) => {
       this.listProvidences = info;
-      //this.dropdownList = info;
-
     });
   }
+
+  getListRevisionCenter() {
+    for (var i = 0; i < this.listRevisions.length; i++) {
+      this.listRevName.push(this.listRevisions[i]["name"]);
+    }
+
+    return this.listRevName
+  }
+
   getDoctorRevisionCenter() {
     this.service.getRevisionCenter().subscribe((info) => {
       this.listRevisions = info;
-      //this.dropdownList = info;
-      console.log(this.dropdownList)
-  
-      console.log(this.listRevisions[0]["name"])
-      
+      this.getListRevisionCenter()
     });
-
-    var results = [];
-    for (var i = 0; i < this.listRevisions.length; i++) {
-        results.push(this.listRevisions[i]["name"]);
-        console.log(results)
-    }
-    return results
 
   }
 
