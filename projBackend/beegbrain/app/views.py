@@ -21,6 +21,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 import pyedflib
 import re
+from django.db import connection
 
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
@@ -549,7 +550,7 @@ def createEEG(request):
             Annotation.objects.create(start=start,duration=duration,description=description,eeg=eegObject)
 
         # Split EEG by channels
-        poolSize = 6
+        poolSize = 8
         pool = multiprocessing.Pool(poolSize)
         for i in np.arange(n):
             signal = f.readSignal(i) 
@@ -647,7 +648,7 @@ def getChannelByLabel(request):
 @permission_classes([IsAuthenticated])
 def getChannelsByLabels(request):
     """GET de channels por um array de labels e id do EEG"""
-    poolSize = 8
+    poolSize = 4
     pool = multiprocessing.Pool(poolSize)
     start = int(request.GET['start'])  
     end = int(request.GET['end'])  
@@ -661,7 +662,7 @@ def getChannelsByLabels(request):
         pool.apply_async(bufferWorker,(data,label,eeg,start,end),)
     pool.close()
     pool.join() 
-    print(data)
+    connection.close()
     return Response(data,status=status.HTTP_200_OK)
 
 def bufferWorker(data,label,eeg,start,end):
@@ -676,7 +677,7 @@ def bufferWorker(data,label,eeg,start,end):
 @permission_classes([IsAuthenticated])
 def getAllEegChannels(request):
     """GET de todos os channels de um eeg"""
-    poolSize = 8
+    poolSize = 4
     pool = multiprocessing.Pool(poolSize)
     eeg_id = int(request.GET['eeg'])    
     manager = multiprocessing.Manager()
@@ -685,6 +686,7 @@ def getAllEegChannels(request):
         pool.apply_async(workerDecompress,(data,channel.label,channel.file.name),)
     pool.close()
     pool.join() 
+    connection.close()
     return Response(data,status=status.HTTP_200_OK)
 
 def workerDecompress(data,label,filename):
