@@ -168,6 +168,9 @@ def getContract(request):
     serializer = serializers.ContractSerializer(contracts, many=True)
     return Response(serializer.data)
 
+def getContractProvidences(revision_centers):
+    providences = [Contract.objects.get(revision_center=revision_center).providence for revision_center in revision_centers]
+    return providences
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
@@ -382,21 +385,14 @@ def create_user(request):
 
 # ############################### DOCTOR_REVISON_CENTER ###############################
 
-@api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
-def getDoctorRevisionCenters(request):
+def getDoctorRevisionCenters(doctor_id):
     """GET de todos os doctor_revision_center"""
-
-    doctor_id = int(request.GET['id'])
     try:
         doctor = Doctor.objects.get(id=doctor_id)
     except Doctor.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
     doctor_revision_centers = DoctorRevisionCenter.objects.filter(doctor=doctor)
-    serializer = serializers.DoctorRevisionCenterSerializer(doctor_revision_centers, many=True)
-    return Response(serializer.data)
+    return doctor_revision_centers
 
 
 @api_view(['POST'])
@@ -792,9 +788,10 @@ def getEventById(request, id):
 def getDoctorSharedFolder(request):
     """GET de todas as pastas partilhadas"""
     doctor_revision_centers = getDoctorRevisionCenters(request)
+    associated_providences = getContractProvidences(doctor_revision_centers)
     query = Q()
-    for revision_center in doctor_revision_centers:
-        query = query | Q(institution=revision_center)
+    # for providence in associated_providences:
+    #     query = query | Q(institution=revision_center)
     doctor_shared_folders = SharedFolder.objects.filter(query)
     serializer = serializers.SharedFolderSerializer(doctor_shared_folders, many=True)
     return Response(serializer.data)
