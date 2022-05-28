@@ -25,8 +25,10 @@ export class WorkspaceComponent implements OnInit {
   getEEG() {
     this.service.getAllEEG().subscribe((info) => {
       this.lst_eeg = info;
+      console.log("eegs:",this.lst_eeg)
     });
   }
+
 
   getPatients() {
     this.patient_service.getPatients().subscribe((info) => {
@@ -34,7 +36,6 @@ export class WorkspaceComponent implements OnInit {
       console.log(this.lst_patient)
     });
   }
-
 
   onDelete(id : number) {
     this.service.deleteEEG(id).subscribe();

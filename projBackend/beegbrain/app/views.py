@@ -394,6 +394,7 @@ def createDoctorRevisionCenter(request):
 
 
 # ############################### REPORT ###############################
+
 @api_view(['GET'])
 # @authentication_classes([TokenAuthentication])
 # @permission_classes([IsAuthenticated])
@@ -454,7 +455,6 @@ def getEegByPatient(request, id):
         eegs = EEG.objects.filter(patient=id)
     except:
         return Response(status=status.HTTP_404_NOT_FOUND)
-
     serializer = serializers.EEGSerializer(eegs, many=True)
     return Response(serializer.data)
 
@@ -466,31 +466,40 @@ def createEEG(request):
     
     PRIORITIES = {'Very Low':1,'Low':2,'Medium':3,'High':4,'Very High':5}
 
+    print(request.data)
+
     try:
         operator = Operator.objects.get(health_number=request.data['operatorID'])
     except Operator.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        operator = None
 
     try:
         patient = Patient.objects.get(health_number=request.data['patientID'])
     except Patient.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        patient = None
 
     for memoryFile in request.FILES.getlist('file'):
 
         file = memoryFile.file
-        f = pyedflib.EdfReader(file.name)
-        priority = PRIORITIES[request.data['priority']]
-        timestamp = f.getStartdatetime()
-        duration = f.getFileDuration()
-        n = f.signals_in_file-1 
-        signal_labels = f.getSignalLabels()
-        annotations = f.readAnnotations()
-        
+
+        print(file.name)
+
+        try:
+            f = pyedflib.EdfReader(file.name)
+            priority = PRIORITIES[request.data['priority']]
+            timestamp = f.getStartdatetime()
+            duration = f.getFileDuration()
+            n = f.signals_in_file-1 
+            signal_labels = f.getSignalLabels()
+            annotations = f.readAnnotations()
+            stat = True
+        except:
+            stat = False
+
         eeg = {
             "operator": operator,
             "patient": patient,
-            "status": True,
+            "status": stat,
             "timestamp": timestamp,
             "priority": priority,
             "report": None,
@@ -503,6 +512,12 @@ def createEEG(request):
         if serializer_eeg.is_valid():
             serializer_eeg.save()
             idEEG = EEG.objects.latest('id').id
+
+        if not stat:
+            print("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
+            continue
+
+        print("uiiiiiiiiiiiiiiiiii")
 
         eegObject = EEG.objects.get(id=idEEG)
 
@@ -564,6 +579,7 @@ def getEegById(request):
         ret.delete()
         return True
 
+
 # ############################### CHANNEL ###############################
 
 @api_view(['GET'])
@@ -606,6 +622,7 @@ def getChannelByLabel(request):
     data = { channel.label : decompress(channel.file.name) }
     return Response(data)
 
+
 @api_view(['GET'])
 # @authentication_classes([TokenAuthentication])
 # @permission_classes([IsAuthenticated])
@@ -613,19 +630,27 @@ def getChannelsByLabels(request):
     """GET de channels por um array de labels e id do EEG"""
     poolSize = 8
     pool = multiprocessing.Pool(poolSize)
-    eeg_id = int(request.GET['eeg'])    
-    labels = request.GET.getlist('labels[]')
+    start = int(request.GET['start'])  
+    end = int(request.GET['end'])  
+    eeg_id = int(request.GET['eeg'])  
+    eeg = EEG.objects.get(id=eeg_id)  
+    labels = request.GET.getlist('labels')
     manager = multiprocessing.Manager()
     data = manager.dict()
     for label in labels:
-        pool.apply_async(channelWorker,(data,label,eeg_id),)
+        print("label")
+        pool.apply_async(bufferWorker,(data,label,eeg,start,end),)
     pool.close()
     pool.join() 
+    print(data)
     return Response(data,status=status.HTTP_200_OK)
 
-def channelWorker(data,label,eeg_id):
-    channel = Channel.objects.get(eeg_id=eeg_id, label=label)
-    data[label] = decompress(channel.file.name)
+def bufferWorker(data,label,eeg,start,end):
+    chn = Channel.objects.get(label=label,eeg=eeg) 
+    array = decompress(chn.file.name)
+    data[label] = array[start:end]
+    print(data[label])
+
 
 @api_view(['GET'])
 # @authentication_classes([TokenAuthentication])
@@ -762,8 +787,12 @@ def getInstitutionSharedFolder(request):
 
     institution = getInstitutionById(request)
     institution_shared_folder = SharedFolder.objects.filter(institution=institution)
-    serializer = serializers.SharedFolderSerializer(institution_shared_folder, many=True)
+    shared_folder = [shared_folder for shared_folder in institution_shared_folder if notExpired(shared_folder)]
+    serializer = serializers.SharedFolderSerializer(shared_folder, many=True)
     return Response(serializer.data)
+
+def notExpired(shared_folder):
+    return datetime.now() - shared_folder.created_at < 604800000 # alterar isto para uma semana ou x dias
 
 
 @api_view(['POST'])

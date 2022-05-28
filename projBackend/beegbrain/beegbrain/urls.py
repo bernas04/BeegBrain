@@ -53,6 +53,7 @@ urlpatterns = [
     path('api/channel', views.getChannelByLabel),
     path('api/labels', views.getChannelLabels),
     path('api/eegChannels', views.getAllEegChannels),
+    path('api/channelsByLabels', views.getChannelsByLabels),
 
     path('api/events', views.getEvent),
     path('api/createEvent', views.createEvent),

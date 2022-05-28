@@ -7,6 +7,9 @@ import { EEG } from '../classes/EEG';
   providedIn: 'root'
 })
 export class WorkspaceService {
+  getErrorEEGs() {
+    throw new Error('Method not implemented.');
+  }
 
   private BASE_URL = 'http://localhost:8000/api/';
 

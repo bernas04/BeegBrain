@@ -1,9 +1,7 @@
-import numpy as np
 import pyedflib
-import matplotlib.pyplot as plt
 
 
-f = pyedflib.EdfReader("/home/ricardo/Downloads/S002/S002R07.edf")
+f = pyedflib.EdfReader("/home/ricardo/Downloads/S001R14.edf")
 
 n = f.signals_in_file 
 print(n)

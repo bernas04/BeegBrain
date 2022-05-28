@@ -144,8 +144,8 @@ class Report(models.Model):
 # EEG -> Has all the information about an EEG exam
 class EEG(models.Model):
 
-    operator = models.ForeignKey(Operator, verbose_name=('operator'), on_delete=models.CASCADE, related_name='%(class)s_operator', null=False)
-    patient = models.ForeignKey(Patient, verbose_name=('patient'), on_delete=models.CASCADE, related_name='%(class)s_patient', null=False)
+    operator = models.ForeignKey(Operator, verbose_name=('operator'), on_delete=models.CASCADE, related_name='%(class)s_operator', null=True)
+    patient = models.ForeignKey(Patient, verbose_name=('patient'), on_delete=models.CASCADE, related_name='%(class)s_patient', null=True)
     status = models.BooleanField(default=True)                     
     timestamp = models.DateTimeField(null=True, blank=True)
     PRIORITIES = [("1","Very Low"),("2","Low"),("3","Medium"),("4","High"),("5","Very High")]
@@ -186,4 +186,5 @@ class SharedFolder(models.Model):
     
     institution = models.ForeignKey(Institution, verbose_name=('institution'), on_delete=models.CASCADE, related_name='%(class)s_institution')
     eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE, related_name='%(class)s_eeg')
+    created_at = models.DateTimeField(auto_now_add=True)    # If now - created_at > cache_limit : remove
 
