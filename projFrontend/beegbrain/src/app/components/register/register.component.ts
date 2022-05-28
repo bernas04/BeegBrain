@@ -12,10 +12,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
+
   dropdownList: Providence[] = [];
   selectedItems: Providence[] = [];
+  token = ''+localStorage.getItem('token');
 
-  
   constructor(private service: RegistrationService) { }
 
   public listProvidences: Providence[] = []
@@ -44,13 +45,13 @@ export class RegisterComponent implements OnInit {
   }
 
   getProvidence() {
-    this.service.getInstituitions().subscribe((info) => {
+    this.service.getInstituitions(this.token).subscribe((info) => {
       this.listProvidences = info;
       
     });
   }
   getDoctorRevisionCenter() {
-    this.service.getInstituitions().subscribe((info) => {
+    this.service.getInstituitions(this.token).subscribe((info) => {
       this.listRevisions = info;
     });
   }

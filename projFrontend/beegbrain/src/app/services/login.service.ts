@@ -14,7 +14,7 @@ export class LoginService {
 
   logIn = (username: string, password: string) => {
 
-      const body=JSON.stringify({"username": username, "password": password});
+      const body=JSON.stringify({"username": username, "password": password });
 
       return this.http.post(
         this.baseUrl + "login_token", 

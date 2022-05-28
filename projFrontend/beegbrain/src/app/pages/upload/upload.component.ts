@@ -15,6 +15,7 @@ export class UploadComponent implements OnInit {
   @Input() operatorID! : string;
   @Input() priority! : string;
   files : File[] = [];
+  token = ''+localStorage.getItem('token');
 
   //fileName = '';
 
@@ -44,7 +45,7 @@ export class UploadComponent implements OnInit {
       formData.append('file', file, file.name);
     }
     
-    this.eegService.submitEEG(formData).subscribe({
+    this.eegService.submitEEG(formData, this.token).subscribe({
       next: (eeg) => {
         console.log("FETCH SUCCESS")
         console.log(eeg);

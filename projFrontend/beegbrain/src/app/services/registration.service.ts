@@ -14,10 +14,13 @@ export class RegistrationService {
 
   constructor(private http: HttpClient) { }
 
-  getInstituitions() : Observable<Providence[]> {
-    return this.http.get<Providence[]>(this.BASE_URL + 'proveniences');
+  getInstituitions(token: string) : Observable<Providence[]> {
+    return this.http.get<Providence[]>(this.BASE_URL + 'proveniences', { 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    });
   }
- 
-
  
 }

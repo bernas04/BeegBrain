@@ -47,8 +47,8 @@ def getUserByEmail(request):
 # ############################### INSTITUTIONS ###############################
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getAllInstitutions(request):
     """GET de todas as instituições"""
     institutions = Institution.objects.all()
@@ -57,8 +57,8 @@ def getAllInstitutions(request):
 
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getInstitutionById(request):
     """GET de instituição por id"""
     institution_id = int(request.GET['id'])
@@ -76,8 +76,8 @@ def getInstitutionById(request):
 # ############################### PROVENIENCIAS ###############################
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getProvidence(request):
     """GET de todas as Proveniencias"""
     providences = Providence.objects.all()
@@ -86,8 +86,8 @@ def getProvidence(request):
 
 
 @api_view(['POST'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def createProvidence(request):
     """POST de uma Proveniencia"""
     serializer = serializers.ProvidenceSerializer(data=request.data)
@@ -99,8 +99,8 @@ def createProvidence(request):
 
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getProvidenceById(request):
     """GET de uma Proveniencia pelo seu id"""
     prov_id = int(request.GET['id'])
@@ -117,8 +117,8 @@ def getProvidenceById(request):
 # ############################### REVISION CENTER ###############################
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getRevisionCenter(request):
     """GET de todos os centros de revisão"""
     revision_centers = RevisionCenter.objects.all()
@@ -128,8 +128,8 @@ def getRevisionCenter(request):
 
 
 @api_view(['POST'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def createRevisionCenter(request):
     """POST de um Centro de Revisão"""
     serializer = serializers.RevisionCenterSerializer(data=request.data)
@@ -141,8 +141,8 @@ def createRevisionCenter(request):
 
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getRevisionCenterById(request, id):
     """GET de um Centro de Revisão pelo seu id"""
     rev_id = int(request.GET['id'])
@@ -159,8 +159,8 @@ def getRevisionCenterById(request, id):
 
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getContract(request):
     """GET de todos os contratos"""
     contracts = Contract.objects.all()
@@ -169,8 +169,8 @@ def getContract(request):
 
 
 @api_view(['POST'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def createContract(request):
     """POST de um Contracto"""
     serializer = serializers.ContractSerializer(data=request.data)
@@ -182,8 +182,8 @@ def createContract(request):
 
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getContractById(request, id):
     """GET de um contrato pelo seu id"""
     cont_id = int(request.GET['id'])
@@ -199,8 +199,8 @@ def getContractById(request, id):
 
 # ############################### PATIENTS ###############################
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getPatients(request):
     """GET de todos os pacientes"""
     patients = Patient.objects.all()
@@ -209,8 +209,8 @@ def getPatients(request):
 
 
 @api_view(['POST'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def createPatient(request):
     """POST de um Paciente"""
     serializer = serializers.PatientSerializer(data=request.data)
@@ -222,8 +222,8 @@ def createPatient(request):
 
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getPatientBySSN(request):
     """GET de um paciente pelo seu id"""
     pat_id = int(request.GET['ssn'])
@@ -237,8 +237,8 @@ def getPatientBySSN(request):
 
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getPatientById(request, id):
     """GET de um paciente pelo seu id"""
     try:
@@ -253,8 +253,8 @@ def getPatientById(request, id):
 # ############################### Operators ###############################
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getOperators(request):
     """GET de todos os Operators"""
     operators = Operator.objects.all()
@@ -263,8 +263,8 @@ def getOperators(request):
 
 
 @api_view(['POST'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def createOperator(request):
     serializer = serializers.UserSerializer(data=request.data)
     if serializer.is_valid():
@@ -275,8 +275,8 @@ def createOperator(request):
 
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getOperatorById(request):
     """GET de um operator pelo seu id"""
     op_id = int(request.GET['operator'])
@@ -382,8 +382,8 @@ def create_user(request):
 # ############################### DOCTOR_REVISON_CENTER ###############################
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getDoctorRevisionCenters(request):
     """GET de todos os doctor_revision_center"""
 
@@ -399,8 +399,8 @@ def getDoctorRevisionCenters(request):
 
 
 @api_view(['POST'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def createDoctorRevisionCenter(request):
     """POST de um Doctor_Revision_Center"""
     serializer = serializers.DoctorRevisionCenterSerializer(data=request.data)
@@ -414,8 +414,8 @@ def createDoctorRevisionCenter(request):
 # ############################### REPORT ###############################
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getReport(request):
     """GET de todos os relatórios"""
     reports = Report.objects.all()
@@ -424,8 +424,8 @@ def getReport(request):
 
 
 @api_view(['POST'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def createReport(request):
     """POST de um Report"""
     serializer = serializers.ReportSerializer(data=request.data)
@@ -437,8 +437,8 @@ def createReport(request):
 
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getReportById(request):
     """GET de um relatório pelo seu id"""
     rep_id = int(request.GET['id'])
@@ -455,8 +455,8 @@ def getReportById(request):
 # ############################### EEG ###############################
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getEeg(request):
     """GET de todos os EEG's"""
     eegs = EEG.objects.all()
@@ -465,8 +465,8 @@ def getEeg(request):
 
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getEegByPatient(request, id):
     """GET de todos os EEG's de um determinado paciente"""
     try:
@@ -478,8 +478,8 @@ def getEegByPatient(request, id):
 
 
 @api_view(['POST'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def createEEG(request):
     
     PRIORITIES = {'Very Low':1,'Low':2,'Medium':3,'High':4,'Very High':5}
@@ -571,8 +571,8 @@ def decompress(filename):
     return np.load(file)
 
 @api_view(['GET', 'DELETE'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getEegById(request):
     """GET ou DELETE de um EEG pelo seu id"""
     if request.method == 'GET':
@@ -596,8 +596,8 @@ def getEegById(request):
 # ############################### CHANNEL ###############################
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getChannelLabels(request):
     """GET da LISTA (labels apenas) de um EEG"""
     eeg_id = int(request.GET['eeg'])
@@ -622,8 +622,8 @@ def getChannelIntervalValues(eeg_id,label,timeInterval,start):
     return data
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getChannelByLabel(request):
     """GET de um channel pela sua label e id do EEG"""
     eeg_id = int(request.GET['eeg'])
@@ -636,8 +636,8 @@ def getChannelByLabel(request):
     return Response(data)
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getChannelsByLabels(request):
     """GET de channels por um array de labels e id do EEG"""
     poolSize = 8
@@ -665,8 +665,8 @@ def bufferWorker(data,label,eeg,start,end):
 
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getAllEegChannels(request):
     """GET de todos os channels de um eeg"""
     poolSize = 8
@@ -684,8 +684,8 @@ def workerDecompress(data,label,filename):
     data[label] = decompress(filename)
 
 @api_view(['POST'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def createAccessEeg(request):
     """POST de um Access EEG"""
     serializer = serializers.ReportSerializer(data=request.data)
@@ -698,8 +698,8 @@ def createAccessEeg(request):
 # ############################### ANNOTATIONS ###############################
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getEegAnnotations(request):
     """GET de todas as annotations de um EEG"""
     eeg_id = int(request.GET['eeg'])
@@ -713,8 +713,8 @@ def getEegAnnotations(request):
 
 
 @api_view(['POST'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def createAnnotation(request):
     """POST de uma annotation"""
     serializer = serializers.AnnotationSerializer(data=request.data)
@@ -727,8 +727,8 @@ def createAnnotation(request):
 # ############################### EVENT ###############################
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getEvent(request):
     """GET de todos os eventos"""
     events = Event.objects.all()
@@ -737,8 +737,8 @@ def getEvent(request):
 
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getEegEvents(request):
     """GET de todos os eventos de um eeg"""
     events = Event.objects.filter(eeg=request.data['eeg'])
@@ -747,8 +747,8 @@ def getEegEvents(request):
 
 
 @api_view(['POST'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def createEvent(request):
     """POST de um evento"""
     serializer = serializers.EventSerializer(data=request.data)
@@ -760,8 +760,8 @@ def createEvent(request):
 
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getEventById(request, id):
     """GET de um evento pelo seu id"""
     eve_id = int(request.GET['id'])
@@ -778,8 +778,8 @@ def getEventById(request, id):
 # ############################### SHARED_FOLDER ###############################
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getDoctorSharedFolder(request):
     """GET de todas as pastas partilhadas"""
     doctor_revision_centers = getDoctorRevisionCenters(request)
@@ -792,8 +792,8 @@ def getDoctorSharedFolder(request):
 
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getInstitutionSharedFolder(request):
     """GET de todas as pastas partilhadas"""
 
@@ -808,8 +808,8 @@ def notExpired(shared_folder):
 
 
 @api_view(['POST'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def createSharedFolder(request):
     """POST de uma pasta partilhada"""
     serializer = serializers.SharedFolderSerializer(data=request.data)
@@ -820,8 +820,8 @@ def createSharedFolder(request):
 
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getSharedFolderById(request, id):
     """GET de uma pasta partilhada pelo seu id"""
     eve_id = int(request.GET['id'])

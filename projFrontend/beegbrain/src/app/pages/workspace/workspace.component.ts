@@ -15,6 +15,8 @@ export class WorkspaceComponent implements OnInit {
   lst_patient: Patient[] = [];
   EEGpacient = new Map<number, Patient>();
 
+  token = ''+localStorage.getItem('token');
+
   constructor(private service: WorkspaceService, private patient_service: PatientsService) { }
 
   ngOnInit(): void {
@@ -23,7 +25,7 @@ export class WorkspaceComponent implements OnInit {
   }
 
   getEEG() {
-    this.service.getAllEEG().subscribe((info) => {
+    this.service.getAllEEG(this.token).subscribe((info) => {
       this.lst_eeg = info;
       console.log("eegs:",this.lst_eeg)
     });
@@ -31,14 +33,14 @@ export class WorkspaceComponent implements OnInit {
 
 
   getPatients() {
-    this.patient_service.getPatients().subscribe((info) => {
+    this.patient_service.getPatients(this.token).subscribe((info) => {
       this.lst_patient = info;
       console.log(this.lst_patient)
     });
   }
 
   onDelete(id : number) {
-    this.service.deleteEEG(id).subscribe();
+    this.service.deleteEEG(id, this.token).subscribe();
   }
 
   refresh() {
