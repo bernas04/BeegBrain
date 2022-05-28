@@ -16,6 +16,9 @@ import gzip
 from django.dispatch import receiver
 from django.conf import settings
 from rest_framework.response import Response
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 import pyedflib
 import re
 
@@ -25,6 +28,21 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
 
+# ############################### USER ###############################
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def getUserByEmail(request):
+    email = request.GET['email']
+    try:
+        user = Person.objects.get(email=email)
+        print(user)
+    except Person.DoesNotExist:
+        print("doesnt exist!!!!")
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    serializer = serializers.PersonSerializer(user)
+    return Response(serializer.data)
 
 # ############################### INSTITUTIONS ###############################
 
@@ -482,8 +500,6 @@ def createEEG(request):
 
         file = memoryFile.file
 
-        print(file.name)
-
         try:
             f = pyedflib.EdfReader(file.name)
             priority = PRIORITIES[request.data['priority']]
@@ -514,10 +530,7 @@ def createEEG(request):
             idEEG = EEG.objects.latest('id').id
 
         if not stat:
-            print("ERRORRRRRRRRRRRRRRRRRRRRRRRRRRRRRR")
             continue
-
-        print("uiiiiiiiiiiiiiiiiii")
 
         eegObject = EEG.objects.get(id=idEEG)
 
@@ -621,7 +634,6 @@ def getChannelByLabel(request):
         return Response(status=status.HTTP_404_NOT_FOUND)
     data = { channel.label : decompress(channel.file.name) }
     return Response(data)
-
 
 @api_view(['GET'])
 # @authentication_classes([TokenAuthentication])

@@ -7,8 +7,9 @@ from rest_framework.authtoken import views as auth_views
 
 urlpatterns = [
 
-    path('login/', auth_views.ObtainAuthToken.as_view()),
     path('admin/', admin.site.urls),
+
+    path('api/get_user', views.getUserByEmail),
 
     path('api/patients', views.getPatients),
     path('api/createPatient', views.createPatient),

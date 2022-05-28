@@ -6,19 +6,25 @@ import { Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class AuthenticationService {
+
   userId = new Subject<string | null>()
   private baseUrl = 'http://127.0.0.1:8000/api/';
-  //curentUserId = localStorage.getItem('user_id')
 
   constructor(private http: HttpClient) {
   }
 
-  register = (username: string, email: string, password: string) => {
+  register = (email: string, password: string, health_number: string, birthday: Date, gender: string, telephone: string, address: string, profession: string, professional_number: string) => {
     const body = JSON.stringify(
       {
-        "username": username,
-        "password": password,
         "email": email,
+        "password": password,
+        "health_number": health_number,
+        "birthday": birthday,
+        "gender": gender,
+        "telephone": telephone,
+        "address": address,
+        "profession": profession,
+        "professional_number": professional_number,
       }
     );
 
