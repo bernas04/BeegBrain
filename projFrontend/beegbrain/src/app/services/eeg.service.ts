@@ -12,10 +12,9 @@ export class EEGService {
   constructor(private http: HttpClient) { }
 
   submitEEG(formData : FormData, token: string) : Observable<EEG> {
-    return this.http.post<EEG>(this.BASE_URL + 'createEEG', formData,{ 
+    return this.http.post<EEG>(this.BASE_URL + 'createEEG', formData, { 
       headers: new HttpHeaders({
-        'Authorization': 'Token ' + token,
-        'Content-Type': 'application/json',
+        'Authorization': 'Token ' + token
       }),
     });
   }

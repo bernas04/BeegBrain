@@ -45,6 +45,8 @@ export class UploadComponent implements OnInit {
       formData.append('file', file, file.name);
     }
     
+    console.log(this.token)
+
     this.eegService.submitEEG(formData, this.token).subscribe({
       next: (eeg) => {
         console.log("FETCH SUCCESS")

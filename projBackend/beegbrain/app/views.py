@@ -481,6 +481,8 @@ def getEegByPatient(request, id):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def createEEG(request):
+
+    print("CREATE EEG!")
     
     PRIORITIES = {'Very Low':1,'Low':2,'Medium':3,'High':4,'Very High':5}
 
@@ -496,9 +498,14 @@ def createEEG(request):
     except Patient.DoesNotExist:
         patient = None
 
+    print(operator)
+    print(patient)
+
     for memoryFile in request.FILES.getlist('file'):
 
         file = memoryFile.file
+
+        print(file)
 
         try:
             f = pyedflib.EdfReader(file.name)
