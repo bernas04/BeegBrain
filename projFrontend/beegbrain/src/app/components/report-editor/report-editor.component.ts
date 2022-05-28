@@ -10,7 +10,7 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import htmlToPdfmake from 'html-to-pdfmake';
 import { ReportService } from 'src/app/services/report.service';
 import { Report } from 'src/app/classes/Report';
-import { runInThisContext } from 'vm';
+
 
 @Component({
   selector: 'app-report-editor',
@@ -33,6 +33,7 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
 
   @Input('EEG_ID') EEG_ID!: number;
   report!: Report;
+  show: boolean = false;
   form!: FormGroup;
 
   constructor(private service: ReportService) {}
@@ -49,12 +50,14 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
         ),
       });
 
+      this.show = true;
+      console.log(this.report)
 
     });
   }
 
   ngOnDestroy(): void {
-    console.log("DESTROY REPORT (se este console log aparacer, descomentar código abaixo)")
+    console.log("DESTROY REPORT COMPONENT (se este console log aparacer, descomentar código abaixo)")
     /* 
     console.log("Changes: ", toHTML(this.form.value["editorContent"]) )
     this.report.content = toHTML(this.form.value["editorContent"]);
