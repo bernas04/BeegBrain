@@ -1,10 +1,12 @@
 import { Options } from '@angular-slider/ngx-slider';
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnInit, ViewChild } from '@angular/core';
 import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { ChannelService } from 'src/app/services/channel.service';
 import { Router } from '@angular/router';
 import { EEGService } from 'src/app/services/eeg.service';
 import { EEG } from 'src/app/classes/EEG';
+import { EEGViewerComponent } from 'src/app/components/eeg-viewer/eeg-viewer.component';
+import { map } from 'rxjs';
 
 
 @Component({
@@ -14,16 +16,20 @@ import { EEG } from 'src/app/classes/EEG';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EegComponent implements OnInit {
+  @ViewChild("child")
+  eeg_viewer!:EEGViewerComponent
+
   dropdownSettings:IDropdownSettings={};
   dropdownList!:String[];
   labels:String[]=[];
   public eegInfo!:EEG;
   labelsSignal= new Map();
   id!: number 
+  control!: boolean;
 
   constructor(private services:ChannelService, private router: Router, private EEGservices:EEGService) { }
 
-  
+
   
   ngOnInit() {
     const url_array = this.router.url.split("/");
@@ -71,23 +77,33 @@ export class EegComponent implements OnInit {
     this.labels.push(item);
     this.services.getDataAboutLabel(this.id, item).subscribe((info) => {
       this.labelsSignal.set(item, info);
-      
     });
+    this.eeg_viewer.notification();
+    this.control=false;
+  }
+
+  onDropDownClose(item:any){
+    this.control=true;
   }
 
   onItemDeselect(item:any){
+    //ver porque é que não está a apagar
     let indx = this.labels.indexOf(item);
     if (this.labels.length==1){
       this.labels=[];
     }
     else{
-      this.labels.splice(indx, 1);
+      this.labels.splice(indx, 1)
     }
+    this.labelsSignal.delete(item);
+    this.control=false;
+    this.eeg_viewer.notification();
   }
 
 
   onSelectAll(items: any) {
     this.labels= items;
+    this.control=false;
   }
 
 

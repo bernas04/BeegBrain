@@ -48,7 +48,7 @@ export class UploadComponent implements OnInit {
       next: (eeg) => {
         console.log("FETCH SUCCESS")
         console.log(eeg);
-        this.router.navigate(['/workspace/' + eeg.id]);
+        this.router.navigate(['/workspace']);
       },
       error: (error) => {
         console.log(error);

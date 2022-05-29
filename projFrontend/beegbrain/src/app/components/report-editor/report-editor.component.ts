@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
 import { Validators, Editor, Toolbar } from 'ngx-editor';
 import { toDoc } from 'ngx-editor';
@@ -19,7 +19,7 @@ import jsPDF from 'jspdf';
 
 })
 export class ReportEditorComponent implements OnInit, OnDestroy {
-
+  @Input('control') control!: boolean;
   editor!: Editor;
   toolbar: Toolbar = [
     ['bold', 'italic'],
