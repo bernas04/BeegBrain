@@ -16,6 +16,7 @@ export class PatientsComponent implements OnInit {
   public listOfPatients: Patient[] = []
   public listOfEEG: EEG[] = []
   public patient!: Patient
+  token = ''+localStorage.getItem('token');
 
   ngOnInit(): void {
 
@@ -30,7 +31,7 @@ export class PatientsComponent implements OnInit {
   }
 
   getPatients() {
-    this.services.getPatients().subscribe((info) => {
+    this.services.getPatients(this.token).subscribe((info) => {
       this.listOfPatients = info;
     });
   } 
@@ -39,7 +40,7 @@ export class PatientsComponent implements OnInit {
     let text = (<HTMLInputElement>document.getElementById("patient_search")).value;
     if (text == "") return
 
-    this.services.getPatientsbySSN( text ).subscribe((info) => {
+    this.services.getPatientsbySSN(text, this.token).subscribe((info) => {
       this.patient = info;
       console.log("PACIENTE ", this.patient)
       this.getEEGbyPatient(this.patient.id);   // para lista os exames EEG da respetiva pessoa
@@ -47,14 +48,14 @@ export class PatientsComponent implements OnInit {
   } 
 
   getPatientbyId(id: number){
-    this.services.getPatientbyId( id ).subscribe((info) => {
+    this.services.getPatientbyId(id, this.token).subscribe((info) => {
       this.patient = info;
       console.log("PACIENTE ", this.patient)
     });
   } 
 
   getEEGbyPatient(id: number) {
-    this.services.getEEGbyPatient( id ).subscribe((info) => {
+    this.services.getEEGbyPatient(id, this.token).subscribe((info) => {
       this.listOfEEG = info;
       console.log("EEGs ", this.listOfEEG)
     });

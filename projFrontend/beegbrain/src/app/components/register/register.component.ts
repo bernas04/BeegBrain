@@ -161,26 +161,42 @@ export class RegisterComponent implements OnInit {
     if (!error){
       if (this.registerForm.value["profession"] == "doctor") {
         this.service.createDoctor(this.registerForm.value["name"],this.registerForm.value["email"],this.registerForm.value["password"],this.registerForm.value["birthday"],this.registerForm.value["gender"],this.registerForm.value["health_number"],this.registerForm.value["telephone"],this.registerForm.value["address"],this.registerForm.value["medicalNumber"], this.registerForm.value["institutions"]).
-        subscribe(
-          data => {
-            console.log(data)
-          /*   
-            localStorage.setItem('token', data[]);
-            localStorage.setItem('id', data['id']); */
+        subscribe({
+          next: (data) => {
+
+            let data_user_json = JSON.parse(JSON.stringify(data))
+
+            console.log(data_user_json['id']);
+  
+            localStorage.setItem('token', data_user_json['token']);
+            localStorage.setItem('id', data_user_json['id']);
+            localStorage.setItem('type', data_user_json['type']);
+            this.router.navigate(['/']);
+            
+          },
+          error: () => {
+            console.log("deu erro")
           }
-
-        )
-      
-      
-      
-      
+        })
       }
-
       else{
-        this.service.createOperator(this.registerForm.value["email"],this.registerForm.value["email"],this.registerForm.value["password"],this.registerForm.value["birthday"],this.registerForm.value["gender"],this.registerForm.value["health_number"],this.registerForm.value["telephone"],this.registerForm.value["address"],this.registerForm.value["medicalNumber"], this.registerForm.value["institutions"] )
+        this.service.createOperator(this.registerForm.value["name"],this.registerForm.value["email"],this.registerForm.value["password"],this.registerForm.value["birthday"],this.registerForm.value["gender"],this.registerForm.value["health_number"],this.registerForm.value["telephone"],this.registerForm.value["address"],this.registerForm.value["medicalNumber"], this.registerForm.value["institutions"] ).
+        subscribe({
+          next: (data) => {
+
+            let data_user_json = JSON.parse(JSON.stringify(data))
+
+            localStorage.setItem('token', data_user_json['token']);
+            localStorage.setItem('id', data_user_json['id']);
+            localStorage.setItem('type', data_user_json['type']);
+            this.router.navigate(['/']);
+            
+          },
+          error: () => {
+            console.log("deu erro")
+          }
+        })
       }
-
-
     }
   }
 

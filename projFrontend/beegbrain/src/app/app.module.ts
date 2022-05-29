@@ -30,6 +30,9 @@ import { ReportEditorComponent } from './components/report-editor/report-editor.
 import { NgxEditorModule } from "ngx-editor";
 import { NgxSliderModule } from '@angular-slider/ngx-slider';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { PieChartComponent } from './components/pie-chart/pie-chart.component';
+import { BarChartComponent } from './components/bar-chart/bar-chart.component';
+import { InfoBoxComponent } from './components/info-box/info-box.component';
 
 
 @NgModule({
@@ -54,6 +57,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     ProgressComponent,
     RegisterComponent,
     ReportEditorComponent,
+    PieChartComponent,
+    BarChartComponent,
+    InfoBoxComponent,
   ],
   imports: [
 		BrowserModule,

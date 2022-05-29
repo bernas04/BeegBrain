@@ -18,7 +18,11 @@ export class RegistrationService {
   constructor(private http: HttpClient) { }
 
   getInstituitions() : Observable<Providence[]> {
-    return this.http.get<Providence[]>(this.BASE_URL + 'proveniences');
+    return this.http.get<Providence[]>(this.BASE_URL + 'proveniences', { 
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+      }),
+    });
   }
   getRevisionCenter() : Observable<RevisionCenter[]> {
     return this.http.get<Providence[]>(this.BASE_URL + 'revisioncenters');
@@ -57,23 +61,24 @@ export class RegistrationService {
     );
   }
 
-  createOperator = (name:string,email: string, password:string, birthday:Date, gender:string, healthnumber:Number, telephone:Number, address:string, operatorNumber:Number, providence:Providence) => {
+  createOperator = (name:string, email: string, password:string, birthday:Date, gender:string, healthnumber:Number, telephone:Number, address:string, operatorNumber:Number, providence:string) => {
     const body = JSON.stringify(
       {
         "name":name,
         "email": email,
+        "address":address,
         "password": password,
         "birthday": birthday,
         "gender": gender,
         "telephone": telephone,
         "health_number": healthnumber,
         "operator_number": operatorNumber,
-        "providence": providence
+        "providence": providence,
         
       }
     );
     return this.http.post(
-      this.BASE_URL + "create_operator",
+      this.BASE_URL + "createOperator",
       body,
       {
         headers: new HttpHeaders({

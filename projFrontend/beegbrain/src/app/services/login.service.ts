@@ -7,15 +7,17 @@ import { Subject } from 'rxjs';
   providedIn: 'root'
 })
 export class LoginService {
+  
   private baseUrl='http://127.0.0.1:8000/api/';
 
   constructor(private http: HttpClient) { }
 
   logIn = (username: string, password: string) => {
-      const body=JSON.stringify({"username": username, "password": password});
+
+      const body=JSON.stringify({"username": username, "password": password });
 
       return this.http.post(
-        this.baseUrl+"login_token", 
+        this.baseUrl + "login_token", 
         body,
         { 
           headers: new HttpHeaders({
@@ -26,9 +28,9 @@ export class LoginService {
       );
   }
 
-  getUserInfo = (username: string, token: string) => {
+  getUserInfo = (email: string, token: string) => {
     return this.http.get(
-      this.baseUrl + "get_user?username=" + username,
+      this.baseUrl + "get_user?email=" + email,
       { 
         headers: new HttpHeaders({
           'Authorization': 'Token ' + token,

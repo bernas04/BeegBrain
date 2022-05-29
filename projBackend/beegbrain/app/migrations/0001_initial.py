@@ -41,7 +41,7 @@ class Migration(migrations.Migration):
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('health_number', models.CharField(max_length=20, unique=True)),
                 ('name', models.CharField(max_length=100)),
-                ('email', models.EmailField(max_length=254)),
+                ('email', models.EmailField(max_length=254, unique=True)),
                 ('address', models.CharField(max_length=300)),
                 ('telephone', models.CharField(max_length=20)),
                 ('birthday', models.DateField()),
@@ -172,12 +172,12 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='eeg',
             name='operator',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='%(class)s_operator', to='app.operator', verbose_name='operator'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='%(class)s_operator', to='app.operator', verbose_name='operator'),
         ),
         migrations.AddField(
             model_name='eeg',
             name='patient',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='%(class)s_patient', to='app.patient', verbose_name='patient'),
+            field=models.ForeignKey(null=True, on_delete=django.db.models.deletion.CASCADE, related_name='%(class)s_patient', to='app.patient', verbose_name='patient'),
         ),
         migrations.CreateModel(
             name='DoctorRevisionCenter',

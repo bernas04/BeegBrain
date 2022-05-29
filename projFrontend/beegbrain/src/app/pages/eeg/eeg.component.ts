@@ -14,6 +14,7 @@ import { EEG } from 'src/app/classes/EEG';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EegComponent implements OnInit {
+
   dropdownSettings:IDropdownSettings={};
   dropdownList!:String[];
   labels:String[]=[];
@@ -21,10 +22,10 @@ export class EegComponent implements OnInit {
   labelsSignal= new Map();
   id!: number 
 
+  token = ''+localStorage.getItem('token');
+
   constructor(private services:ChannelService, private router: Router, private EEGservices:EEGService) { }
 
-  
-  
   ngOnInit() {
     const url_array = this.router.url.split("/");
     let eegId = +url_array[url_array.length - 1];
@@ -42,14 +43,14 @@ export class EegComponent implements OnInit {
   }
 
   getInformation(eegId:number): any{
-    this.EEGservices.getEEGinfo(eegId).subscribe((info) => {
+    this.EEGservices.getEEGinfo(eegId, this.token).subscribe((info) => {
       this.eegInfo = info;
     })
   }
 
 
   getLabelsFromEEG(eegId:number){
-    this.services.getLabelsFromEEG(eegId).subscribe((info) => {
+    this.services.getLabelsFromEEG(eegId, this.token).subscribe((info) => {
       this.dropdownList=info;
     })
   }
@@ -69,7 +70,7 @@ export class EegComponent implements OnInit {
   
   onItemSelect(item: any) {
     this.labels.push(item);
-    this.services.getDataAboutLabel(this.id, item).subscribe((info) => {
+    this.services.getDataAboutLabel(this.id, item, this.token).subscribe((info) => {
       this.labelsSignal.set(item, info);
       
     });

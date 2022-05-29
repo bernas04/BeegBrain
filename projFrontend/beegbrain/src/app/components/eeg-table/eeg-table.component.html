@@ -25,7 +25,7 @@
                         <td class="fs-4">{{eeg.id}}</td>
 
                         <td>
-                            <a href="/patients/{{eeg.patient}}">
+                            <a *ngIf="map.get(eeg.id) != '--'" routerLink="/patients/{{eeg.patient}}">
                                 <!-- <button type="button" class="btn btn-primary btn-sm" style="font-size: medium;"> {{map.get(eeg.id)}} </button> -->
                                 <button type="button" class="btn btn-primary"
                                         style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
