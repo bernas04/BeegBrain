@@ -1,26 +1,8 @@
-import {
-  TitleComponent,
-  TitleComponentOption,
-  TooltipComponent,
-  TooltipComponentOption,
-  GridComponent,
-  GridComponentOption
-} from 'echarts/components';
-import { LineSeriesOption } from 'echarts/charts';
 import * as echarts from 'echarts';
 import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
-import { DataItem } from './DataItem';
-import { Options } from '@angular-slider/ngx-slider';
 import { EEGService } from 'src/app/services/eeg.service';
 import { Router } from '@angular/router';
 import { EEG } from 'src/app/classes/EEG';
-
-type EChartsOption = echarts.ComposeOption<
-  | TitleComponentOption
-  | TooltipComponentOption
-  | GridComponentOption
-  | LineSeriesOption
->;
 
 @Component({
     selector: 'app-eeg-viewer',
@@ -60,27 +42,11 @@ export class EEGViewerComponent implements OnChanges {
   }
 
   ngOnInit() {
+
     const url_array = this.router.url.split("/");
     let eegId = +url_array[url_array.length - 1];
-    /* series: [
-      {
-        name: 'Value',
-        type: 'line',
-        showSymbol: false,
-        data: this.yData[0],
-        
-      },
-      {
-        name: 'Value',
-        type:'line',
-        showSymbol: false,
-        data: this.yData[1],
-      }
-    ] 
-    */
-    
-    let tmp_series: any = [];
-    let contador=0;
+    let series: any = [];
+    let counter=0;
 
     for (const [key, value] of this.labelsSignal) {
       let str = JSON.stringify(value);
@@ -90,34 +56,22 @@ export class EEGViewerComponent implements OnChanges {
       });
       
       this.yData.push(c);
-      tmp_series.push({name:key, type:"line", showSymbol:false, data:this.yData[contador]})
+      series.push({name:key, type:"line", showSymbol:false, data:this.yData[counter]})
       
-      contador++;
+      counter++;
     }
-    
-
-    //Martelada para o eixo dos x    
+     
     let xData=[];
     for (let i=0; i< this.eegInfo.duration*1000;i++){
       xData.push(i);
     }
     
-    // Wait for DOM to load (maybe use other NG event)!!!! ngOnDomLoaded or something
     setTimeout(() => {
       this.chartDom = document.getElementById('chart')!;
       this.myChart = echarts.init(this.chartDom);
-    }, 500);
+    }, 100);
 
     this.option = {
-      title: {
-        /* text: 'EEG',
-        subtext: 'Electroencephalogram exam',
-        textStyle: {
-          fontFamily: "Arial",
-          fontSize: 20,
-          fontWeight: "bolder"
-        } */
-      },
       animation: true,
       grid: {
         show: true,
@@ -147,26 +101,44 @@ export class EEGViewerComponent implements OnChanges {
       },
       dataZoom: [
         {
-            id: 'dataZoomX',
-            type: 'slider',
-            xAxisIndex: [0],
-            filterMode: 'filter'
+          id: 'dataZoomX',
+          type: 'slider',
+          xAxisIndex: [0],
+          filterMode: 'filter'
         },
         {
-            id: 'dataZoomY',
-            type: 'slider',
-            yAxisIndex: [0],
-            filterMode: 'empty'
+          id: 'dataZoomY',
+          type: 'slider',
+          yAxisIndex: [0],
+          filterMode: 'empty'
         }
       ],
       xAxis: {
-        type: 'category',
-        //data: xData,
+        name: "x",
+        type: "category",
+        minorTick: {
+          show: true
+        },
+        splitLine: {
+          lineStyle: {
+            color: "#999"
+          },
+          show: true,
+        },
+        minorSplitLine: {
+          show: true,
+          lineStyle: {
+            color: "#ddd"
+          }
+        }
       },
       yAxis: {
         name : 'Value',
         type: 'value',
-        boundaryGap: [0, '100%'], // min: 0 , max: o máximo do sinal
+        boundaryGap: [0, '100%'], 
+        minorTick: {
+          show: true
+        },
         splitLine: {
           lineStyle: {
             color: ['#ccc'],
@@ -174,10 +146,17 @@ export class EEGViewerComponent implements OnChanges {
             type: 'solid'
           },
           show: true
+        },
+        minorSplitLine: {
+          show: true,
+          lineStyle: {
+            color: "#ddd"
+          }
         }
+
       },
       darkMode: true,
-      series: tmp_series
+      series: series
       
       
     };

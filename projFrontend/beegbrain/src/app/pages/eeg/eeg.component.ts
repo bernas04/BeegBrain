@@ -16,6 +16,7 @@ import { map } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EegComponent implements OnInit {
+
   @ViewChild("child")
   eeg_viewer!:EEGViewerComponent
 
@@ -26,13 +27,15 @@ export class EegComponent implements OnInit {
   labelsSignal= new Map();
   id!: number 
   control!: boolean;
-
   token = ''+localStorage.getItem('token');
 
   constructor(private services:ChannelService, private router: Router, private EEGservices:EEGService) { }
 
+
+  
   ngOnInit() {
     const url_array = this.router.url.split("/");
+    let eegId = +url_array[url_array.length - 1];
     this.id=eegId;
     this.getLabelsFromEEG(eegId);
     this.getInformation(eegId);
