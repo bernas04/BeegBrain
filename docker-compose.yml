@@ -3,7 +3,7 @@ version: '3'
 services:
 
   db:
-    image: mysql:8
+    image: mysql:latest
     container_name: database-mysql
     restart: unless-stopped
     ports:
@@ -20,7 +20,8 @@ services:
       timeout: 5s
       retries: 30
     volumes:
-      - mysql:/var/lib/mysql
+      - /mysql:/var/lib/mysql
+      - /tmp/mysqld:/var/run/mysqld
 
   django:
     build: ./projBackend/beegbrain
@@ -28,11 +29,13 @@ services:
       - "8080:8080"
     image: django
     container_name: backend-django
+    command: python manage.py runserver 0.0.0.0:8000
     restart: unless-stopped
     depends_on:
       db:
         condition: service_healthy
-
+    volumes:
+      - /tmp/mysqld:/run/mysqld
     links:
       - db
 

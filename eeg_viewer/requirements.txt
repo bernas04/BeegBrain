@@ -3,3 +3,4 @@ matplotlib
 numpy
 tk
 pyflac
+mne

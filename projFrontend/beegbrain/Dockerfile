@@ -1,12 +1,12 @@
 # stage 1
 
-FROM node:alpine AS build
+FROM node:18-alpine AS build
 
 WORKDIR /app
 
 COPY . .
 
-RUN npm ci && npm run build
+RUN npm i && npm run build
 
 # stage 2
 
@@ -14,4 +14,4 @@ FROM nginx:alpine
 
 COPY --from=build /app/dist/beegbrain /usr/share/nginx/html
 
-EXPOSE 42000
+EXPOSE 4200
