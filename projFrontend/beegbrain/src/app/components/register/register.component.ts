@@ -96,23 +96,23 @@ export class RegisterComponent implements OnInit {
     let error = false;
 
     if (this.registerForm.value["name"] === null || this.registerForm.value["name"].trim() === "") {
-      console.log("erro")
+ 
       error = true;
       this.error_name = true;
     }
 
     if (this.registerForm.value["email"] === null || this.registerForm.value["email"].trim() === "") {
-      console.log("erro")
+ 
       error = true;
       this.error_email = true;
     }
     if (this.registerForm.value["password"] === null || this.registerForm.value["password"].trim() === "") {
-      console.log("erro")
+ 
       error = true;
       this.error_password = true;
     }
     if (this.registerForm.value["health_number"] === null || this.registerForm.value["health_number"].trim() === "") {
-      console.log("erro")
+ 
       error = true;
       this.error_health_number = true;
     }
@@ -120,39 +120,39 @@ export class RegisterComponent implements OnInit {
 
 
     if (this.registerForm.value["gender"] === null) {
-      console.log("erro")
+ 
       error = true;
       this.error_gender= true;
     }
     if (this.registerForm.value["birthday"] === null || this.registerForm.value["birthday"].trim() === "") {
-      console.log("erro")
+ 
       error = true;
       this.error_birthday= true;
     }
 
     if (this.registerForm.value["telephone"] === null || this.registerForm.value["telephone"].trim() === "") {
-      console.log("erro")
+ 
       error = true;
       this.error_telephone= true;
     }
 
     if (this.registerForm.value["address"] === null || this.registerForm.value["address"].trim() === "") {
-      console.log("erro")
+ 
       error = true;
       this.error_address= true;
     }
     if (this.registerForm.value["profession"] === null || this.registerForm.value["profession"].trim() === "") {
-      console.log("erro")
+ 
       error = true;
       this.error_profession= true;
     }
     if (this.registerForm.value["medicalNumber"] === null || this.registerForm.value["medicalNumber"].trim() === "") {
-      console.log("erro")
+ 
       error = true;
       this.error_medicalNumber= true;
     }
     if (this.registerForm.value["institutions"] === null ) {
-      console.log("erro")
+ 
       error = true;
       this.error_institutions= true;
     }
@@ -242,100 +242,8 @@ export class RegisterComponent implements OnInit {
 
   }
 
-  getUserRevisionCenter(revision: String) {
-    var result = this.listRevisions.filter(obj => {
-      console.log(result)
-      return obj.name === revision
-    })
-    return result
-  }
 
-  register() {
-
-    console.log("Register")
-    console.log(this.registerForm);
-
-  //   this.showError = false
-
-  //   this.service.createDoctor(this.registerForm.value["email"], this.registerForm.value["password"]).subscribe({
-  //     next: (data) => {
-
-  //       let data_json = JSON.parse(JSON.stringify(data));
-  //       this.token = data_json.token;
-  //       localStorage.setItem('token', this.token);
-  //       localStorage.setItem('email', this.registerForm.value["email"]);
-
-  //       this.loginService.getUserInfo(this.registerForm.value["email"], this.token).subscribe({
-  //         next: (data_user) => {
-  //           let data_user_json = JSON.parse(JSON.stringify(data_user));
-  //           localStorage.setItem('id', data_user_json.id);
-  //           this.router.navigate(['/dashboard']);
-  //         },
-  //         error: () => {
-  //           this.registerForm.reset();
-  //           this.showError = true
-  //         }
-  //       });
-
-  //     },
-  //     error: () => {
-  //       this.showError = true
-  //       this.registerForm.reset();
-  //     }
-  //   });
-
-  // }
-    
-    let email = (<HTMLInputElement>document.getElementById("email")).value
-    let pass = (<HTMLInputElement>document.getElementById("pass")).value
-    let birthday = (<HTMLInputElement>document.getElementById("birthday")).value
-    let bDate = new Date(birthday);
-
-    let health_number = (<HTMLInputElement>document.getElementById("healthnumber")).value
-    let address = (<HTMLInputElement>document.getElementById("address")).value
-    let health_prof_number = (<HTMLInputElement>document.getElementById("healthprofnumber")).value
-    let phone_number = (<HTMLInputElement>document.getElementById("phonenumber")).value
-
-    let gender = ""
-
-    if ((<HTMLInputElement>document.getElementById("male")).checked) {
-      gender = "M"
-    }
-    if ((<HTMLInputElement>document.getElementById("female")).checked) {
-      gender = "F"
-
-    }
-    if ((<HTMLInputElement>document.getElementById("other")).checked) {
-      gender = "O"
-    }
-
-    let prof = ""
-
-
-
-    if ((<HTMLInputElement>document.getElementById("doctor")).checked) {
-
-      /*   this.listRevisions.filter(this.selectedItems[0]["name"])
-        
-        this.selectedItems.push(result); */
-
-      } 
-
-
-      let doctor = new Doctor(health_number, email, pass, address, phone_number, bDate, gender, health_prof_number,this.selectedItems)
-    
-    }
-
-    // if ((<HTMLInputElement>document.getElementById("operator")).checked) {
-
-    //   let provName = (<HTMLInputElement>document.getElementById("providence")).value
-    //   var result = this.listProvidences.filter(obj => {
-    //     return obj.address === provName
-    //   })
-    //   let providence = result[0]
-    //   let operator = new Operator(health_number, email, pass, address, phone_number, bDate, gender, health_prof_number, providence)
-    // }
-  }
+}
 
 
 

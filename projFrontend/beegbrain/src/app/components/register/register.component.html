@@ -24,7 +24,7 @@
                     </span>
                     <p *ngIf="error_name" class="text-danger">Name is required</p>
                     <div class="wrap-input100 validate-input" >
-                        <input class="input100" type="text" id="name" name="name" placeholder="name" formControlName="name">
+                        <input class="input100" type="text" id="name" name="name" placeholder="Name" formControlName="name">
                         <span class="focus-input100"></span>
 
                     </div>
@@ -41,7 +41,7 @@
                         <span class="focus-input100"></span>
                     </div>
 
-                    <p *ngIf="error_health_number" class="text-danger">Health number is required</p>
+                    <p *ngIf="error_health_number" class="text-danger">A valid health number is required</p>
                     <div class="wrap-input100 validate-input" data-validate="Health number is required">
                         <input class="input100" type="text" id="healthnumber" name="healthnumber" placeholder="Health Number" formControlName="health_number">
                         <span class="focus-input100"></span>
@@ -84,7 +84,7 @@
 
                     </div>
 
-                    <p *ngIf="error_telephone" class="text-danger">Phone number is required</p>
+                    <p *ngIf="error_telephone" class="text-danger">A valid phone number is required</p>
                     <div class="wrap-input100 validate-input" data-validate="Enter your phone number">
                         <input class="input100" type="text" id="phonenumber" name="phonenumber" placeholder="Phone number"   formControlName="telephone">
                         <span class="focus-input100"></span>
@@ -96,7 +96,7 @@
                         <span class="focus-input100"></span>
                     </div>
 
-                    <p *ngIf="error_address" class="text-danger">Health Profession Number is required</p>
+                    <p *ngIf="error_address" class="text-danger">A valid health Profession Number is required</p>
                     <div class="wrap-input100 validate-input" data-validate="Enter your medical number">
                         <input class="input100" type="text" name="healthprofnumber" id="healthprofnumber" placeholder="Health Professional number"  formControlName="medicalNumber">
                         <span class="focus-input100"></span>
@@ -136,7 +136,7 @@
 
                         <div  *ngIf="doctor_check" class="wrap-input100 validate-input" data-validate="Select your Revision Center">
                             <span class="focus-input100"></span>
-                            <select name="revisionCenters" formControlName="institutions" multiple>
+                            <select name="revisionCenters" style="width:99%" formControlName="institutions" multiple>
                                 <option *ngFor="let revCenter of listRevisions" [value]="revCenter.id">{{ revCenter.name }}</option>
                             </select>
 
