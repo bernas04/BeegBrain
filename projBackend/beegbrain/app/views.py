@@ -550,7 +550,11 @@ def createEEG(request):
             Annotation.objects.create(start=start,duration=duration,description=description,eeg=eegObject)
 
         # Split EEG by channels
+<<<<<<< HEAD
         poolSize = 8
+=======
+        poolSize = 1
+>>>>>>> 3b768b947d94ac4b0d11cdc394afb42fbcebbe30
         pool = multiprocessing.Pool(poolSize)
         for i in np.arange(n):
             signal = f.readSignal(i) 
@@ -560,6 +564,7 @@ def createEEG(request):
     return Response(serializer_eeg.data, status=status.HTTP_201_CREATED)
 
 def saveChannel(label,eeg,array):
+    print("labelName ",label)
     filename = str(eeg.id) + '_' + label
     compressChannel(filename,array)
     chn = Channel.objects.create(label=label,eeg=eeg)
@@ -648,7 +653,11 @@ def getChannelByLabel(request):
 @permission_classes([IsAuthenticated])
 def getChannelsByLabels(request):
     """GET de channels por um array de labels e id do EEG"""
+<<<<<<< HEAD
     poolSize = 4
+=======
+    poolSize = 1
+>>>>>>> 3b768b947d94ac4b0d11cdc394afb42fbcebbe30
     pool = multiprocessing.Pool(poolSize)
     start = int(request.GET['start'])  
     end = int(request.GET['end'])  
@@ -677,7 +686,11 @@ def bufferWorker(data,label,eeg,start,end):
 @permission_classes([IsAuthenticated])
 def getAllEegChannels(request):
     """GET de todos os channels de um eeg"""
+<<<<<<< HEAD
     poolSize = 4
+=======
+    poolSize = 1
+>>>>>>> 3b768b947d94ac4b0d11cdc394afb42fbcebbe30
     pool = multiprocessing.Pool(poolSize)
     eeg_id = int(request.GET['eeg'])    
     manager = multiprocessing.Manager()

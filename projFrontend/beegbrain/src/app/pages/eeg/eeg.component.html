@@ -15,19 +15,29 @@
         (onSelect)="onItemSelect($event)"
         (onSelectAll)="onSelectAll($event)"
         (onDeSelect)="onItemDeselect($event)"
+        (onDropDownClose)="onDropDownClose($event)"
         >
         </ng-multiselect-dropdown>
     </div>
 </div>
 
 <div class="row">
-    <div class="col-lg-8">
-        <app-eeg-viewer *ngIf="labelsSignal.size != 0" [speed]=speed [eegInfo]="eegInfo" [labelsSignal]="labelsSignal" [interval]=window_size></app-eeg-viewer> 
+    <div class="col-lg-9">
+        <app-eeg-viewer #child 
+        *ngIf="control" 
+        [control]="control"
+        [speed]=speed 
+        [eegInfo]="eegInfo" 
+        [labelsSignal]="labelsSignal" 
+        [interval]=window_size
+        [labels]="labels"
+        ></app-eeg-viewer> 
+
     </div>
 
     <div class="col-lg-3">
-        <h4>Report Area</h4>
-        <app-report-editor></app-report-editor>
+        <h4 *ngIf="control">Report Area</h4>
+        <app-report-editor *ngIf="control"></app-report-editor>
     </div>
 
 </div>

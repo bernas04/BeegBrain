@@ -40,11 +40,13 @@ export class EEGViewerComponent implements OnChanges {
   @Input('interval') interval!: number;
   @Input('labelsSignal') labelsSignal!: any;
   @Input('eegInfo') eegInfo!: EEG
+  @Input('labels') labels!: any;
+  @Input('control') control!: boolean;
 
   
   constructor(private services:EEGService, private router:Router) { }
   
-  yData: number[] = [];
+  yData: any[] = [];
   xData: string[] = [];
   seconds = 0;
 
@@ -52,37 +54,54 @@ export class EEGViewerComponent implements OnChanges {
     this.changeSpeed();
   }
   
-
+  notification(){
+    //isto está a funcionar
+    console.log(this.labels);
+  }
 
   ngOnInit() {
     const url_array = this.router.url.split("/");
     let eegId = +url_array[url_array.length - 1];
+    /* series: [
+      {
+        name: 'Value',
+        type: 'line',
+        showSymbol: false,
+        data: this.yData[0],
+        
+      },
+      {
+        name: 'Value',
+        type:'line',
+        showSymbol: false,
+        data: this.yData[1],
+      }
+    ] 
+    */
     
+    let tmp_series: any = [];
+    let contador=0;
 
     for (const [key, value] of this.labelsSignal) {
       let str = JSON.stringify(value);
       let b = str.split(':')[1];
-      
       var c = str.split(',').map(function(item) {
-        return parseFloat(item);
+        return Math.round(parseFloat(item));
       });
-      c.shift(); // Martelada
-      this.yData = c;
+      
+      this.yData.push(c);
+      tmp_series.push({name:key, type:"line", showSymbol:false, data:this.yData[contador]})
+      
+      contador++;
     }
     
+
+    //Martelada para o eixo dos x    
     let xData=[];
-    // Martelada máxima para o eixo dos x, btw, não funciona
-    console.log("Tamanho do eixo dos y: " + this.yData.length);
-
-    let init = new Date(this.eegInfo.timestamp);
-    xData.push(init.getTime() * 1000); // milissegundos
-
-    for (let i=0; i <= this.eegInfo.duration*1000; i++){
-      let tmp = init.getTime() + i;
-      xData.push(new Date(tmp).getTime())
+    for (let i=0; i< this.eegInfo.duration*1000;i++){
+      xData.push(i);
     }
     
-
     // Wait for DOM to load (maybe use other NG event)!!!! ngOnDomLoaded or something
     setTimeout(() => {
       this.chartDom = document.getElementById('chart')!;
@@ -102,8 +121,9 @@ export class EEGViewerComponent implements OnChanges {
       animation: true,
       grid: {
         show: true,
-        //backgroundColor: "black",
-        borderWidth: 10,
+        backgroundColor: "#f5f5f5",
+        borderWidth: 2,
+        borderColor:"#000000"
       },
       tooltip: {
         trigger: 'axis',
@@ -157,15 +177,8 @@ export class EEGViewerComponent implements OnChanges {
         }
       },
       darkMode: true,
-      series: [
-        {
-          name: 'Value',
-          type: 'line',
-          showSymbol: false,
-          data: this.yData,
-          
-        }
-      ]
+      series: tmp_series
+      
       
     };
     this.start(this.speed);
