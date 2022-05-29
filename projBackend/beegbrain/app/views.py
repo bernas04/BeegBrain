@@ -279,11 +279,14 @@ def getDoctors(request):
 
 @api_view(['POST'])
 def createDoctor(request):
+    print(request.data)
     serializer = serializers.UserSerializer(data=request.data)
     if serializer.is_valid():
         resp = serializer.createDoctor(request.data)   
         token = serializers.TokenSerializer(data={'key': resp.key})
         return Response(token.initial_data)
+    else: 
+        print(serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 

@@ -18,32 +18,42 @@
 
             <div class="mb-5">
 
-                <form class="login100-form validate-form">
+                <form id="register" class="login100-form validate-form" [formGroup]="registerForm">
                     <span class="login100-form-title">
                         Become a BeegBrain
                     </span>
+                    <p *ngIf="error_name" class="text-danger">Name is required</p>
+                    <div class="wrap-input100 validate-input" >
+                        <input class="input100" type="text" id="name" name="name" placeholder="name" formControlName="name">
+                        <span class="focus-input100"></span>
 
+                    </div>
+                    <p *ngIf="error_email" class="text-danger">Valid email is required: ex@abc.xyz</p>
                     <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
-                        <input class="input100" type="text" id="email" name="email" placeholder="Email">
+                        <input class="input100" type="text" id="email" name="email" placeholder="Email" formControlName="email">
                         <span class="focus-input100"></span>
 
                     </div>
 
+                    <p *ngIf="error_password" class="text-danger">Password is required</p>
                     <div class="wrap-input100 validate-input" data-validate="Password is required">
-                        <input class="input100" type="password" id="pass" name="pass" placeholder="Password">
+                        <input class="input100" type="password" id="pass" name="pass" placeholder="Password" formControlName="password">
                         <span class="focus-input100"></span>
                     </div>
 
+                    <p *ngIf="error_health_number" class="text-danger">Health number is required</p>
                     <div class="wrap-input100 validate-input" data-validate="Health number is required">
-                        <input class="input100" type="text" id="healthnumber" name="healthnumber" placeholder="Health Number">
+                        <input class="input100" type="text" id="healthnumber" name="healthnumber" placeholder="Health Number" formControlName="health_number">
                         <span class="focus-input100"></span>
                     </div>
 
+                    <p *ngIf="error_birthday" class="text-danger">Birthday date is required</p>
                     <div class="wrap-input100 validate-input" data-validate="Enter your birthday">
-                        <input class="input100" type="date" id="birthday" name="date" placeholder="Birthday">
+                        <input class="input100" type="date" id="birthday" name="date" placeholder="Birthday"  formControlName="birthday">
                         <span class="focus-input100"></span>
                     </div>
 
+                    <p *ngIf="error_gender" class="text-danger">Gender is required</p>
                     <div class="wrap-input100 validate-input" data-validate="Gender is required">
                         <div class="radio10">
                             <div class="row">
@@ -51,19 +61,19 @@
                                     <p class="description" type="text" name="gender" placeholder="Gender"> Gender</p>
                                 </div>
                                 <div class="col-3">
-                                    <input class="" type="radio" name="gender" id="male">
+                                    <input class="" type="radio" name="gender" id="male" value="M" formControlName="gender">
                                     <label class="form-check-label" for="flexRadioDefault1">
                                         Male
                                     </label>
                                 </div>
                                 <div class="col-3">
-                                    <input class="" type="radio" name="gender" id="female">
+                                    <input class="" type="radio" name="gender" id="female" value="F"  formControlName="gender">
                                     <label class="form-check-label" for="flexRadioDefault1">
                                         Female
                                     </label>
                                 </div>
                                 <div class="col-3">
-                                    <input class="" type="radio" name="gender" id="other">
+                                    <input class="" type="radio" name="gender" id="other" value="O"  formControlName="gender">
                                     <label class="form-check-label" for="flexRadioDefault1">
                                         Other
                                     </label>
@@ -74,33 +84,39 @@
 
                     </div>
 
+                    <p *ngIf="error_telephone" class="text-danger">Phone number is required</p>
                     <div class="wrap-input100 validate-input" data-validate="Enter your phone number">
-                        <input class="input100" type="text" id="phonenumber" name="phonenumber" placeholder="Phone number">
+                        <input class="input100" type="text" id="phonenumber" name="phonenumber" placeholder="Phone number"   formControlName="telephone">
                         <span class="focus-input100"></span>
                     </div>
+
+                    <p *ngIf="error_address" class="text-danger">Address is required</p>
                     <div class="wrap-input100 validate-input" data-validate="Enter your address">
-                        <input class="input100" type="text" name="address" id="address" placeholder="Address">
+                        <input class="input100" type="text" name="address" id="address" placeholder="Address"  formControlName="address">
                         <span class="focus-input100"></span>
                     </div>
+
+                    <p *ngIf="error_address" class="text-danger">Health Profession Number is required</p>
                     <div class="wrap-input100 validate-input" data-validate="Enter your medical number">
-                        <input class="input100" type="text" name="healthprofnumber" id="healthprofnumber" placeholder="Health Professional number">
+                        <input class="input100" type="text" name="healthprofnumber" id="healthprofnumber" placeholder="Health Professional number"  formControlName="medicalNumber">
                         <span class="focus-input100"></span>
                     </div>
-                    
-                    <div class="wrap-input100 validate-input" data-validate="Profission is required">
+
+                    <p *ngIf="error_profession" class="text-danger">Profession is required</p>
+                    <div class="wrap-input100 validate-input" data-validate="Profession is required">
                         <div class="radio10">
                             <div class="row">
                                 <div class="col-4">
-                                    <p class="description" type="text" name="gender" placeholder="Health Profession"> Profession</p>
+                                    <p class="description" type="text" name="gender" placeholder="Health Profession" > Profession</p>
                                 </div>
                                 <div class="col-4">
-                                    <input class="" type="radio" value="doctor" name="profession" id="doctor" (click)="update_doctor()">
+                                    <input class="" type="radio" value="doctor" name="profession" id="doctor" formControlName="profession" (click)="update_doctor()" >
                                     <label class="form-check-label" for="flexRadioDefault1">
                                         Doctor
                                     </label>
                                 </div>
                                 <div class="col-4">
-                                    <input class="" type="radio" name="profession" value="operator" id="operator" (click)="update_operator()">
+                                    <input class="" type="radio" name="profession" value="operator" id="operator" (click)="update_operator()" formControlName="profession">
                                     <label class="form-check-label" for="flexRadioDefault1">
                                         Operator
                                     </label>
@@ -110,39 +126,30 @@
                             </div>
                         </div>
                     
-
                         <div *ngIf="operator_check" class="wrap-input100 validate-input" data-validate="Enter your providence">
                             <span class="focus-input100"></span>
-                            <select id="providence" class="form-select" style="width:99%" aria-label="Default select example">
+                            <select id="providence" class="form-select" style="width:99%" aria-label="Default select example" formControlName="institutions">
                                 <option *ngFor='let ts of listProvidences; let i = index' [value]="listProvidences[i].address">Providence: 
                                 {{listProvidences[i].name}} </option>
                             </select>
                         </div>
 
-                        <div (click)="revision()" *ngIf="doctor_check" class="wrap-input100 validate-input" data-validate="Select your Revision Center">
+                        <div  *ngIf="doctor_check" class="wrap-input100 validate-input" data-validate="Select your Revision Center">
                             <span class="focus-input100"></span>
+                            <select name="revisionCenters" formControlName="institutions" multiple>
+                                <option *ngFor="let revCenter of listRevisions" [value]="revCenter.id">{{ revCenter.name }}</option>
+                            </select>
 
-                            <ng-multiselect-dropdown
-                            [settings]="dropdownSettings"
-                            [data]="dropdownList"
-                            (onSelect)="onItemSelect($event)"
-                            (onSelectAll)="onSelectAll($event)"
-                            >
-                            </ng-multiselect-dropdown>
-               
                         </div>
 
                  
 
                     <div class="container-login100-form-btn">
 
-                        <div (click)="register()" class="login100-form-btn" >
+                        <div (click)="submit()" class="login100-form-btn" >
                             Register
                         </div>
                     </div>
-
-
-
 
                 </form>
             </div>

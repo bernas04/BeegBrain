@@ -1,3 +1,4 @@
+import { RevisionCenter } from './RevisionCenter';
 import { Institution } from './Institution';
 import { Person } from "./Person";
 
@@ -12,10 +13,11 @@ export class Doctor implements Person {
     gender!: string;
     medicalNumber!: string;
     pass!:string;
-    instituitions!:[Institution] 
+    listChosenRevisions: RevisionCenter[] = [];
 
 
-    constructor(health_number:string, email:string, pass:string, address:string, telephone:string, birthday:Date, gender:string, medicalNumber:string, instituitons:[Institution]){
+
+    constructor(health_number:string, email:string, pass:string, address:string, telephone:string, birthday:Date, gender:string, medicalNumber:string, listChosenRevisions:RevisionCenter[]){
         this.health_number = health_number
         this.email = email
         this.address = address
@@ -24,6 +26,6 @@ export class Doctor implements Person {
         this.medicalNumber = medicalNumber
         this.gender = gender
         this.pass = pass
-        this.instituitions=instituitons
+        this.listChosenRevisions=listChosenRevisions
     }
 }
