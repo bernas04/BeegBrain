@@ -1,6 +1,8 @@
+import { PatientsService } from './../../services/patients.service';
+import { Patient } from 'src/app/classes/Patient';
 import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
+import { MatSelectModule } from '@angular/material/select';
 
 @Component({
   selector: 'app-eeg-filters',
@@ -13,12 +15,21 @@ export class EegFiltersComponent implements OnInit {
   
   idSearch = '';
 
-  constructor() { }
+  lst_patients: Patient[] = []
+
+  constructor(private patientService:PatientsService) { }
 
   ngOnInit(): void {
-
+    console.log(this.lst_patients)
+    this.getPatientsList()
   }
 
+  getPatientsList(){
+    this.patientService.getPatients(this.token).subscribe((info) => {
+    this.lst_patients = info;
+  });
+
+}
 
 
 
@@ -28,6 +39,7 @@ export class EegFiltersComponent implements OnInit {
     this.idSearch += value + ' | ';
     console.log(this.idSearch)
     this.searchIdEvent.emit(value);
+
   }
 
   @Output() searchPriority = new EventEmitter<any>();
@@ -35,6 +47,7 @@ export class EegFiltersComponent implements OnInit {
   selectPriority(value: string) {
     console.log(value)
     this.searchPriority.emit(value);
+
   }
 
   @Output() filterByDateEvent = new EventEmitter<any>();
@@ -43,7 +56,15 @@ export class EegFiltersComponent implements OnInit {
     var myDate = new Date(value);
     console.log("tou na componente dos filtros")
     console.log(value)
-    this.filterByDateEvent.emit(myDate)
+    console.log(typeof(value))
+    this.filterByDateEvent.emit(value)
+    console.log(this.lst_patients)
+
+  }
+
+  @Output() filterByOperator = new EventEmitter<any>();
+  selectOperator(value: string){
+    this.filterByOperator.emit(value)
   }
  
 

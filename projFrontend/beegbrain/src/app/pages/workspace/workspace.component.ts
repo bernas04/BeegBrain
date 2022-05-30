@@ -17,7 +17,7 @@ import { WorkspaceService } from 'src/app/services/workspace.service';
 export class WorkspaceComponent implements OnInit {
 
   lst_eeg: EEG[] = [];
-  lst_empty: EEG[] = [];
+  lst_untouchable: EEG[] = [];
 
   lst_patient: Patient[] = [];
   filter_egg_id = ''
@@ -47,18 +47,31 @@ export class WorkspaceComponent implements OnInit {
     }
   }
 
-  selectData(dateInput: any) {
-    //não entra aqui o corno ERRO
-    console.log("tou aqui")
+  selectData(dateInput: string) {
     let date = new Date(dateInput);
-    console.log(date)
-    if (!date) {
-      this.getEEG()
+    
+    var month_prov = date.getUTCMonth() + 1; //months from 1-12
+    var month = ''
+    if (month_prov < 10){
+      month = '0' + month_prov
     }
     else {
-      this.lst_eeg = this.lst_eeg.filter(
-        eeg => eeg.timestamp == date);
+      month = month_prov.toString()
     }
+    var day = date.getUTCDate();
+    var year = date.getUTCFullYear();
+
+    let newdate = year + "-" + month + "-" + day;
+
+    if (dateInput != '') {
+      console.log("ratisse")
+      this.lst_eeg = this.lst_untouchable.filter(
+        eeg => eeg.timestamp.toString().substring(0, 10) == newdate);
+    } 
+    else {
+      this.lst_eeg = this.lst_untouchable
+    }
+      
   }
 
 
@@ -67,50 +80,58 @@ export class WorkspaceComponent implements OnInit {
     // está a dar erro, não consegue entrar em 2 ifs 
     console.log("inicial", pri)
 
-
-    
-
-
     switch (pri) {
-      
+
       case '1':
-        this.lst_eeg= this.lst_eeg.filter(
+        this.lst_eeg = this.lst_untouchable.filter(
           eeg => eeg.priority === '1',
           console.log("tou no 1")
         );
+
+        console.log(this.lst_eeg)
+
         break;
       case '2':
-        this.lst_eeg = this.lst_eeg.filter(
+        this.lst_eeg = this.lst_untouchable.filter(
           eeg => eeg.priority === '2',
-          console.log("tou no 2")
+          console.log("tou no 2"),
         );
+        console.log(this.lst_eeg)
+
         break;
       case '3':
-        this.lst_eeg = this.lst_eeg.filter(
+        this.lst_eeg = this.lst_untouchable.filter(
           eeg => eeg.priority === '3',
           console.log("tou no 3")
+
         );
+        console.log(this.lst_eeg)
+
         break;
       case '4':
-        this.lst_eeg = this.lst_eeg.filter(
+        this.lst_eeg = this.lst_untouchable.filter(
           eeg => eeg.priority === '4',
           console.log("tou no 4")
         );
+        console.log(this.lst_eeg)
+
         break;
 
       case '5':
-        this.lst_eeg = this.lst_eeg.filter(
+        this.lst_eeg = this.lst_untouchable.filter(
           eeg => eeg.priority === '5',
           console.log("tou no 5")
         );
+        console.log(this.lst_eeg)
+
         break;
       default:
         this.getEEG()
         break;
-        }
+    }
 
 
-  
+
   }
 
 
@@ -120,16 +141,16 @@ export class WorkspaceComponent implements OnInit {
 
     this.service.getAllEEG(this.token).subscribe((info) => {
       this.lst_eeg = info;
+      this.lst_untouchable = info;
       console.log("eegs:", this.lst_eeg)
     });
-    
+
   }
 
 
   getPatients() {
     this.patient_service.getPatients(this.token).subscribe((info) => {
       this.lst_patient = info;
-      console.log(this.lst_patient)
     });
   }
 
