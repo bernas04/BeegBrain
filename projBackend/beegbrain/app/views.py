@@ -13,11 +13,6 @@ from rest_framework import status
 import numpy as np
 import pyedflib
 import gzip
-import json
-
-import time
-from django.contrib.auth.forms import UserCreationForm
-import tempfile
 from django.dispatch import receiver
 from django.conf import settings
 from rest_framework.response import Response
@@ -43,15 +38,12 @@ def getUserByEmail(request):
     email = request.GET['email']
     try:
         user = Person.objects.get(email=email)
+        print(user)
     except Person.DoesNotExist:
+        print("doesnt exist!!!!")
         return Response(status=status.HTTP_404_NOT_FOUND)
-    try:
-        d = Doctor.objects.get(email=email)
-        type = 'doctor'
-    except Doctor.DoesNotExist:
-        type = 'operator'
-    data = {'id': user.id, 'type' : type}
-    return Response(data)
+    serializer = serializers.PersonSerializer(user)
+    return Response(serializer.data)
 
 # ############################### INSTITUTIONS ###############################
 
@@ -84,9 +76,9 @@ def getInstitutionById(request):
 
 # ############################### PROVENIENCIAS ###############################
 
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
 @api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getProvidence(request):
     """GET de todas as Proveniencias"""
     providences = Providence.objects.all()
@@ -126,8 +118,8 @@ def getProvidenceById(request):
 # ############################### REVISION CENTER ###############################
 
 @api_view(['GET'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def getRevisionCenter(request):
     """GET de todos os centros de revisão"""
     revision_centers = RevisionCenter.objects.all()
@@ -275,13 +267,13 @@ def getOperators(request):
 
 
 @api_view(['POST'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
 def createOperator(request):
     serializer = serializers.UserSerializer(data=request.data)
     if serializer.is_valid():
         resp = serializer.createOperator(request.data)
-        token = serializers.TokenSerializer(data={'key': resp['token'].key, 'id': resp['id'], 'type' : 'operator'})
+        token = serializers.TokenSerializer(data={'key': resp.key})
         return Response(token.initial_data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -324,15 +316,11 @@ def getDoctors(request):
 
 @api_view(['POST'])
 def createDoctor(request):
-    print(request.data)
     serializer = serializers.UserSerializer(data=request.data)
     if serializer.is_valid():
         resp = serializer.createDoctor(request.data)   
-        print(resp)
-        token = serializers.TokenSerializer(data={'key': resp['token'].key, 'id': resp['id'], 'type' : 'doctor'})
+        token = serializers.TokenSerializer(data={'key': resp.key})
         return Response(token.initial_data)
-    else: 
-        print(serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -461,49 +449,6 @@ def getReportById(request):
     return Response(serializer.data)
 
 
-@api_view(['GET', 'POST'])
-# @authentication_classes([TokenAuthentication])
-# @permission_classes([IsAuthenticated])
-def getReportByEEG(request, id):
-
-    if request.method == 'GET':
-        """GET de um relatório pelo seu EEG id"""
-
-        try:
-            eeg = EEG.objects.get(id=id)
-
-            if eeg.report:
-                report = eeg.report
-                report = Report.objects.get(id=report.id)
-
-            else:
-                report = Report.objects.create(content="")
-                eeg.report = report
-                eeg.save()
-                return Response(report)
-            
-        except Report.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        
-        serializer = serializers.ReportSerializer(report)
-        return Response(serializer.data)
-
-    elif request.method == 'POST':
-        """POST de um relatório pelo seu EEG id""" 
-        recieved_report = json.loads(request.body.decode("utf-8"))
-
-        try:
-            report = Report.objects.get(id=id)
-            report.content = recieved_report["content"]
-            report.save()
-            
-        except Report.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-        
-        serializer = serializers.ReportSerializer(report)
-        return Response(serializer.data)
-
-
 # ############################### EEG ###############################
 
 @api_view(['GET'])
@@ -615,7 +560,7 @@ def createEEG(request):
             Annotation.objects.create(start=start,duration=duration,description=description,eeg=eegObject)
 
         # Split EEG by channels
-        poolSize = 8
+        poolSize = 4
         pool = multiprocessing.Pool(poolSize)
         for i in np.arange(n):
             signal = f.readSignal(i) 
@@ -625,7 +570,6 @@ def createEEG(request):
     return Response(serializer_eeg.data, status=status.HTTP_201_CREATED)
 
 def saveChannel(label,eeg,array):
-    print("labelName ",label)
     filename = str(eeg.id) + '_' + label
     compressChannel(filename,array)
     chn = Channel.objects.create(label=label,eeg=eeg)
@@ -649,7 +593,6 @@ def decompress(filename):
 @permission_classes([IsAuthenticated])
 def getEegById(request):
     """GET ou DELETE de um EEG pelo seu id"""
-
     if request.method == 'GET':
         eeg_id = int(request.GET['id'])
         try:
@@ -658,18 +601,14 @@ def getEegById(request):
             return Response(status=status.HTTP_404_NOT_FOUND) 
         serializer = serializers.EEGSerializer(ret)
         return Response(serializer.data)
-
     elif request.method == 'DELETE':
-
-        eeg_id = int(json.loads(request.body.decode("utf-8"))["id"])
-
+        eeg_id = int(request.GET['id'])
         try:
             ret = EEG.objects.get(id=eeg_id)
         except EEG.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-
         ret.delete()
-        return Response()
+        return True
 
 
 # ############################### CHANNEL ###############################
