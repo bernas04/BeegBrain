@@ -9,7 +9,8 @@
                     EEG ID
                 </strong></div>
             <div class="form-outline">
-                <input placeholder="ID" type="search" id="eegId" class="form-control" />
+                <input placeholder="ID" type="search" id="eegId"  autocomplete="on" class="form-control"
+                #searchTerm  (keyup)="onKeyId(searchTerm.value)" />
                 <label class="form-label" for="formControlDefault"></label>
             </div>
         </div>
@@ -33,10 +34,10 @@
                 Date
             </strong></div>
         <div class="form-outline">
-            <input placeholder="ID" type="date" id="date" class="form-control" />
+            <input placeholder="ID" type="date" id="date" #date (change)="selectData(date.value)" class="form-control" />
             <label class="form-label" for="formControlDefault"></label>
         </div>
-        </div>
+       
 
         <div class="card-body">
 
@@ -54,12 +55,14 @@
         <div class="card-body">
             
         <div class="card-header"> <strong> Priority </strong></div>
-        <select class="form-control" id="exampleSelect">
+        <select class="form-control" id="priority" #priority  (click)="selectPriority(priority.value)">            
             <option value="5">Urgent</option>
                 <option value="4">High</option>
-                <option value="4">Medium</option>
+                <option value="3">Medium</option>
                 <option value="2">Low</option>
                 <option value="1">Very Low</option>
+                <option value="">None</option>
+
             </select>
         </div>
     </div>

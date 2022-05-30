@@ -14,6 +14,9 @@ export class EegTableComponent implements OnInit {
   @Input('allEEG') lst_EEG!: EEG[];
   @Input('allPatients') lst_Patients!: Patient[];
   @Output() eeg_deleted = new EventEmitter<any>();
+
+  @Input() filter_egg_id = '';
+
   private id! : number;
   public map = new Map<number, string>();
 
@@ -29,7 +32,11 @@ export class EegTableComponent implements OnInit {
       else this.map.set(eeg.id,'--')
     });
 
+
   }
+
+  
+
 
   delete() {
     this.eeg_deleted.emit(this.id);

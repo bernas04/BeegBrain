@@ -19,6 +19,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgxEchartsModule } from 'ngx-echarts';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { Ng2SearchPipeModule } from 'ng2-search-filter';
 
 import * as echarts from 'echarts';
 import { PatientinfoComponent } from './components/patientinfo/patientinfo.component';
@@ -73,7 +74,8 @@ import { InfoBoxComponent } from './components/info-box/info-box.component';
     }),
     NgMultiSelectDropDownModule.forRoot(),
     BrowserAnimationsModule,
-    NgxEditorModule
+    NgxEditorModule,
+    Ng2SearchPipeModule
   ],
   providers: [],
   bootstrap: [AppComponent]
