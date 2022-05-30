@@ -136,9 +136,9 @@ class DoctorRevisionCenter(models.Model):
 # Report -> Content written by a Doctor related to a EEG.
 class Report(models.Model):
 
-    content = models.TextField()
+    content = models.TextField(null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
-    doctor = models.ForeignKey(Doctor, verbose_name=('doctor'), on_delete=models.CASCADE, related_name='%(class)s_doctor')
+    # doctor = models.ForeignKey(Doctor, verbose_name=('doctor'), on_delete=models.CASCADE, related_name='%(class)s_doctor')
 
 
 # EEG -> Has all the information about an EEG exam
@@ -146,7 +146,7 @@ class EEG(models.Model):
 
     operator = models.ForeignKey(Operator, verbose_name=('operator'), on_delete=models.CASCADE, related_name='%(class)s_operator', null=True)
     patient = models.ForeignKey(Patient, verbose_name=('patient'), on_delete=models.CASCADE, related_name='%(class)s_patient', null=True)
-    status = models.BooleanField(default=True)                     
+    status = models.TextField(null=True, blank=True)                     
     timestamp = models.DateTimeField(null=True, blank=True)
     PRIORITIES = [("1","Very Low"),("2","Low"),("3","Medium"),("4","High"),("5","Very High")]
     priority = models.CharField(max_length=1, choices=PRIORITIES)

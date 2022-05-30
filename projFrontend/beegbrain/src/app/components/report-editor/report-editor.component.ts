@@ -1,8 +1,6 @@
-import { Component, Input, OnDestroy, OnInit, ViewEncapsulation } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup } from '@angular/forms';
-import { Validators, Editor, Toolbar } from 'ngx-editor';
-import { toDoc } from 'ngx-editor';
-import { schema } from 'ngx-editor';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { Validators, Editor, Toolbar, toHTML } from 'ngx-editor';
 
 // @ts-ignore
 import pdfMake from "pdfmake/build/pdfmake";  
@@ -10,7 +8,9 @@ import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";  
 pdfMake.vfs = pdfFonts.pdfMake.vfs;  
 import htmlToPdfmake from 'html-to-pdfmake';
-import jsPDF from 'jspdf';
+import { ReportService } from 'src/app/services/report.service';
+import { Report } from 'src/app/classes/Report';
+
 
 @Component({
   selector: 'app-report-editor',
@@ -19,12 +19,11 @@ import jsPDF from 'jspdf';
 
 })
 export class ReportEditorComponent implements OnInit, OnDestroy {
-  @Input('control') control!: boolean;
-  editor!: Editor;
+
+  editor: Editor = new Editor();
   toolbar: Toolbar = [
     ['bold', 'italic'],
     ['underline', 'strike'],
-    /* ['code', 'blockquote'], */
     ['ordered_list', 'bullet_list'],
     [{ heading: ['h1', 'h2', 'h3', 'h4', 'h5', 'h6'] }],
     ['link', 'image'],
@@ -32,25 +31,51 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
     ['align_left', 'align_center', 'align_right', 'align_justify'],
   ];
 
-  form = new FormGroup({
-    editorContent: new FormControl(
-      { value: "", disabled: false },   // value : <meter o json>   [fonte]: https://stackblitz.com/edit/ngx-editor?file=src%2Fapp%2Fapp.component.ts 
-      Validators.required()
-    ),
-  });
+  @Input('EEG_ID') EEG_ID!: number;
+  report!: Report;
+  show: boolean = false;
+  form!: FormGroup;
 
+  constructor(private service: ReportService) {}
   
   ngOnInit(): void {
-    this.editor = new Editor();
+
+    this.service.getReport( this.EEG_ID ).subscribe((info) => {
+      this.report = info;
+
+      this.form = new FormGroup({
+        editorContent: new FormControl(
+          { value: this.report.content , disabled: false },
+          Validators.required()
+        ),
+      });
+
+      this.show = true;
+      console.log(this.report)
+
+    });
   }
 
   ngOnDestroy(): void {
+    console.log("DESTROY REPORT COMPONENT (se este console log aparacer, descomentar código abaixo)")
+    /* 
+    console.log("Changes: ", toHTML(this.form.value["editorContent"]) )
+    this.report.content = toHTML(this.form.value["editorContent"]);
+    this.service.setReport( this.report ).subscribe(); 
+    */
     this.editor.destroy();
+  }
+
+  save() {
+    // de vez em quando esta cena buga, quando isso acontece, é meter toHTML( )
+    console.log("Changes: ", this.form.value["editorContent"] )
+    this.report.content = this.form.value["editorContent"];
+    this.service.setReport( this.report ).subscribe();
   }
 
 
   generatePDF(option: number) {      
-    var html = htmlToPdfmake( this.form.value["editorContent"]  );
+    var html = htmlToPdfmake(  this.form.value["editorContent"] );
     const documentDefinition = { content: html };
 
     switch( option ) {
@@ -70,7 +95,4 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
      
   }  
 
-  onChange($event: any) {
-    console.log("Changes: ",this.form.value["editorContent"] )
-  }
 }

@@ -1,60 +1,122 @@
 <div class="card">
     <div class="card-body">
-        <!-- title -->
-                <h4 class="card-title"> <strong> Error Area </strong> </h4>
-                <h5 class="card-subtitle mt-1">Check which exams are with some issues </h5>
-              
 
-        <!-- title -->
-        <div class="table-responsive">
-            <table class="table align-middle">
+        <div class="table-responsive" style="margin-top: 1em;">
+            <table id="eeg_table" class="table align-middle table-striped ">
                 <thead>
                     <tr>
-                        <th class="text-dark font-medium fs-4">Exam ID</th>
-                        <th class="text-dark font-medium fs-4">Pacient</th>
-                        <th class="text-dark font-medium fs-4">Status</th>
-                        <th class="text-dark font-medium fs-4">Review</th>
+                        <th></th>
+                        <th class="text-dark font-medium fs-4"> <i class="bi bi-file-person-fill" style="margin-right: 0.3em;"></i> Patient</th>
+                        <th class="text-dark font-medium fs-4"> <i class="bi bi-bug-fill" style="margin-right: 0.3em;" ></i> Error </th>
+                        <th class="text-dark font-medium fs-4"> <i class="bi bi-exclamation-diamond-fill" style="margin-right: 0.3em;"></i> Priority</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
+                    <tr *ngFor='let eeg of lst_EEG'>
+
+                        <td class="fs-4">{{eeg.id}}</td>
+
                         <td>
-                            <div class="d-flex align-items-center">
-                                <div class="ms-3">
-                                    <h5 class="mb-0 font-medium"> a </h5>
-                                    <span class="text-muted"> </span>
-                                </div>
-                            </div>
+                            <a href="/patients/{{eeg.patient}}">
+                                <!-- <button type="button" class="btn btn-primary btn-sm" style="font-size: medium;"> {{map.get(eeg.id)}} </button> -->
+                                <button type="button" class="btn btn-primary"
+                                        style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                                {{map.get(eeg.id)}}
+                                </button>
+                            </a>
                         </td>
-                        <td class="fs-4"></td>
+
                         <td>
+                            <!-- <h5 class="mb-0 font-medium">{{eeg.timestamp | date:'dd/MM/yyyy'}}</h5> -->
+                            <span class="text-muted">{{eeg.status}}</span>
                         </td>
-                        
+
                         <td>
-                            <button type="button" class="btn btn-primary"> <i class="bi bi-eye-fill"></i> </button>
+                            <span *ngIf="eeg.priority == '1'" class="badge text-bg-success"> very low </span>
+                            <span *ngIf="eeg.priority == '2'" class="badge text-bg-info"> low </span>
+                            <span *ngIf="eeg.priority == '3'" class="badge text-bg-secondary" style="font-size:medium;"> medium </span>
+                            <span *ngIf="eeg.priority == '4'" class="badge text-bg-light"> high </span>
+                            <span *ngIf="eeg.priority == '5'" class="badge text-bg-dark"> very high </span> 
                         </td>
+
+                        <td style="text-align: right; vertical-align: middle;">
+                            <button type="button" class="btn btn-primary" style="margin-right: 1em;" data-toggle="modal" data-target="#form"> <i class="bi bi-envelope-plus-fill"></i> </button>
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#my-modal" style="margin-right: 1em;" (click)="save2delete(eeg.id)"> <i class="bi bi-trash-fill"></i> </button>
+                        </td>
+
+                    </tr>              
                 </tbody>
             </table>
         </div>
-        <div class="d-flex align-items-center justify-content-center">
-
-            <button type="button" style="border-radius: 3%" class="btn btn-danger" data-toggle="modal" data-target="#form"> Contact support team <i class="bi bi-envelope-fill" ></i></button>
+    </div>
     
-            <div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="text-right cross"> <i class="fa fa-times mr-2"></i> </div>
-                            <div class="comment-box text-center">
-                            <div class="comment-area"> <textarea class="form-control" placeholder="Please specify what's wrong" rows="4"></textarea> </div>
-                                
-                                <div class="text-center mt-4"> <button class="btn btn-success send px-5"> Send <i class="fa fa-long-arrow-right ml-1"></i></button>
+</div>
+
+<div class="d-flex align-items-center justify-content-center">
+
+    <button type="button" style="border-radius: 3%" class="btn btn-danger" data-toggle="modal" data-target="#form"> Contact support team <i class="bi bi-envelope-fill" ></i></button>
+
+    <div class="modal fade" id="form" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+
+                <div class="text-center mt-4 mb-4"> 
+                    <h4>Contact Support Team</h4>
+                </div>
+                
+                <div class="comment-box text-center">
+
+                    <!-- <div class="col-lg-12 d-flex align-items-center">
+                        <div class="col-lg-2">
+                            <label>Email</label>
                         </div>
+                        
+                        <div class="col-lg-10">
+                            <input type="text" id="fname" name="firstname" placeholder="MEU MAIL?">
+                        </div>
+                    </div> -->
+
+                    <div class="comment-area"> 
+                        <textarea class="form-control" placeholder="Write here what's wrong" id="mail_content" rows="4"></textarea> 
+                    </div>
+                        
+                    <div class="text-center mt-4"> 
+                        <button class="btn btn-primary send px-5" (click)="sendMail()"> Send <i class="fa fa-long-arrow-right ml-1"></i> </button>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- ------------------------------------------- ARE YOU SURE U WANNA DELETE THE EXAM ------------------------------------------- -->
+<div id="my-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content border-0">
+            <div class="modal-body p-0">
+                <div class="card border-0 p-sm-3 p-2 justify-content-center">
+
+                    <div class="card-header pb-0 bg-white border-0 ">
+                        <h4> Are you sure you wanna delete this exam?</h4>
+                        <span class="text-muted "> This change cannot be reversed, be careful.</span>
+                    </div>
+
+                    <div class="card-body px-sm-4 mb-2 pt-1 pb-0"> 
+                        <div class="row justify-content-end no-gutters">
+
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-light text-muted" id="button" data-dismiss="modal" style="font-weight: bold">Cancel</button>
+                            </div>
+
+                            <div class="col-auto">
+                                <button type="button" class="btn btn-danger px-4" id="button" data-dismiss="modal" style="font-weight: bold" (click)="delete()">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>  
             </div>
         </div>
-
     </div>
-    
-    
 </div>

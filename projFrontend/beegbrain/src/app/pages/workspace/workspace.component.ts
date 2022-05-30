@@ -12,6 +12,7 @@ import { WorkspaceService } from 'src/app/services/workspace.service';
 export class WorkspaceComponent implements OnInit {
 
   lst_eeg: EEG[] = [];  
+  lst_error_eeg: EEG[] = [];  
   lst_patient: Patient[] = [];
   EEGpacient = new Map<number, Patient>();
 
@@ -25,9 +26,19 @@ export class WorkspaceComponent implements OnInit {
   }
 
   getEEG() {
+    
     this.service.getAllEEG(this.token).subscribe((info) => {
-      this.lst_eeg = info;
-      console.log("eegs:",this.lst_eeg)
+
+      info.forEach((eeg) => {
+        console.log(eeg.status)
+        if (eeg.status != null) {
+          this.lst_error_eeg.push(eeg);
+
+        } else {
+          this.lst_eeg.push(eeg);
+        }
+      })
+
     });
   }
 

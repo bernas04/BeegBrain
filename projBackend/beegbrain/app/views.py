@@ -13,6 +13,11 @@ from rest_framework import status
 import numpy as np
 import pyedflib
 import gzip
+import json
+
+import time
+from django.contrib.auth.forms import UserCreationForm
+import tempfile
 from django.dispatch import receiver
 from django.conf import settings
 from rest_framework.response import Response
@@ -449,6 +454,49 @@ def getReportById(request):
     return Response(serializer.data)
 
 
+@api_view(['GET', 'POST'])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
+def getReportByEEG(request, id):
+
+    if request.method == 'GET':
+        """GET de um relatório pelo seu EEG id"""
+
+        try:
+            eeg = EEG.objects.get(id=id)
+
+            if eeg.report:
+                report = eeg.report
+                report = Report.objects.get(id=report.id)
+
+            else:
+                report = Report.objects.create(content="")
+                eeg.report = report
+                eeg.save()
+                return Response(report)
+            
+        except Report.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = serializers.ReportSerializer(report)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        """POST de um relatório pelo seu EEG id""" 
+        recieved_report = json.loads(request.body.decode("utf-8"))
+
+        try:
+            report = Report.objects.get(id=id)
+            report.content = recieved_report["content"]
+            report.save()
+            
+        except Report.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = serializers.ReportSerializer(report)
+        return Response(serializer.data)
+
+
 # ############################### EEG ###############################
 
 @api_view(['GET'])
@@ -495,14 +543,10 @@ def createEEG(request):
     except Patient.DoesNotExist:
         patient = None
 
-    print(operator)
-    print(patient)
 
     for memoryFile in request.FILES.getlist('file'):
 
         file = memoryFile.file
-
-        print(file)
 
         try:
             f = pyedflib.EdfReader(file.name)
@@ -512,9 +556,17 @@ def createEEG(request):
             n = f.signals_in_file-1 
             signal_labels = f.getSignalLabels()
             annotations = f.readAnnotations()
-            stat = True
-        except:
-            stat = False
+            stat = None
+
+        except Exception as e:
+            print()
+            print('<ERROR MESSAGE>', str(e))
+            print()
+
+            stat = str(e)
+            timestamp = None
+            priority = PRIORITIES[request.data['priority']]
+            duration = None
 
         eeg = {
             "operator": operator,
@@ -526,15 +578,25 @@ def createEEG(request):
             "duration": duration,
         }
 
+        print(eeg)
+
         # Criar o objeto EEG
         idEEG = None
         serializer_eeg = serializers.EEGSerializer(data=eeg)
         if serializer_eeg.is_valid():
+            print("É VALIDO")
             serializer_eeg.save()
             idEEG = EEG.objects.latest('id').id
 
-        if not stat:
-            continue
+        else:
+            print(serializer_eeg.errors)
+
+
+        if stat is not None:
+            print("RETURN DO EEG COM ERRO")
+            # continue
+            return Response(serializer_eeg.data, status=status.HTTP_201_CREATED)
+
 
         eegObject = EEG.objects.get(id=idEEG)
 
@@ -580,6 +642,7 @@ def decompress(filename):
 @permission_classes([IsAuthenticated])
 def getEegById(request):
     """GET ou DELETE de um EEG pelo seu id"""
+
     if request.method == 'GET':
         eeg_id = int(request.GET['id'])
         try:
@@ -588,14 +651,18 @@ def getEegById(request):
             return Response(status=status.HTTP_404_NOT_FOUND) 
         serializer = serializers.EEGSerializer(ret)
         return Response(serializer.data)
+
     elif request.method == 'DELETE':
-        eeg_id = int(request.GET['id'])
+
+        eeg_id = int(json.loads(request.body.decode("utf-8"))["id"])
+
         try:
             ret = EEG.objects.get(id=eeg_id)
         except EEG.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
         ret.delete()
-        return True
+        return Response()
 
 
 # ############################### CHANNEL ###############################

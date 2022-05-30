@@ -2,6 +2,11 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EEG } from '../classes/EEG';
+import '../../assets/js/smtp.js'; 
+
+declare let Email : any;
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -26,6 +31,20 @@ export class EEGService {
         'Content-Type': 'application/json',
       }),
     });
+  }
+
+  sendEmail(content: string) {
+      var our_email= "beeg.br4in@gmail.com";
+      var text = content;
+      Email.send({
+          Host: "smtp.gmail.com",
+          Username : our_email,
+          Password : "beeg.brain2021",
+          To : 'joaoreis16@ua.pt', /* 'joaobernardo0@ua.pt, joaoreis16@ua.pt, marianarosa@ua.pt, ricardorodriguez@ua.pt' */
+          From : our_email,
+          Subject : "Dúvida BeegBrain!",
+          Body : text,
+      })
   }
 
 }

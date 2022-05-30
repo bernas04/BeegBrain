@@ -19,7 +19,7 @@ class Migration(migrations.Migration):
             name='EEG',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('status', models.BooleanField(default=True)),
+                ('status', models.TextField(blank=True, null=True)),
                 ('timestamp', models.DateTimeField(blank=True, null=True)),
                 ('priority', models.CharField(choices=[('1', 'Very Low'), ('2', 'Low'), ('3', 'Medium'), ('4', 'High'), ('5', 'Very High')], max_length=1)),
                 ('duration', models.IntegerField(blank=True, null=True)),
@@ -52,7 +52,7 @@ class Migration(migrations.Migration):
             name='Report',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('content', models.TextField()),
+                ('content', models.TextField(null=True)),
                 ('timestamp', models.DateTimeField(auto_now_add=True)),
             ],
         ),
@@ -155,11 +155,6 @@ class Migration(migrations.Migration):
             managers=[
                 ('objects', app.models.CustomUserManager()),
             ],
-        ),
-        migrations.AddField(
-            model_name='report',
-            name='doctor',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='%(class)s_doctor', to='app.doctor', verbose_name='doctor'),
         ),
         migrations.CreateModel(
             name='Operator',

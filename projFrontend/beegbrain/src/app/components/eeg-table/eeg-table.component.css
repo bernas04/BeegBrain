@@ -24,6 +24,12 @@ td, th {
     vertical-align: middle;
 }
 
+#inprogress {
+    background-color: darkgreen !important;
+    border-color: darkgreen !important;
+    font-size: medium;
+}
+
 /* ********************************************************************** */
 
 .example-container {

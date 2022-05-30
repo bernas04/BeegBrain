@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EEG } from 'src/app/classes/EEG';
-import { WorkspaceService } from 'src/app/services/workspace.service';
+import { Patient } from 'src/app/classes/Patient';
+import { EEGService } from 'src/app/services/eeg.service';
 
 @Component({
   selector: 'app-errorarea',
@@ -9,19 +10,42 @@ import { WorkspaceService } from 'src/app/services/workspace.service';
 })
 export class ErrorareaComponent implements OnInit {
 
-  lst_EEG!: EEG[];
+  @Input('allEEG') lst_EEG!: EEG[];
+  @Input('allPatients') lst_Patients!: Patient[];
+  @Output() eeg_deleted = new EventEmitter<any>();
+  public map = new Map<number, string>();
+  private id! : number;
 
-  constructor(private service: WorkspaceService) { }
+  constructor(private service: EEGService) { }
 
   ngOnInit(): void {
-    //this.getErrorEEG();
+    // criar o map com key = id do EEG, e value = nome do paciente
+    this.lst_EEG.forEach((eeg) => {
+      let pat = this.lst_Patients.find(x => x.id == eeg.patient)
+      // console.log(pat)
+      if (pat) {
+        this.map.set(eeg.id, pat.name)
+        
+      } else { 
+        this.map.set(eeg.id,'undefined')
+      }
+    });
+
   }
 
-  // getErrorEEG() {
-  //   this.service.getErrorEEGs().subscribe((eegs) => {
-  //     this.lst_eeg = eegs;
-  //     console.log("eegs:",this.lst_eeg)
-  //   });
+  sendMail() {
+    let content = (<HTMLInputElement>document.getElementById("mail_content")).value;
+    console.log("Conteudo", content);
+    this.service.sendEmail(content);
+  }
+
+
+  delete() {
+    this.eeg_deleted.emit(this.id);
+  }
   
+  save2delete(id : number) {
+    this.id = id;
+  }
 
 }

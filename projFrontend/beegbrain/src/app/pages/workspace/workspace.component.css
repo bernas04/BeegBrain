@@ -33,3 +33,11 @@ body, html {
     padding-right: 25%;
     box-sizing: border-box;
 }
+
+img {
+    display: block;
+    /* margin-top: 10em; */
+    margin-left: auto;
+    margin-right: auto;
+  }
+  

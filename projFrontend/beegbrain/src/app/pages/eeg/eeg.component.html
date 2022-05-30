@@ -36,8 +36,7 @@
     </div>
 
     <div class="col-lg-3">
-        <h4 *ngIf="control">Report Area</h4>
-        <app-report-editor *ngIf="control"></app-report-editor>
+        <app-report-editor [EEG_ID]="id"></app-report-editor>
     </div>
 
 </div>

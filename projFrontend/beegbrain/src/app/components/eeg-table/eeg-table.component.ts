@@ -25,8 +25,13 @@ export class EegTableComponent implements OnInit {
     // criar o map com key = id do EEG, e value = nome do paciente
     this.lst_EEG.forEach((eeg) => {
       let pat = this.lst_Patients.find(x => x.id == eeg.patient)
-      if (pat) this.map.set(eeg.id, pat.name)
-      else this.map.set(eeg.id,'--')
+      // console.log(pat)
+      if (pat) {
+        this.map.set(eeg.id, pat.name)
+        
+      } else { 
+        this.map.set(eeg.id,'undefined')
+      }
     });
 
   }

@@ -23,6 +23,7 @@ export class PatientsComponent implements OnInit {
     const url_array = this.router.url.split("/");
     if (!isNaN(+url_array[url_array.length - 1])) {
       let pat_id = +url_array[url_array.length - 1];
+      
       this.getPatientbyId(pat_id);
       this.getEEGbyPatient(pat_id);    // para lista os exames EEG da respetiva pessoa
     }
