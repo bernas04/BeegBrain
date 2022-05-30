@@ -83,7 +83,7 @@ class Person(models.Model):
 
     health_number = models.CharField(max_length=20, unique=True)
     name = models.CharField(max_length=100)
-    email = models.EmailField()
+    email = models.EmailField(unique=True)
     address = models.CharField(max_length=300)
     telephone = models.CharField(max_length=20)
     birthday = models.DateField()
@@ -106,7 +106,7 @@ class Patient(Person):
 # Doctor -> A Doctor can work in more than one Revision Center. He's responsible for visualizing, monitoring and reporting an EEG exam.
 class Doctor(Person):
 
-    medical_number = models.CharField(max_length=20)
+    medical_number = models.CharField(max_length=20, unique=True)
 
     def __str__(self) -> str:
         return 'Doctor: ' + super().__str__() + f' {self.medical_number}'
@@ -116,7 +116,7 @@ class Doctor(Person):
 # into the platform to be seen by the Revision Center that holds a contract with his Providence.
 class Operator(Person):
 
-    operator_number = models.CharField(max_length=20)
+    operator_number = models.CharField(max_length=20, unique=True)
     providence = models.ForeignKey(Providence, verbose_name=('providence'), on_delete=models.CASCADE, related_name='%(class)s_providence')
     
     def __str__(self) -> str:
@@ -143,9 +143,10 @@ class Report(models.Model):
 
 # EEG -> Has all the information about an EEG exam
 class EEG(models.Model):
-    operator = models.ForeignKey(Operator, verbose_name=('operator'), on_delete=models.CASCADE, related_name='%(class)s_operator', null=False)
-    patient = models.ForeignKey(Patient, verbose_name=('patient'), on_delete=models.CASCADE, related_name='%(class)s_patient', null=False)
-    status = models.BooleanField(default=True)                     
+
+    operator = models.ForeignKey(Operator, verbose_name=('operator'), on_delete=models.CASCADE, related_name='%(class)s_operator', null=True)
+    patient = models.ForeignKey(Patient, verbose_name=('patient'), on_delete=models.CASCADE, related_name='%(class)s_patient', null=True)
+    status = models.TextField(null=True, blank=True)                     
     timestamp = models.DateTimeField(null=True, blank=True)
     PRIORITIES = [("1","Very Low"),("2","Low"),("3","Medium"),("4","High"),("5","Very High")]
     priority = models.CharField(max_length=1, choices=PRIORITIES)
@@ -164,8 +165,8 @@ class Channel(models.Model):
 # Annotation -> Information about some event occured during the EEG exam (with start time, duration and description)
 class Annotation(models.Model):
 
-    start = models.DateTimeField(null=False)
-    duration = models.FloatField(null=False)
+    start = models.FloatField(null=False)
+    duration = models.FloatField(null=True)
     description = models.TextField(null=False)              
     eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE, related_name='%(class)s_eeg', null=False)
 
@@ -174,7 +175,6 @@ class Annotation(models.Model):
 # Associated with a person (Operator/Doctor) or an automatic proccess and a timestamp.
 class Event(models.Model):
 
-    # TODO: List of possible types.
     type = models.CharField(max_length=50)
     timestamp = models.DateTimeField(auto_now_add=True)
     eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE, related_name='%(class)s_eeg')
@@ -186,4 +186,5 @@ class SharedFolder(models.Model):
     
     institution = models.ForeignKey(Institution, verbose_name=('institution'), on_delete=models.CASCADE, related_name='%(class)s_institution')
     eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE, related_name='%(class)s_eeg')
+    created_at = models.DateTimeField(auto_now_add=True)    # If now - created_at > cache_limit : remove
 

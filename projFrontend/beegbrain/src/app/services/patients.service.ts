@@ -13,20 +13,40 @@ export class PatientsService {
 
   constructor(private http: HttpClient) { }
 
-  getPatients() : Observable<Patient[]> {
-    return this.http.get<Patient[]>(this.BASE_URL + 'patients');
+  getPatients(token: string) : Observable<Patient[]> {
+    return this.http.get<Patient[]>(this.BASE_URL + 'patients',{ 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    });
   }
 
-  getPatientsbySSN(ssn : string) : Observable<Patient> {
-    return this.http.get<Patient>(this.BASE_URL + 'patient?ssn='+ ssn );
+  getPatientsbySSN(ssn : string, token: string) : Observable<Patient> {
+    return this.http.get<Patient>(this.BASE_URL + 'patient?ssn='+ ssn, { 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    });
   }
 
-  getPatientbyId(id : number) : Observable<Patient> {
-    return this.http.get<Patient>(this.BASE_URL + 'patient/'+ id );
+  getPatientbyId(id : number, token: string) : Observable<Patient> {
+    return this.http.get<Patient>(this.BASE_URL + 'patient/'+ id, { 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    });
   }
 
-  getEEGbyPatient(id : number) : Observable<EEG[]> {
-    return this.http.get<EEG[]>(this.BASE_URL + 'eegs/'+ id );
+  getEEGbyPatient(id : number, token: string) : Observable<EEG[]> {
+    return this.http.get<EEG[]>(this.BASE_URL + 'eegs/'+ id, { 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    });
   }
 
 

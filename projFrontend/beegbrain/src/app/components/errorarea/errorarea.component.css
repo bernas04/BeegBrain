@@ -1,28 +1,9 @@
-@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200&display=swap');
 
-html,
-body {
-    height: 100%
-}
-
-body {
-    display: grid;
-    place-items: center;
-    font-family: 'Manrope', sans-serif;
-    background: #000;
-    
-}
-
-
-
-
-
- .cross {
-         padding: 10px;
-    color: #C9302C;
+.cross {
+    padding: 10px;
     cursor: pointer;
     font-size: 23px;
- }
+}
 
 .cross i{
     
@@ -30,76 +11,33 @@ body {
     cursor: pointer;
 }
 
-
-
-
-
-
-
 .comment-box {
-    padding: 5px
+    padding: 5px;
 }
 
 .comment-area textarea {
     resize: none;
-    border: 1px solid #C9302C
+    height: 10em;
 }
 
-.form-control:focus {
-    color: #495057;
-    background-color: #fff;
-    border-color: #ffffff;
-    outline: 0;
-    box-shadow: 0 0 0 1px #C9302C !important
-}
 
-.send {
-    color: #fff;
-    background-color: #C9302C;
-    border-color: #C9302C
+.text-bg-dark, .text-bg-dark:hover, .text-bg-dark:active, .text-bg-dark:visited {
+    background-color: #C41E3A !important;
+    border-color: #C41E3A !important;
+    font-size:medium;
 }
-
-.send:hover {
-    color: #fff;
-    background-color: #C9302C;
-    border-color: #C9302C
+.text-bg-light, .text-bg-light:hover, .text-bg-light:active, .text-bg-light:visited {
+    background-color: #F28C28 !important;
+    border-color: #F28C28 !important;
+    font-size:medium;
 }
-
-.rating {
-   display: inline-flex;
-    margin-top: -10px;
-    flex-direction: row-reverse;
-   
-    
+.text-bg-info, .text-bg-info:hover, .text-bg-info:active, .text-bg-info:visited {
+    background-color: #6495ED !important;
+    border-color: #6495ED !important;
+    font-size:medium;
 }
-
-.rating>input {
-    display: none
-}
-
-.rating>label {
-    position: relative;
-    width: 28px;
-    font-size: 35px;
-    color: #ff0000;
-    cursor: pointer;
-}
-
-.rating>label::before {
-    content: "\2605";
-    position: absolute;
-    opacity: 0
-}
-
-.rating>label:hover:before,
-.rating>label:hover~label:before {
-    opacity: 1 !important
-}
-
-.rating>input:checked~label:before {
-    opacity: 1
-}
-
-.rating:hover>input:checked~label:before {
-    opacity: 0.4
+.text-bg-success, .text-bg-success:hover, .text-bg-success:active, .text-bg-success:visited {
+    background-color: #5D3FD3 !important;
+    border-color: #5D3FD3 !important;
+    font-size:medium;
 }

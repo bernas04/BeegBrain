@@ -16,8 +16,13 @@ export class TableService {
 
   constructor(private http: HttpClient) { }
 
-  getEEGinfo(id:number) : Observable<EEG>{
-    return this.http.get<EEG>(this.BASE_URL+'eeg?id='+id);
+  getEEGinfo(id:number, token: string) : Observable<EEG>{
+    return this.http.get<EEG>(this.BASE_URL+'eeg?id='+id, { 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    });
   }
 
 

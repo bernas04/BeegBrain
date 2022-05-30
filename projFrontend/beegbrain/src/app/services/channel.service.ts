@@ -1,12 +1,6 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Doctor } from '../classes/Doctor';
-import { EEG } from '../classes/EEG';
-import { Operator } from '../classes/Operator';
-import { Patient } from '../classes/Patient';
-import { Report } from '../classes/Report';
-import { Channel } from '../classes/Channel';
 
 @Injectable({
   providedIn: 'root'
@@ -17,12 +11,22 @@ export class ChannelService {
 
   constructor(private http: HttpClient) { }
 
-  getLabelsFromEEG(id: number) : Observable<String[]> {
-      return this.http.get<String[]>(this.BASE_URL+'labels?eeg='+id);
+  getLabelsFromEEG(id: number, token: string) : Observable<String[]> {
+      return this.http.get<String[]>(this.BASE_URL+'labels?eeg='+id,{ 
+        headers: new HttpHeaders({
+          'Authorization': 'Token ' + token,
+          'Content-Type': 'application/json',
+        }),
+      });
   }
 
-  getDataAboutLabel(eegId : any, channel: any): Observable<Number[]>{
-    return this.http.get<Number[]>(this.BASE_URL+'channel?eeg='+eegId+'&label='+channel)
+  getDataAboutLabel(eegId : any, channel: any, token: string): Observable<Number[]>{
+    return this.http.get<Number[]>(this.BASE_URL+'channel?eeg='+eegId+'&label='+channel,{ 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    })
   }
   
   

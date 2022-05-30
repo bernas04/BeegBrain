@@ -1,4 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
 import { EEG } from 'src/app/classes/EEG';
 import { Patient } from 'src/app/classes/Patient';
 import { TableService } from 'src/app/services/table.service'
@@ -17,17 +18,23 @@ export class EegTableComponent implements OnInit {
   public map = new Map<number, string>();
 
 
-  constructor() { }
+  constructor(private router : Router) { }
 
   ngOnInit(): void {
+
     // criar o map com key = id do EEG, e value = nome do paciente
     this.lst_EEG.forEach((eeg) => {
       let pat = this.lst_Patients.find(x => x.id == eeg.patient)
-      if(pat) this.map.set(eeg.id, pat.name)
+      // console.log(pat)
+      if (pat) {
+        this.map.set(eeg.id, pat.name)
+        
+      } else { 
+        this.map.set(eeg.id,'undefined')
+      }
     });
 
   }
-
 
   delete() {
     this.eeg_deleted.emit(this.id);
@@ -38,7 +45,7 @@ export class EegTableComponent implements OnInit {
   }
 
   redirect(id: number) {
-    window.location.href = "/workspace/"+id;
+    this.router.navigate(["/workspace/"+id]);
   }
 
 

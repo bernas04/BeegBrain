@@ -1,4 +1,4 @@
-pyEDFlib
+pyEDFlib==0.1.23
 matplotlib
 numpy
 tk
