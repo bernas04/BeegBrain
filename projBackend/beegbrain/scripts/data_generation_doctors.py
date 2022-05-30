@@ -1,5 +1,4 @@
 import json
-from app.models import Doctor
 from app.serializers import UserSerializer
 
 

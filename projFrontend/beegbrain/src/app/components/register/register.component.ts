@@ -116,9 +116,6 @@ export class RegisterComponent implements OnInit {
       error = true;
       this.error_health_number = true;
     }
-    console.log(this.registerForm.value["health_number"])
-
-
     if (this.registerForm.value["gender"] === null) {
  
       error = true;
@@ -166,11 +163,12 @@ export class RegisterComponent implements OnInit {
 
             let data_user_json = JSON.parse(JSON.stringify(data))
 
-            console.log(data_user_json['id']);
+            console.log(data_user_json);
   
             localStorage.setItem('token', data_user_json['token']);
             localStorage.setItem('id', data_user_json['id']);
             localStorage.setItem('type', data_user_json['type']);
+            localStorage.setItem('email',this.registerForm.value["email"]);
             this.router.navigate(['/']);
             
           },
@@ -184,11 +182,15 @@ export class RegisterComponent implements OnInit {
         subscribe({
           next: (data) => {
 
-            let data_user_json = JSON.parse(JSON.stringify(data))
+            let data_user_json = JSON.parse(JSON.stringify(data));  
 
-            localStorage.setItem('token', data_user_json['token']);
+            
+            console.log(data_user_json);
+
+            localStorage.setItem('token', data_user_json['key']);
             localStorage.setItem('id', data_user_json['id']);
             localStorage.setItem('type', data_user_json['type']);
+            localStorage.setItem('email',this.registerForm.value["email"]);
             this.router.navigate(['/']);
             
           },

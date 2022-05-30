@@ -13,7 +13,6 @@ export class RegistrationService {
 
   private BASE_URL = 'http://localhost:8000/api/';
   token = ''+localStorage.getItem('token');
-  currentUserId = localStorage.getItem('user_id');
   
   constructor(private http: HttpClient) { }
 
@@ -24,13 +23,10 @@ export class RegistrationService {
       }),
     });
   }
+
   getRevisionCenter() : Observable<RevisionCenter[]> {
     return this.http.get<Providence[]>(this.BASE_URL + 'revisioncenters');
   }
-
- 
-
-  //criar metodo registar user no django 
 
   createDoctor = (name:string,email: string, password:string, birthday:Date, gender:string, healthNumber:string, telephone:string, address:string, medicalNumber:string, institutions:string): Observable<Object> => {
     const body = JSON.stringify(
@@ -48,7 +44,6 @@ export class RegistrationService {
         
       }
     );
-    console.log(body)
 
     return this.http.post(
       this.BASE_URL + "createDoctor",
@@ -61,7 +56,7 @@ export class RegistrationService {
     );
   }
 
-  createOperator = (name:string, email: string, password:string, birthday:Date, gender:string, healthnumber:Number, telephone:Number, address:string, operatorNumber:Number, providence:string) => {
+  createOperator = (name:string, email: string, password:string, birthday:Date, gender:string, healthnumber:Number, telephone:Number, address:string, operatorNumber:Number, providence:string) : Observable<Object> => {
     const body = JSON.stringify(
       {
         "name":name,
@@ -88,6 +83,4 @@ export class RegistrationService {
     );
   }
  
-  
-  //createOperator():
 }

@@ -36,6 +36,7 @@ export class LoginComponent implements OnInit {
 
         let data_json = JSON.parse(JSON.stringify(data));
         this.token = data_json.token;
+        
         localStorage.setItem('token', this.token);
         localStorage.setItem('email', this.contactForm.value["email"]);
 
@@ -43,6 +44,7 @@ export class LoginComponent implements OnInit {
           next: (data_user) => {
             let data_user_json = JSON.parse(JSON.stringify(data_user));
             localStorage.setItem('id', data_user_json.id);
+            localStorage.setItem('id', data_user_json.type);
             this.router.navigate(['/dashboard']);
           },
           error: () => {

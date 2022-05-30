@@ -43,12 +43,15 @@ def getUserByEmail(request):
     email = request.GET['email']
     try:
         user = Person.objects.get(email=email)
-        print(user)
     except Person.DoesNotExist:
-        print("doesnt exist!!!!")
         return Response(status=status.HTTP_404_NOT_FOUND)
-    serializer = serializers.PersonSerializer(user)
-    return Response(serializer.data)
+    try:
+        d = Doctor.objects.get(email=email)
+        type = 'doctor'
+    except Doctor.DoesNotExist:
+        type = 'operator'
+    data = {'id': user.id, 'type' : type}
+    return Response(data)
 
 # ############################### INSTITUTIONS ###############################
 

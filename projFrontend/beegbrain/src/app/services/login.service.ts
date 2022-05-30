@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
-import { Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +12,7 @@ export class LoginService {
 
   constructor(private http: HttpClient) { }
 
-  logIn = (username: string, password: string) => {
+  logIn = (username: string, password: string) : Observable<Object> => {
 
       const body=JSON.stringify({"username": username, "password": password });
 
@@ -28,7 +28,7 @@ export class LoginService {
       );
   }
 
-  getUserInfo = (email: string, token: string) => {
+  getUserInfo = (email: string, token: string) : Observable<Object> => {
     return this.http.get(
       this.baseUrl + "get_user?email=" + email,
       { 
