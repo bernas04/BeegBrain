@@ -27,13 +27,15 @@ class UserSerializer(serializers.ModelSerializer):
                    medical_number=validated_data['medical_number'])
         d.save()
         print("doctor created")
-        return Token.objects.get(user=user)
+
+        return { 'token' : Token.objects.get(user=user), 'id' : d.id}
 
     def createOperator(self, validated_data):
         user = User(email=validated_data['email'])
         user.set_password(validated_data['password'])
         user.is_active = True
         user.save()
+        providence = Providence.objects.get(id=validated_data['providence'])
         o = Operator(name=validated_data['name'],
                    health_number=validated_data['health_number'],
                    email=validated_data['email'],
@@ -42,9 +44,9 @@ class UserSerializer(serializers.ModelSerializer):
                    birthday=validated_data['birthday'],
                    gender=validated_data['gender'],
                    operator_number=validated_data['operator_number'],
-                   providence=validated_data['providence'])
+                   providence=providence)
         o.save()
-        return Token.objects.get(user=user)
+        return { 'token' : Token.objects.get(user=user), 'id' : o.id}
 
 class TokenSerializer(serializers.ModelSerializer):
     class Meta: 

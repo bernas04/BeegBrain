@@ -60,7 +60,7 @@ class Migration(migrations.Migration):
             name='Doctor',
             fields=[
                 ('person_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='app.person')),
-                ('medical_number', models.CharField(max_length=20, unique=True)),
+                ('medical_number', models.CharField(max_length=20)),
             ],
             bases=('app.person',),
         ),
@@ -90,7 +90,6 @@ class Migration(migrations.Migration):
             name='SharedFolder',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('eeg', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='%(class)s_eeg', to='app.eeg', verbose_name='eeg')),
                 ('institution', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='%(class)s_institution', to='app.institution', verbose_name='institution')),
             ],
@@ -123,8 +122,8 @@ class Migration(migrations.Migration):
             name='Annotation',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('start', models.FloatField()),
-                ('duration', models.FloatField(null=True)),
+                ('start', models.DateTimeField()),
+                ('duration', models.FloatField()),
                 ('description', models.TextField()),
                 ('eeg', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='%(class)s_eeg', to='app.eeg', verbose_name='eeg')),
             ],
@@ -160,7 +159,7 @@ class Migration(migrations.Migration):
             name='Operator',
             fields=[
                 ('person_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='app.person')),
-                ('operator_number', models.CharField(max_length=20, unique=True)),
+                ('operator_number', models.CharField(max_length=20)),
                 ('providence', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='%(class)s_providence', to='app.providence', verbose_name='providence')),
             ],
             bases=('app.person',),

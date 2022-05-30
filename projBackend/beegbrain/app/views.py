@@ -81,9 +81,9 @@ def getInstitutionById(request):
 
 # ############################### PROVENIENCIAS ###############################
 
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
 @api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def getProvidence(request):
     """GET de todas as Proveniencias"""
     providences = Providence.objects.all()
@@ -123,8 +123,8 @@ def getProvidenceById(request):
 # ############################### REVISION CENTER ###############################
 
 @api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
 def getRevisionCenter(request):
     """GET de todos os centros de revisão"""
     revision_centers = RevisionCenter.objects.all()
@@ -272,13 +272,13 @@ def getOperators(request):
 
 
 @api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
+# @authentication_classes([TokenAuthentication])
+# @permission_classes([IsAuthenticated])
 def createOperator(request):
     serializer = serializers.UserSerializer(data=request.data)
     if serializer.is_valid():
         resp = serializer.createOperator(request.data)
-        token = serializers.TokenSerializer(data={'key': resp.key})
+        token = serializers.TokenSerializer(data={'key': resp['token'].key, 'id': resp['id'], 'type' : 'operator'})
         return Response(token.initial_data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -321,11 +321,15 @@ def getDoctors(request):
 
 @api_view(['POST'])
 def createDoctor(request):
+    print(request.data)
     serializer = serializers.UserSerializer(data=request.data)
     if serializer.is_valid():
         resp = serializer.createDoctor(request.data)   
-        token = serializers.TokenSerializer(data={'key': resp.key})
+        print(resp)
+        token = serializers.TokenSerializer(data={'key': resp['token'].key, 'id': resp['id'], 'type' : 'doctor'})
         return Response(token.initial_data)
+    else: 
+        print(serializer.errors)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
