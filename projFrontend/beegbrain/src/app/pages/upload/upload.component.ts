@@ -1,7 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { EEGService } from 'src/app/services/eeg.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 
 @Component({
@@ -16,12 +15,19 @@ export class UploadComponent implements OnInit {
   @Input() priority! : string;
   files : File[] = [];
   token = ''+localStorage.getItem('token');
-
-  //fileName = '';
+  type = ''+localStorage.getItem('type');
+  id = ''+localStorage.getItem('id');
+  health_number = ''+localStorage.getItem('health_number');
 
   public form!: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private eegService: EEGService, private router: Router, private http: HttpClient) { }
+  constructor(private eegService: EEGService, private router: Router) {
+
+    if (this.token === null || this.type !== 'operator' ) {
+      this.router.navigate(['/']);
+    }
+
+  }
 
   ngOnInit(): void {
   }
@@ -33,11 +39,11 @@ export class UploadComponent implements OnInit {
   submitEEG() {
 
     console.log("Submitting EEG")
-    console.log(this.operatorID)
+    console.log(this.id)
     console.log(this.patientID)
 
     const formData = new FormData();
-    formData.append('operatorID', this.operatorID);
+    formData.append('operatorID', this.health_number);
     formData.append('patientID', this.patientID);
     formData.append('priority', this.priority);
     for (let file of this.files) {

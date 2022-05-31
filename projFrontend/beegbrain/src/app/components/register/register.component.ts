@@ -169,7 +169,8 @@ export class RegisterComponent implements OnInit {
             localStorage.setItem('id', data_user_json['id']);
             localStorage.setItem('type', data_user_json['type']);
             localStorage.setItem('email',this.registerForm.value["email"]);
-            this.router.navigate(['/']);
+            localStorage.setItem('health_number', data_user_json.health_number);
+            this.router.navigate(['/dashboard']);
             
           },
           error: () => {
@@ -191,7 +192,8 @@ export class RegisterComponent implements OnInit {
             localStorage.setItem('id', data_user_json['id']);
             localStorage.setItem('type', data_user_json['type']);
             localStorage.setItem('email',this.registerForm.value["email"]);
-            this.router.navigate(['/']);
+            localStorage.setItem('health_number', data_user_json.health_number);
+            this.router.navigate(['/dashboard']);
             
           },
           error: () => {

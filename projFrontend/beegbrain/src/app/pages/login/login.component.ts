@@ -45,6 +45,7 @@ export class LoginComponent implements OnInit {
             let data_user_json = JSON.parse(JSON.stringify(data_user));
             localStorage.setItem('id', data_user_json.id);
             localStorage.setItem('type', data_user_json.type);
+            localStorage.setItem('health_number', data_user_json.health_number);
             this.router.navigate(['/dashboard']);
           },
           error: () => {

@@ -9,7 +9,7 @@
     <button type="button" class="btn btn-success mb-5 text-center d-flex justify-content-center" (click)="refresh()"> 
       <i class="bi bi-arrow-clockwise"></i> Refresh </button>
 
-    <button type="button"  [routerLink]="'/upload'" class="btn btn-primary mb-5 text-center d-flex justify-content-center">
+    <button *ngIf="type === 'operator'" type="button"  [routerLink]="'/upload'" class="btn btn-primary mb-5 text-center d-flex justify-content-center">
       <i class="bi bi-file-earmark-arrow-up"></i> Upload </button>
 
   </div>
@@ -25,7 +25,7 @@
           aria-controls="allexams" aria-selected="true"><strong> Transfered Area </strong></a>
       </li>
 
-      <li class="nav-item">
+      <li class="nav-item" *ngIf="type == 'operator'">
         <a class="nav-link" id="errorarea-tab" data-toggle="tab" href="#errorarea" role="tab" aria-controls="errorarea" aria-selected="false">
           Error Area 
           <span *ngIf="lst_error_eeg.length != 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="color:white;"> {{lst_error_eeg.length}}</span>

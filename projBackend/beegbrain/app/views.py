@@ -40,10 +40,14 @@ def getUserByEmail(request):
         user = Person.objects.get(email=email)
         print(user)
     except Person.DoesNotExist:
-        print("doesnt exist!!!!")
         return Response(status=status.HTTP_404_NOT_FOUND)
-    serializer = serializers.PersonSerializer(user)
-    return Response(serializer.data)
+    try:
+        d = Doctor.objects.get(email=email)
+        type = 'doctor'
+    except Doctor.DoesNotExist:
+        type = 'operator'
+    data = {'id': user.id, 'health_number' : user.health_number, 'type': type}
+    return Response(data)
 
 # ############################### INSTITUTIONS ###############################
 
@@ -77,8 +81,6 @@ def getInstitutionById(request):
 # ############################### PROVENIENCIAS ###############################
 
 @api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def getProvidence(request):
     """GET de todas as Proveniencias"""
     providences = Providence.objects.all()
@@ -118,8 +120,6 @@ def getProvidenceById(request):
 # ############################### REVISION CENTER ###############################
 
 @api_view(['GET'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def getRevisionCenter(request):
     """GET de todos os centros de revisão"""
     revision_centers = RevisionCenter.objects.all()
@@ -267,13 +267,11 @@ def getOperators(request):
 
 
 @api_view(['POST'])
-@authentication_classes([TokenAuthentication])
-@permission_classes([IsAuthenticated])
 def createOperator(request):
     serializer = serializers.UserSerializer(data=request.data)
     if serializer.is_valid():
         resp = serializer.createOperator(request.data)
-        token = serializers.TokenSerializer(data={'key': resp.key})
+        token = serializers.TokenSerializer(data={'key': resp['token'].key, 'id': resp['id'], 'type':'doctor', 'health_number' : request.data['health_number']})
         return Response(token.initial_data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -319,7 +317,7 @@ def createDoctor(request):
     serializer = serializers.UserSerializer(data=request.data)
     if serializer.is_valid():
         resp = serializer.createDoctor(request.data)   
-        token = serializers.TokenSerializer(data={'key': resp.key})
+        token = serializers.TokenSerializer(data={'key': resp['token'].key, 'id': resp['id'], 'type':'doctor', 'health_number' : request.data['health_number']})
         return Response(token.initial_data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

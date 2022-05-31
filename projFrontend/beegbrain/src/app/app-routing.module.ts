@@ -12,7 +12,7 @@ import { WorkspaceComponent } from './pages/workspace/workspace.component';
 
 const routes: Routes = [
 
-  { path: '', component: DashboardComponent },
+  { path: '', component: LoginComponent },
 
   { path: 'dashboard', component: DashboardComponent },
 

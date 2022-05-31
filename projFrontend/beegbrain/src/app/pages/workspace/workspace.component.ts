@@ -17,6 +17,8 @@ export class WorkspaceComponent implements OnInit {
   EEGpacient = new Map<number, Patient>();
 
   token = ''+localStorage.getItem('token');
+  type = ''+localStorage.getItem('type');
+  id = ''+localStorage.getItem('id');
 
   constructor(private service: WorkspaceService, private patient_service: PatientsService) { }
 
