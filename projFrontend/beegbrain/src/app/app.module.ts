@@ -34,7 +34,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PieChartComponent } from './components/pie-chart/pie-chart.component';
 import { BarChartComponent } from './components/bar-chart/bar-chart.component';
 import { InfoBoxComponent } from './components/info-box/info-box.component';
-import { MatSelectModule } from '@angular/material/select';
+import {AutocompleteLibModule} from 'angular-ng-autocomplete';
 
 
 @NgModule({
@@ -77,7 +77,7 @@ import { MatSelectModule } from '@angular/material/select';
     BrowserAnimationsModule,
     NgxEditorModule,
     Ng2SearchPipeModule,
-    MatSelectModule
+    AutocompleteLibModule
 
   ],
   providers: [],

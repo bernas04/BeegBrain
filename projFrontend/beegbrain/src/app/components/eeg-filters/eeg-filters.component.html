@@ -22,6 +22,13 @@
             <div class="form-outline">
                 <input placeholder="SSN" type="search" id="patientssn" class="form-control" />
                 <label class="form-label" for="formControlDefault"></label>
+
+            </div>
+
+        </div>             
+        <div class="card-body">
+            <div class="card-header"> <strong> Institution </strong></div>
+            <div class="form-outline">   
                 <input placeholder="Name" type="search" id="patientname" class="form-control" />
                 <label class="form-label" for="formControlDefault"></label>
             </div>
@@ -44,9 +51,28 @@
                 Operator
             </strong></div>
         <div class="form-outline">
-            <input placeholder="SSN" type="search" id="operatorssn" class="form-control" />
            
-
+            <div class="ng-autocomplete" style="width: 100%">
+                <ng-autocomplete 
+                  [data]="data"
+                  [searchKeyword]="keyword"
+                  placeholder="Operator"
+                  id="operatorhealthnumber"
+                  (selected)='selectEvent($event)'
+                  (inputChanged)='onChangeSearch($event)'
+                  (inputFocused)='onFocused($event)'
+                  [itemTemplate]="itemTemplate"
+                  [notFoundTemplate]="notFoundTemplate">                                 
+                </ng-autocomplete>
+                
+                <ng-template #itemTemplate let-item>
+                <a [innerHTML]="item.name"></a>
+                </ng-template>
+                
+                <ng-template #notFoundTemplate let-notFound>
+                <div [innerHTML]="notFound"></div>
+                </ng-template>
+            </div>
             
             <label class="form-label" for="formControlDefault"></label>
             <input placeholder="Name" type="search" id="operatorname" class="form-control" />

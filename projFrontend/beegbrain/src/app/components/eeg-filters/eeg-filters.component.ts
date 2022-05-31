@@ -8,31 +8,48 @@ import { MatSelectModule } from '@angular/material/select';
   selector: 'app-eeg-filters',
   templateUrl: './eeg-filters.component.html',
   styleUrls: ['./eeg-filters.component.css'],
-  
+
 })
 export class EegFiltersComponent implements OnInit {
-  token = ''+localStorage.getItem('token');
-  
+  token = '' + localStorage.getItem('token');
+
   idSearch = '';
 
   lst_patients: Patient[] = []
 
-  constructor(private patientService:PatientsService) { }
+  constructor(private patientService: PatientsService) { }
 
   ngOnInit(): void {
     console.log(this.lst_patients)
     this.getPatientsList()
   }
 
-  getPatientsList(){
+  getPatientsList() {
     this.patientService.getPatients(this.token).subscribe((info) => {
-    this.lst_patients = info;
-  });
+      this.lst_patients = info;
+    });
 
-}
+  }
 
 
+  data = [
+      
+  ];
 
+  keyword = 'name';
+
+  selectEvent(item:any) {
+    // do something with selected item
+  }
+
+  onChangeSearch(val: string) {
+    // fetch remote data from here
+    // And reassign the 'data' which is binded to 'data' property.
+  }
+
+  onFocused(e:any) {
+    // do something when input is focused
+  }
   @Output() searchIdEvent = new EventEmitter<any>();
 
   onKeyId(value: string) {
@@ -52,21 +69,21 @@ export class EegFiltersComponent implements OnInit {
 
   @Output() filterByDateEvent = new EventEmitter<any>();
 
-  selectData(value: string){
+  selectData(value: string) {
     var myDate = new Date(value);
     console.log("tou na componente dos filtros")
     console.log(value)
-    console.log(typeof(value))
+    console.log(typeof (value))
     this.filterByDateEvent.emit(value)
     console.log(this.lst_patients)
 
   }
 
   @Output() filterByOperator = new EventEmitter<any>();
-  selectOperator(value: string){
+  selectOperator(value: string) {
     this.filterByOperator.emit(value)
   }
- 
+
 
 
 }
