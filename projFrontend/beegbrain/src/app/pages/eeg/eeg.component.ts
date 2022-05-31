@@ -29,17 +29,32 @@ export class EegComponent implements OnInit {
   control!: boolean;
   token = ''+localStorage.getItem('token');
 
+  window_size: number=30;
+
+  speed: number = 1000; // default: 1 segundo
+  options: Options = {
+    floor: 0,
+    ceil: 1000,
+    step: 50,         // de 0.05 em 0.05 segundos
+    rightToLeft: true,
+    translate: (value: number): string => {
+      return value +' ms';
+    },
+  };
+  
+  
+
   constructor(private services:ChannelService, private router: Router, private EEGservices:EEGService) { }
 
 
   
   ngOnInit() {
+    
     const url_array = this.router.url.split("/");
     let eegId = +url_array[url_array.length - 1];
     this.id=eegId;
     this.getLabelsFromEEG(eegId);
     this.getInformation(eegId);
-    
     this.dropdownSettings = {
       singleSelection: false,
       idField : 'item_id',
@@ -52,6 +67,7 @@ export class EegComponent implements OnInit {
   getInformation(eegId:number): any{
     this.EEGservices.getEEGinfo(eegId, this.token).subscribe((info) => {
       this.eegInfo = info;
+      console.log(info);
     })
   }
 
@@ -62,24 +78,9 @@ export class EegComponent implements OnInit {
     })
   }
   
-  speed: number = 1000; // default: 1 segundo
-  options: Options = {
-    floor: 0,
-    ceil: 1000,
-    step: 50,         // de 0.05 em 0.05 segundos
-    rightToLeft: true,
-    translate: (value: number): string => {
-      return value +' ms';
-    },
-  };
-  
-  window_size: number=30;
-  
   onItemSelect(item: any) {
     this.labels.push(item);
-    this.services.getDataAboutLabel(this.id, item, this.token).subscribe((info) => {
-      this.labelsSignal.set(item, info);
-    });
+    this.getLabelData(this.labels);
     this.eeg_viewer.notification();
     this.control=false;
   }
@@ -115,6 +116,22 @@ export class EegComponent implements OnInit {
 
   update() {
     console.log("new speed value: "+ this.speed)
+  }
+
+  changeInterval(num: number) {
+    this.window_size = num;
+    this.getLabelData(this.labels);
+  }
+
+  getLabelData(item: String[]) {
+    this.services.getDataAboutLabel(this.id, item, this.token, this.window_size, 0).subscribe((info) => {
+      for (var label of item) {
+        this.labelsSignal.set(label, info);
+      }
+      // dar update dos dados no eeg_viewer
+      this.eeg_viewer.updateData();
+    });
+
   }
 
   

@@ -1,5 +1,5 @@
 import * as echarts from 'echarts';
-import { ChangeDetectionStrategy, Component, Input, OnChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output } from '@angular/core';
 import { EEGService } from 'src/app/services/eeg.service';
 import { Router } from '@angular/router';
 import { EEG } from 'src/app/classes/EEG';
@@ -24,6 +24,7 @@ export class EEGViewerComponent implements OnChanges {
   @Input('eegInfo') eegInfo!: EEG
   @Input('labels') labels!: any;
   @Input('control') control!: boolean;
+  @Output() new_interval = new EventEmitter<number>();
 
   
   constructor(private services:EEGService, private router:Router) { }
@@ -34,6 +35,8 @@ export class EEGViewerComponent implements OnChanges {
 
   ngOnChanges(model: any) {
     this.changeSpeed();
+    this.new_interval.emit(this.interval);
+    this.updateData();
   }
   
   notification(){
@@ -42,20 +45,13 @@ export class EEGViewerComponent implements OnChanges {
   }
 
   ngOnInit() {
-
     const url_array = this.router.url.split("/");
     let eegId = +url_array[url_array.length - 1];
     let series: any = [];
     let counter=0;
 
     for (const [key, value] of this.labelsSignal) {
-      let str = JSON.stringify(value);
-      let b = str.split(':')[1];
-      var c = str.split(',').map(function(item) {
-        return Math.round(parseFloat(item));
-      });
-      
-      this.yData.push(c);
+      this.yData.push(value[key]);
       series.push({name:key, type:"line", showSymbol:false, data:this.yData[counter]})
       
       counter++;
@@ -82,7 +78,10 @@ export class EEGViewerComponent implements OnChanges {
       tooltip: {
         trigger: 'axis',
         axisPointer: {
-          animation: false
+          animation: false,
+          lineStyle: {
+            color: '#ff0000'
+          }
         }
       },
       toolbox: {
@@ -117,7 +116,7 @@ export class EEGViewerComponent implements OnChanges {
         name: "x",
         type: "category",
         minorTick: {
-          show: true
+          show: true,
         },
         splitLine: {
           lineStyle: {
@@ -137,7 +136,7 @@ export class EEGViewerComponent implements OnChanges {
         type: 'value',
         boundaryGap: [0, '100%'], 
         minorTick: {
-          show: true
+          show: true,
         },
         splitLine: {
           lineStyle: {
@@ -201,6 +200,31 @@ export class EEGViewerComponent implements OnChanges {
     this.lst_intervalId.push(this.intervalId);
   }
 
+  updateData() {
+
+    let min_series: any = [];
+
+    for (const [key, value] of this.labelsSignal) {
+      /* this.yData.push(value[key]); */
+      console.log("VALOR da value[key]" , value[key])
+      min_series.push({name:key, type:"line", showSymbol:false, data:value[key]})
+    }
+
+  
+
+    this.myChart.setOption<echarts.EChartsOption>({
+      yAxis:{
+        /* data: min_series, */
+      },
+
+      series: min_series,
+     
+      xAxis: {
+          /* data : dataX, */
+      },
+    }); 
+  }
+
 
   changeSpeed() {
     // clear the existing interval
@@ -215,3 +239,7 @@ export class EEGViewerComponent implements OnChanges {
   }
 
 }
+function OutPut() {
+  throw new Error('Function not implemented.');
+}
+
