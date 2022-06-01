@@ -69,5 +69,7 @@ urlpatterns = [
     
     path('api/doctorRevisionCenters', views.getDoctorRevisionCenters),
     path('api/createDoctorevisioncenter', views.createDoctorRevisionCenter),
-    
+
+    path('api/filter', views.getEEGfilter),
+   
 ]

@@ -1,3 +1,4 @@
+from ast import operator
 import multiprocessing
 from rest_framework.decorators import api_view
 from datetime import datetime
@@ -843,4 +844,49 @@ def getSharedFolderById(request, id):
 
 
 
+# ############################### FILTERS ###############################
 
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def getEEGfilter(request):
+    print("hahaha")
+    print("REQUEST",request)
+    eeg_id = (request.GET['id'])
+    patient_id = (request.GET['patient_id'])
+    institution_id = (request.GET['institution_id'])
+    date = (request.GET['date'])
+    operator_id = (request.GET['operator_id'])
+    priority = (request.GET['priority'])
+    report_status = (request.GET['report_status'])
+
+    
+    eegs = EEG.objects.all()
+
+    if eeg_id:
+        print("eeg_id",eeg_id)
+        eegs = eegs.filter(id__contains=eeg_id)
+    if date:
+        eegs = eegs.filter(timestamp__icontains=date)
+    if patient_id:
+        eegs = eegs.filter(patient_id__contains=patient_id)
+        print(patient_id)
+    # if institution_id:
+    #     eegs = eegs.filter(operator_id__contains=patient_id).filter() to do
+    if operator_id:
+        eegs = eegs.filter(operator_id__contains=operator_id)
+        print(operator_id)
+        print("fodasssssssss")
+
+    if report_status:
+        eegs = eegs.filter(report__contains=report_status)
+
+    if priority:
+        eegs = eegs.filter(priority__contains=priority)
+
+    serializer = serializers.EEGSerializer(eegs, many=True)
+    print("JAAAAAAAAAAAAAAAAaaaaaa")
+    return Response(serializer.data)
+    
+    

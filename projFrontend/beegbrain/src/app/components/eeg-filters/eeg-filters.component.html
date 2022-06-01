@@ -1,4 +1,5 @@
 <div class="filters" style="margin-left: 50px;">
+    <form method="GET" [formGroup]="filtersForm">
 
     <div class="card">
          <h4 style="align-self: center;"> <strong> Search by</strong></h4>
@@ -9,8 +10,8 @@
                     EEG ID
                 </strong></div>
             <div class="form-outline">
-                <input placeholder="ID" type="search" id="eegId"  autocomplete="on" class="form-control"
-                #searchTerm  (keyup)="onKeyId(searchTerm.value)" />
+                <input  (keyup.enter)="getFiltersFormData()"  formControlName="eeg_id" placeholder="ID" type="search" id="eegId"  autocomplete="on" class="form-control"
+                #searchTerm   />
                 <label class="form-label" for="formControlDefault"></label>
             </div>
         </div>
@@ -20,16 +21,9 @@
         <div class="card-body">
             <div class="card-header"> <strong> Patient </strong></div>
             <div class="form-outline">
-                <input placeholder="SSN" type="search" id="patientssn" class="form-control" />
+                <input (keyup.enter)="getFiltersFormData()"   formControlName="patient_id" placeholder="SSN" type="search" id="patientssn" class="form-control" />
                 <label class="form-label" for="formControlDefault"></label>
-
-            </div>
-
-        </div>             
-        <div class="card-body">
-            <div class="card-header"> <strong> Institution </strong></div>
-            <div class="form-outline">   
-                <input placeholder="Name" type="search" id="patientname" class="form-control" />
+                <input (keyup.enter)="getFiltersFormData()"   formControlName="patient_id" placeholder="Name" type="search" id="patientname" class="form-control" />
                 <label class="form-label" for="formControlDefault"></label>
             </div>
 
@@ -41,7 +35,7 @@
                 Date
             </strong></div>
         <div class="form-outline">
-            <input placeholder="ID" type="date" id="date" #date (change)="selectData(date.value)" class="form-control" />
+            <input (keyup.enter)="getFiltersFormData()"   placeholder="ID" formControlName="date" type="date" id="date" #date  class="form-control" />
             <label class="form-label" for="formControlDefault"></label>
         </div>
        
@@ -51,31 +45,10 @@
                 Operator
             </strong></div>
         <div class="form-outline">
-           
-            <div class="ng-autocomplete" style="width: 100%">
-                <ng-autocomplete 
-                  [data]="data"
-                  [searchKeyword]="keyword"
-                  placeholder="Operator"
-                  id="operatorhealthnumber"
-                  (selected)='selectEvent($event)'
-                  (inputChanged)='onChangeSearch($event)'
-                  (inputFocused)='onFocused($event)'
-                  [itemTemplate]="itemTemplate"
-                  [notFoundTemplate]="notFoundTemplate">                                 
-                </ng-autocomplete>
-                
-                <ng-template #itemTemplate let-item>
-                <a [innerHTML]="item.name"></a>
-                </ng-template>
-                
-                <ng-template #notFoundTemplate let-notFound>
-                <div [innerHTML]="notFound"></div>
-                </ng-template>
-            </div>
+          
             
             <label class="form-label" for="formControlDefault"></label>
-            <input placeholder="Name" type="search" id="operatorname" class="form-control" />
+            <input (keyup.enter)="getFiltersFormData()"   placeholder="Name" formControlName="operator_id" type="search" id="operatorname" class="form-control" />
             <label class="form-label" for="formControlDefault"></label>
         </div>
         </div>
@@ -83,7 +56,7 @@
         <div class="card-body">
             
         <div class="card-header"> <strong> Priority </strong></div>
-        <select class="form-control" id="priority" #priority  (click)="selectPriority(priority.value)">            
+        <select class="form-control" id="priority" #priority formControlName="priority" (keyup.enter)="getFiltersFormData()">            
             <option value="5">Urgent</option>
                 <option value="4">High</option>
                 <option value="3">Medium</option>
@@ -94,5 +67,6 @@
             </select>
         </div>
     </div>
+</form>
 
 </div>

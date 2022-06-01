@@ -1,8 +1,7 @@
 <app-navbar></app-navbar>
 
   <div class="col-lg-3">
-    <app-eeg-filters (searchIdEvent)="onKeyId($event)"  
-    (searchPriority)="selectPriority($event)"  (filterByDateEvent)="selectData($event)"> </app-eeg-filters>
+    <app-eeg-filters (sendFiltersEvent)="sendFilters($event)" > </app-eeg-filters>
   </div>
   <div class="float-md-right mb-5 pr-4 d-flex">
     
@@ -30,6 +29,7 @@
         <app-eeg-table  *ngIf="lst_eeg.length != 0" [allEEG]="lst_eeg" [allPatients]="lst_patient" 
         (eeg_deleted)="onDelete($event)"   ></app-eeg-table>
 
+     
 
         <div *ngIf="lst_eeg.length == 0" class="alert alert-warning d-flex align-items-center" role="alert" style="width: 20em;">
           <i class="bi bi-exclamation-triangle-fill"></i>
