@@ -901,6 +901,7 @@ def getEEGfilter(request):
 
 
     if operator_id:
+        print("FODASSSSSSSSSSSSSSSSSSSSSss")
         print("operator",operator_id)
         query_operator = EEG.objects.select_related('operator').filter(operator__health_number=operator_id)
         operator_list = list(query_operator)

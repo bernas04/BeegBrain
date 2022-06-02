@@ -22,36 +22,36 @@ export class EegFiltersComponent implements OnInit {
 
   lst_patients: Patient[] = []
 
-  filtersForm !:FormGroup;
+  filtersForm !: FormGroup;
 
   filtering: Boolean = false
-  eeg_id :string = ''
+  eeg_id: string = ''
   patient_id: string = ''
   operator_id: string = ''
   institution_id: string = ''
   priority: string = ''
-  report_status:string = ''
+  report_status: string = ''
   date: string = ''
 
 
 
 
-  
 
-  constructor(private fb:FormBuilder, private patientService: PatientsService, private eegService:EEGService) { }
 
-  public eegs_filtered: EEG[]=[];
+  constructor(private fb: FormBuilder, private patientService: PatientsService, private eegService: EEGService) { }
+
+  public eegs_filtered: EEG[] = [];
 
   ngOnInit(): void {
     console.log(this.lst_patients)
     this.getPatientsList()
     this.filtersForm = this.fb.group({
-      eeg_id : [null],
-      patient_id:[null],
+      eeg_id: [null],
+      patient_id: [null],
       operator_id: [null],
       institution_id: [null],
       priority: [null],
-      report_status:[null],
+      report_status: [null],
       date: [null],
     })
 
@@ -68,82 +68,92 @@ export class EegFiltersComponent implements OnInit {
 
   getFiltersFormData(): void {
     const data = this.filtersForm.value
-    var x :boolean=false;
-    if (data["eeg_id"] !== undefined){
-      if (data["eeg_id"] !== null){
-        this.eeg_id=data["eeg_id"]
+    var x: boolean = false;
+    if (data["eeg_id"] !== undefined) {
+      if (data["eeg_id"] !== null) {
+        this.eeg_id = data["eeg_id"]
         console.log("new WAY", this.eeg_id)
       }
-      else{
-        this.eeg_id=''
+      else {
+        this.eeg_id = ''
       }
-      x=true;
-      
+      x = true;
+
     }
-    if (data["patient_id"] !== undefined){
-      if (data["patient_id"] !== null){
-        this.patient_id=data["patient_id"]
+    if (data["patient_id"] !== undefined) {
+      if (data["patient_id"] !== null) {
+        this.patient_id = data["patient_id"]
         console.log(this.patient_id)
       }
-      else{
-        this.patient_id=''
+      else {
+        this.patient_id = ''
       }
-      x=true;
+      x = true;
 
-    } 
-    if (data["institution_id"] !== undefined){
+    }
+    if (data["institution_id"] !== undefined) {
       if (data["institution_id"] !== null) {
-         this.institution_id=data["institution_id"]
-      console.log(this.institution_id)
+        this.institution_id = data["institution_id"]
+        console.log(this.institution_id)
       }
-      else{
-        this.institution_id=''
+      else {
+        this.institution_id = ''
       }
-      x=true;
-      
+      x = true;
+
     }
-    if (data["date"] !== undefined){
-      if (data["date"] !== null){
-         this.date=data["date"]
-      console.log(this.date)
+    if (data["date"] !== undefined) {
+      if (data["date"] !== null) {
+        this.date = data["date"]
+        console.log(this.date)
       }
-      else{
-        this.date=''
+      else {
+        this.date = ''
       }
-      x=true;
+      x = true;
     }
-    if (data["priority"] !== undefined){
-      if (data["priority"] !== null){
-         this.date=data["priority"]
-      console.log(this.priority)
+    if (data["operator_id"] !== undefined) {
+      if (data["operator_id"] !== null) {
+        this.operator_id = data["operator_id"]
+        console.log("operator", this.operator_id)
       }
-      else{
-        this.priority=''
+      else {
+        this.operator_id = ''
       }
-      x=true;
+      x = true;
     }
-    if (data["report_status"] !== undefined){
-      if (data["report_status"] !== null){
-         this.date=data["report_status"]
-      console.log(this.report_status)
+    if (data["priority"] !== undefined) {
+      if (data["priority"] !== null) {
+        this.date = data["priority"]
+        console.log(this.priority)
       }
-      else{
-        this.report_status=''
+      else {
+        this.priority = ''
       }
-      x=true;
+      x = true;
+    }
+    if (data["report_status"] !== undefined) {
+      if (data["report_status"] !== null) {
+        this.date = data["report_status"]
+        console.log(this.report_status)
+      }
+      else {
+        this.report_status = ''
+      }
+      x = true;
     }
 
 
 
-    if (x){
+    if (x) {
       this.filtering = true
-      this.eegService.getEEGfiltered(this.eeg_id,this.patient_id,this.institution_id,this.date,this.operator_id,this.priority, this.report_status, this.token).subscribe((lst) => {
+      this.eegService.getEEGfiltered(this.eeg_id, this.patient_id, this.institution_id, this.date, this.operator_id, this.priority, this.report_status, this.token).subscribe((lst) => {
         this.eegs_filtered = lst;
         this.sendFilters(this.eegs_filtered)
 
       });
     }
-    
+
   }
 
   @Output() sendFiltersEvent = new EventEmitter<any>();
@@ -151,8 +161,8 @@ export class EegFiltersComponent implements OnInit {
     console.log(value)
     this.sendFiltersEvent.emit(value);
 
-  }  
-  
+  }
+
 
 
 }
