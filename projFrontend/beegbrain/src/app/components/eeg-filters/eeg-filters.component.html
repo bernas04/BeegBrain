@@ -56,7 +56,7 @@
         <div class="card-body">
             
         <div class="card-header"> <strong> Priority </strong></div>
-        <select class="form-control" id="priority" #priority formControlName="priority" (keyup.enter)="getFiltersFormData()">            
+        <select class="form-control" id="priority" #priority formControlName="priority" (change)="getFiltersFormData()">            
             <option value="5">Urgent</option>
                 <option value="4">High</option>
                 <option value="3">Medium</option>

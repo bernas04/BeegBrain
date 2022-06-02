@@ -891,7 +891,7 @@ def getEEGfilter(request):
         query_patient = EEG.objects.select_related('patient').filter(patient__health_number=patient_id)
         patient_list = list(query_patient)
         for eeg in temp_list:
-            if eeg not in patient_list:
+            if eeg not in patient_list and eeg in eegs_list:
                 eegs_list.remove(eeg)
 
         
@@ -901,22 +901,22 @@ def getEEGfilter(request):
 
 
     if operator_id:
-        print("FODASSSSSSSSSSSSSSSSSSSSSss")
-        print("operator",operator_id)
         query_operator = EEG.objects.select_related('operator').filter(operator__health_number=operator_id)
         operator_list = list(query_operator)
-        print("SOLUCAO", operator_list)
         for eeg in temp_list:
-            print("kakakaAAAAAAAAAk")
-            if eeg not in operator_list:
-                print("kakakak")
+            if eeg not in operator_list and eeg in eegs_list:
                 eegs_list.remove(eeg)
 
     if report_status:
         eegs = eegs.filter(report__contains=report_status)
-
+        
     if priority:
         eegs = eegs.filter(priority__contains=priority)
+        priority_list = list(eegs)
+        for eeg in temp_list:
+            if eeg not in priority_list and eeg in eegs_list:
+                eegs_list.remove(eeg)
+
 
     serializer = serializers.EEGSerializer(eegs_list, many=True)
     print("serializer", serializer.data)

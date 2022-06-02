@@ -124,7 +124,7 @@ export class EegFiltersComponent implements OnInit {
     }
     if (data["priority"] !== undefined) {
       if (data["priority"] !== null) {
-        this.date = data["priority"]
+        this.priority = data["priority"]
         console.log(this.priority)
       }
       else {
@@ -134,7 +134,7 @@ export class EegFiltersComponent implements OnInit {
     }
     if (data["report_status"] !== undefined) {
       if (data["report_status"] !== null) {
-        this.date = data["report_status"]
+        this.report_status = data["report_status"]
         console.log(this.report_status)
       }
       else {
