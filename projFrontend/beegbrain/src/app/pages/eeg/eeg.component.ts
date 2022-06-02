@@ -67,7 +67,6 @@ export class EegComponent implements OnInit {
   getInformation(eegId:number): any{
     this.EEGservices.getEEGinfo(eegId, this.token).subscribe((info) => {
       this.eegInfo = info;
-      console.log(info);
     })
   }
 
@@ -86,7 +85,7 @@ export class EegComponent implements OnInit {
   }
 
   onDropDownClose(item:any){
-    this.control=true;
+    this.control = true;
   }
 
   onItemDeselect(item:any){
@@ -124,7 +123,9 @@ export class EegComponent implements OnInit {
   }
 
   getLabelData(item: String[]) {
-    this.services.getDataAboutLabel(this.id, item, this.token, this.window_size, 0).subscribe((info) => {
+
+    // está a pedir o dobro dos dados que é preciso
+    this.services.getDataAboutLabel(this.id, item, this.token, this.eegInfo.duration, 0).subscribe((info) => {
       for (var label of item) {
         this.labelsSignal.set(label, info);
       }
@@ -132,6 +133,14 @@ export class EegComponent implements OnInit {
       this.eeg_viewer.updateData();
     });
 
+  }
+
+  down() {
+
+  }
+
+  up() {
+    this.eeg_viewer.updateData();
   }
 
   

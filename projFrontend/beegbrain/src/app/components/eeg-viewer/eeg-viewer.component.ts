@@ -51,9 +51,11 @@ export class EEGViewerComponent implements OnChanges {
     let counter=0;
 
     for (const [key, value] of this.labelsSignal) {
+      var signalsInWindow = (value[key].length/ this.eegInfo.duration)*30;
       this.yData.push(value[key]);
-      series.push({name:key, type:"line", showSymbol:false, data:this.yData[counter]})
-      
+      var values = this.yData[counter].slice(0,signalsInWindow)
+      series.push({name:key, type:"line", showSymbol:false, data:values})
+
       counter++;
     }
      
@@ -113,7 +115,7 @@ export class EEGViewerComponent implements OnChanges {
         }
       ],
       xAxis: {
-        name: "x",
+        name: "Quantity",
         type: "category",
         minorTick: {
           show: true,
@@ -173,16 +175,7 @@ export class EEGViewerComponent implements OnChanges {
   /* Esta é a função que vai estar sempre a ser chamada */
   start(speed: number) {
     this.intervalId = setInterval(() => {
-      //this.yData = []
-      let convertedInterval = Math.floor(this.interval/10);
-      this.yData=[];
-      this.xData=[];
-
-      for (let i=0;i<3;i++){
-        this.yData.push();
-        this.xData.push();
-
-      }
+      
       
       this.myChart.setOption<echarts.EChartsOption>({
         series: [
@@ -206,11 +199,16 @@ export class EEGViewerComponent implements OnChanges {
 
     for (const [key, value] of this.labelsSignal) {
       /* this.yData.push(value[key]); */
-      console.log("VALOR da value[key]" , value[key])
-      min_series.push({name:key, type:"line", showSymbol:false, data:value[key]})
+      var signalsInWindow = (value[key].length/ this.eegInfo.duration)*30;
+      console.log("VALOR da value[key]" , value[key]);
+      
+      
+      const firstHalf = value[key].slice(0, signalsInWindow)
+
+      console.log("Estou aqui " , firstHalf);
+      min_series.push({name:key, type:"line", showSymbol:false, data: firstHalf})
     }
 
-  
 
     this.myChart.setOption<echarts.EChartsOption>({
       yAxis:{
