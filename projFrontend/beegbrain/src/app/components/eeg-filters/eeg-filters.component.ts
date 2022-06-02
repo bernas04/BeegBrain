@@ -139,8 +139,9 @@ export class EegFiltersComponent implements OnInit {
       this.filtering = true
       this.eegService.getEEGfiltered(this.eeg_id,this.patient_id,this.institution_id,this.date,this.operator_id,this.priority, this.report_status, this.token).subscribe((lst) => {
         this.eegs_filtered = lst;
+        this.sendFilters(this.eegs_filtered)
+
       });
-      this.sendFilters(this.eegs_filtered)
     }
     
   }

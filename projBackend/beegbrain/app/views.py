@@ -1,5 +1,7 @@
 from ast import operator
+from asyncio import ensure_future
 import multiprocessing
+from time import strftime
 from rest_framework.decorators import api_view
 from datetime import datetime
 from django.db.models import Q
@@ -22,6 +24,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 import pyedflib
 import re
+import datetime
 from django.db import connection
 
 
@@ -853,6 +856,8 @@ def getSharedFolderById(request, id):
 def getEEGfilter(request):
     print("hahaha")
     print("REQUEST",request)
+
+
     eeg_id = (request.GET['id'])
     patient_id = (request.GET['patient_id'])
     institution_id = (request.GET['institution_id'])
@@ -863,21 +868,48 @@ def getEEGfilter(request):
 
     
     eegs = EEG.objects.all()
+    eegs_list = list(eegs)
+    print("ha",eegs_list)
+    temp_list = eegs_list.copy()
+    
+    if eeg_id != '':
+        for e in temp_list:
+            if str(e.id) != eeg_id:
+                eegs_list.remove(e)
+                
 
-    if eeg_id:
-        print("eeg_id",eeg_id)
-        eegs = eegs.filter(id__contains=eeg_id)
-    if date:
-        eegs = eegs.filter(timestamp__icontains=date)
+    if date != '':
+        for e in eegs:
+            date_eeg = str(e.timestamp)
+            date_eeg = date_eeg[0:10]
+            if date_eeg != date:
+                eegs_list.remove(e)
+              
+
+        
     if patient_id:
-        eegs = eegs.filter(patient_id__contains=patient_id)
-        print(patient_id)
+        query_patient = EEG.objects.select_related('patient').filter(patient__health_number=patient_id)
+        patient_list = list(query_patient)
+        for eeg in temp_list:
+            if eeg not in patient_list:
+                eegs_list.remove(eeg)
+
+        
+
     # if institution_id:
     #     eegs = eegs.filter(operator_id__contains=patient_id).filter() to do
+
+
     if operator_id:
-        eegs = eegs.filter(operator_id__contains=operator_id)
-        print(operator_id)
-        print("fodasssssssss")
+        print("operator",operator_id)
+        query_operator = EEG.objects.select_related('operator').filter(operator__health_number=operator_id)
+        operator_list = list(query_operator)
+        print("SOLUCAO", operator_list)
+        for eeg in temp_list:
+            print("kakakaAAAAAAAAAk")
+            if eeg not in operator_list:
+                print("kakakak")
+                eegs_list.remove(eeg)
 
     if report_status:
         eegs = eegs.filter(report__contains=report_status)
@@ -885,7 +917,8 @@ def getEEGfilter(request):
     if priority:
         eegs = eegs.filter(priority__contains=priority)
 
-    serializer = serializers.EEGSerializer(eegs, many=True)
+    serializer = serializers.EEGSerializer(eegs_list, many=True)
+    print("serializer", serializer.data)
     print("JAAAAAAAAAAAAAAAAaaaaaa")
     return Response(serializer.data)
     
