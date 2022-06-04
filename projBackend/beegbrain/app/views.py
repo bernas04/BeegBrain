@@ -237,7 +237,6 @@ def getPatientsByStr(request):
     return Response(serializer.data)
 
 
-
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
