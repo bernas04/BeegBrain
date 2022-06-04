@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EEG } from 'src/app/classes/EEG';
 import { Patient } from 'src/app/classes/Patient';
 import { EEGService } from 'src/app/services/eeg.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-errorarea',
@@ -19,10 +20,13 @@ export class ErrorareaComponent implements OnInit {
   constructor(private service: EEGService) { }
 
   ngOnInit(): void {
+  }
+
+  ngOnChanges(model: any) {
+
     // criar o map com key = id do EEG, e value = nome do paciente
     this.lst_EEG.forEach((eeg) => {
       let pat = this.lst_Patients.find(x => x.id == eeg.patient)
-      // console.log(pat)
       if (pat) {
         this.map.set(eeg.id, pat.name)
         
@@ -30,13 +34,18 @@ export class ErrorareaComponent implements OnInit {
         this.map.set(eeg.id,'undefined')
       }
     });
-
   }
 
   sendMail() {
-    let content = (<HTMLInputElement>document.getElementById("mail_content")).value;
+    /* let content = (<HTMLInputElement>document.getElementById("mail_content")).value;
     console.log("Conteudo", content);
-    this.service.sendEmail(content);
+    this.service.sendEmail(content);  */
+
+    Swal.fire(
+      'Done',
+      'Email sent',
+      'success'
+    )
   }
 
 

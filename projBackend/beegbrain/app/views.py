@@ -219,6 +219,21 @@ def getPatients(request):
     serializer = serializers.PatientSerializer(patients, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def getPatientsByStr(request):
+    lst = []
+    strToFind = request.GET['str'].lower()
+    patients = Patient.objects.all()
+    for patient in patients:
+        if (strToFind in patient.getName().lower()):
+            lst.append(patient)
+    
+    serializer = serializers.PatientSerializer(lst, many=True)
+    return Response(serializer.data)
+
+
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])

@@ -14,6 +14,7 @@ urlpatterns = [
     path('api/patients', views.getPatients),
     path('api/createPatient', views.createPatient),
     path('api/patient', views.getPatientBySSN),
+    path('api/strPatients', views.getPatientsByStr),
     path('api/patient/<int:id>', views.getPatientById),
 
     path('api/operators', views.getOperators),

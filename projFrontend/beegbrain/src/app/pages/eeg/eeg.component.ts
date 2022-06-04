@@ -80,7 +80,7 @@ export class EegComponent implements OnInit {
   onItemSelect(item: any) {
     this.labels.push(item);
     this.getLabelData(this.labels);
-    this.eeg_viewer.notification();
+    //this.eeg_viewer.notification();
     this.control=false;
   }
 
@@ -99,7 +99,7 @@ export class EegComponent implements OnInit {
     }
     this.labelsSignal.delete(item);
     this.control=false;
-    this.eeg_viewer.notification();
+    //this.eeg_viewer.notification();
   }
 
 
@@ -124,9 +124,18 @@ export class EegComponent implements OnInit {
 
   getLabelData(item: String[]) {
 
+    // evita que se peçam novamente canais dos quais já existe info
+    let new_channels: String[]=[];
+    for (var channel in item){
+      if (!this.labelsSignal.has(item[channel])){
+        new_channels.push(item[channel])
+      }
+    }
+
     // está a pedir o dobro dos dados que é preciso
     this.services.getDataAboutLabel(this.id, item, this.token, this.eegInfo.duration, 0).subscribe((info) => {
-      for (var label of item) {
+      for (var label of new_channels) {
+
         this.labelsSignal.set(label, info);
       }
       // dar update dos dados no eeg_viewer
@@ -136,12 +145,11 @@ export class EegComponent implements OnInit {
   }
 
   down() {
-
+    this.eeg_viewer.updateDataAndTime(false)
   }
 
   up() {
-    this.eeg_viewer.updateData();
+    this.eeg_viewer.updateDataAndTime(true);
   }
 
-  
 }
