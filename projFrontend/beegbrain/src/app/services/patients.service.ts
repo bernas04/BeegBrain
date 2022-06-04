@@ -31,6 +31,15 @@ export class PatientsService {
     });
   }
 
+  getPatientsbyName(string : string, token: string) : Observable<Patient[]> {
+    return this.http.get<Patient[]>(this.BASE_URL + 'strPatients?str='+ string, { 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    });
+  }
+
   getPatientbyId(id : number, token: string) : Observable<Patient> {
     return this.http.get<Patient>(this.BASE_URL + 'patient/'+ id, { 
       headers: new HttpHeaders({

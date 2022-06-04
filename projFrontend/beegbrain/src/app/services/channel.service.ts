@@ -20,8 +20,15 @@ export class ChannelService {
       });
   }
 
-  getDataAboutLabel(eegId : any, channel: any, token: string): Observable<Number[]>{
-    return this.http.get<Number[]>(this.BASE_URL+'channel?eeg='+eegId+'&label='+channel,{ 
+  getDataAboutLabel(eegId : any, channel: any, token: string, end: number, initial: number): Observable<Number[]>{
+    console.log("[API] >> pedido para as labels: ", channel)
+    let tmp='';
+
+    for (var i of channel) {
+      tmp+='&labels='+i
+    }
+    
+    return this.http.get<Number[]>(this.BASE_URL+'channelsByLabels?eeg='+ eegId + tmp +"&start="+initial+"&end="+end,{ 
       headers: new HttpHeaders({
         'Authorization': 'Token ' + token,
         'Content-Type': 'application/json',

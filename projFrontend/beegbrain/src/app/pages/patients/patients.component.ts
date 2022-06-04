@@ -28,7 +28,7 @@ export class PatientsComponent implements OnInit {
       this.getEEGbyPatient(pat_id);    // para lista os exames EEG da respetiva pessoa
     }
 
-    this.getPatients();
+    // this.getPatients();
   }
 
   getPatients() {
@@ -37,29 +37,47 @@ export class PatientsComponent implements OnInit {
     });
   } 
 
-  getPatientsbySSN(){
+  getPatient(){
     let text = (<HTMLInputElement>document.getElementById("patient_search")).value;
-    if (text == "") return
+    if (+text == NaN) {
+      console.log("PESQUISA POR SSN")
+      this.services.getPatientsbySSN(text, this.token).subscribe((info) => {
+        this.patient = info;
+        this.getEEGbyPatient(this.patient.id);   // para lista os exames EEG da respetiva pessoa
+      });
 
-    this.services.getPatientsbySSN(text, this.token).subscribe((info) => {
-      this.patient = info;
-      console.log("PACIENTE ", this.patient)
-      this.getEEGbyPatient(this.patient.id);   // para lista os exames EEG da respetiva pessoa
-    });
+    } else {
+      console.log("PESQUISA POR NOME")
+      this.services.getPatientsbyName(text, this.token).subscribe(data => this.listOfPatients = data);
+    }
+
+    
   } 
 
   getPatientbyId(id: number){
     this.services.getPatientbyId(id, this.token).subscribe((info) => {
       this.patient = info;
-      console.log("PACIENTE ", this.patient)
     });
   } 
 
   getEEGbyPatient(id: number) {
     this.services.getEEGbyPatient(id, this.token).subscribe((info) => {
       this.listOfEEG = info;
-      console.log("EEGs ", this.listOfEEG)
     });
+  }
+
+  clean() {
+    setTimeout(() => this.listOfPatients = [], 500)
+  }
+
+  choose(pat_id : number){
+    window.location.href = "patients/"+ pat_id
+  }
+
+  show() {
+    let text = (<HTMLInputElement>document.getElementById("patient_search")).value;
+    if (text == "") return false
+    return true
   }
 
 }

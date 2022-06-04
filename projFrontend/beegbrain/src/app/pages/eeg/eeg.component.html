@@ -5,9 +5,17 @@
     <i class="bi bi-speedometer2" style="margin-left: 3px; margin-right: 3px; width: 2em; height: 2em"></i>
 
     <ngx-slider class="slider" invert [(value)]="speed" [options]="options" (userChangeEnd)="update()" ></ngx-slider>
+
+    <button (click)="down()" type="button" class="btn btn-primary"><i class="bi bi-caret-left-fill"></i></button>
+    <!-- Dar update da view  -->
+
     <label style="margin-left: 2em;">Time: 
-        <input (keyup)="getInputValue($event)" (click)="getInputValue($event)" id="window_interval" type="number" min="1" max="60" value="30"><br>
+        <input (keyup.enter)="getInputValue($event)" (click)="getInputValue($event)"  id="window_interval" type="number" max="{{eegInfo.duration}}" step="10" value="{{window_size}}"><br>
     </label>
+
+    <button (click)="up()" type="button" class="btn btn-primary"><i class="bi bi-caret-right-fill"></i></button>
+    <!-- Carregar mais dados, se for preciso e dar update da view -->
+
     <div class="drop-container col-lg-3">
         <ng-multiselect-dropdown
         [settings] = "dropdownSettings"
@@ -22,8 +30,9 @@
 </div>
 
 <div class="row">
-    <div class="col-lg-9">
-        <app-eeg-viewer #child 
+    <div class="col-lg-9 col-sm-6">
+        <app-eeg-viewer 
+        #child 
         *ngIf="control" 
         [control]="control"
         [speed]=speed 
@@ -31,11 +40,12 @@
         [labelsSignal]="labelsSignal" 
         [interval]=window_size
         [labels]="labels"
+        (new_interval)="changeInterval($event)"
         ></app-eeg-viewer> 
 
     </div>
 
-    <div class="col-lg-3">
+    <div class="col-lg-3 col-sm-6">
         <app-report-editor [EEG_ID]="id"></app-report-editor>
     </div>
 

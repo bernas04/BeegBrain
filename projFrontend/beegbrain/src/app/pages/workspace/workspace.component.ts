@@ -32,13 +32,18 @@ export class WorkspaceComponent implements OnInit {
     this.service.getAllEEG(this.token, this.type, this.id).subscribe((info) => {
 
       info.forEach((eeg) => {
-        console.log(eeg.status)
+        console.log(eeg)
         if (eeg.status != null) {
+          this.lst_error_eeg.push(eeg);
+
+        } else if (eeg.patient == null ) {
+          eeg.status = 'patient undefined'
           this.lst_error_eeg.push(eeg);
 
         } else {
           this.lst_eeg.push(eeg);
         }
+
       })
 
     });

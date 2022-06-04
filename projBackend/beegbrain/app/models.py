@@ -99,6 +99,9 @@ class Patient(Person):
 
     medical_info = models.TextField(null=True)
 
+    def getName(self) -> str:
+        return self.name
+
     def __str__(self) -> str:
         return 'Patient: ' + super().__str__() + f' {self.health_number}'
 

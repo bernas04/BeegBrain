@@ -29,17 +29,32 @@ export class EegComponent implements OnInit {
   control!: boolean;
   token = ''+localStorage.getItem('token');
 
+  window_size: number=30;
+
+  speed: number = 1000; // default: 1 segundo
+  options: Options = {
+    floor: 0,
+    ceil: 1000,
+    step: 50,         // de 0.05 em 0.05 segundos
+    rightToLeft: true,
+    translate: (value: number): string => {
+      return value +' ms';
+    },
+  };
+  
+  
+
   constructor(private services:ChannelService, private router: Router, private EEGservices:EEGService) { }
 
 
   
   ngOnInit() {
+    
     const url_array = this.router.url.split("/");
     let eegId = +url_array[url_array.length - 1];
     this.id=eegId;
     this.getLabelsFromEEG(eegId);
     this.getInformation(eegId);
-    
     this.dropdownSettings = {
       singleSelection: false,
       idField : 'item_id',
@@ -62,30 +77,15 @@ export class EegComponent implements OnInit {
     })
   }
   
-  speed: number = 1000; // default: 1 segundo
-  options: Options = {
-    floor: 0,
-    ceil: 1000,
-    step: 50,         // de 0.05 em 0.05 segundos
-    rightToLeft: true,
-    translate: (value: number): string => {
-      return value +' ms';
-    },
-  };
-  
-  window_size: number=30;
-  
   onItemSelect(item: any) {
     this.labels.push(item);
-    this.services.getDataAboutLabel(this.id, item, this.token).subscribe((info) => {
-      this.labelsSignal.set(item, info);
-    });
-    this.eeg_viewer.notification();
+    this.getLabelData(this.labels);
+    //this.eeg_viewer.notification();
     this.control=false;
   }
 
   onDropDownClose(item:any){
-    this.control=true;
+    this.control = true;
   }
 
   onItemDeselect(item:any){
@@ -99,7 +99,7 @@ export class EegComponent implements OnInit {
     }
     this.labelsSignal.delete(item);
     this.control=false;
-    this.eeg_viewer.notification();
+    //this.eeg_viewer.notification();
   }
 
 
@@ -117,5 +117,39 @@ export class EegComponent implements OnInit {
     console.log("new speed value: "+ this.speed)
   }
 
-  
+  changeInterval(num: number) {
+    this.window_size = num;
+    this.getLabelData(this.labels);
+  }
+
+  getLabelData(item: String[]) {
+
+    // evita que se peçam novamente canais dos quais já existe info
+    let new_channels: String[]=[];
+    for (var channel in item){
+      if (!this.labelsSignal.has(item[channel])){
+        new_channels.push(item[channel])
+      }
+    }
+
+    // está a pedir o dobro dos dados que é preciso
+    this.services.getDataAboutLabel(this.id, item, this.token, this.eegInfo.duration, 0).subscribe((info) => {
+      for (var label of new_channels) {
+
+        this.labelsSignal.set(label, info);
+      }
+      // dar update dos dados no eeg_viewer
+      this.eeg_viewer.updateData();
+    });
+
+  }
+
+  down() {
+    this.eeg_viewer.updateDataAndTime(false)
+  }
+
+  up() {
+    this.eeg_viewer.updateDataAndTime(true);
+  }
+
 }

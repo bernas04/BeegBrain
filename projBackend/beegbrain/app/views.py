@@ -222,6 +222,21 @@ def getPatients(request):
     serializer = serializers.PatientSerializer(patients, many=True)
     return Response(serializer.data)
 
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def getPatientsByStr(request):
+    lst = []
+    strToFind = request.GET['str'].lower()
+    patients = Patient.objects.all()
+    for patient in patients:
+        if (strToFind in patient.getName().lower()):
+            lst.append(patient)
+    
+    serializer = serializers.PatientSerializer(lst, many=True)
+    return Response(serializer.data)
+
+
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
@@ -682,14 +697,14 @@ def getChannelsByLabels(request):
     pool = multiprocessing.Pool(poolSize)
     start = int(request.GET['start'])  
     end = int(request.GET['end'])  
-    eeg_id = int(request.GET['eeg'])  
+    eeg_id = int(request.GET['eeg'])
     eeg = EEG.objects.get(id=eeg_id)  
     labels = request.GET.getlist('labels')
     manager = multiprocessing.Manager()
     data = manager.dict()
     for label in labels:
         print("label")
-        pool.apply_async(bufferWorker,(data,label,eeg,start,end),)
+        pool.apply_async(bufferWorker(data,label,eeg,start,end),)
     pool.close()
     pool.join() 
     connection.close()
@@ -698,7 +713,8 @@ def getChannelsByLabels(request):
 def bufferWorker(data,label,eeg,start,end):
     chn = Channel.objects.get(label=label,eeg=eeg) 
     array = decompress(chn.file.name)
-    data[label] = array[start:end]
+    final_end = (end-start)*len(array)//eeg.duration
+    data[label] = array[start:final_end]
     print(data[label])
 
 
@@ -713,7 +729,7 @@ def getAllEegChannels(request):
     manager = multiprocessing.Manager()
     data = manager.dict()
     for channel in Channel.objects.filter(eeg_id=eeg_id):
-        pool.apply_async(workerDecompress,(data,channel.label,channel.file.name),)
+        pool.apply_async(workerDecompress(data,channel.label,channel.file.name),)
     pool.close()
     pool.join() 
     connection.close()
