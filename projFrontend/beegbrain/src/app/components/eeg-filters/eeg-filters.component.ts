@@ -8,6 +8,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { send } from 'process';
+import { RegistrationService } from 'src/app/services/registration.service';
+import { Institution } from 'src/app/classes/Institution';
 
 @Component({
   selector: 'app-eeg-filters',
@@ -38,7 +40,9 @@ export class EegFiltersComponent implements OnInit {
 
 
 
-  constructor(private fb: FormBuilder, private patientService: PatientsService, private eegService: EEGService) { }
+  constructor(private fb: FormBuilder, private reg:RegistrationService, private patientService: PatientsService, private eegService: EEGService) { }
+  
+  public listProvidences: Institution[] = []
 
   public eegs_filtered: EEG[] = [];
 
@@ -54,6 +58,7 @@ export class EegFiltersComponent implements OnInit {
       report_status: [null],
       date: [null],
     })
+    this.getProvidence()
 
   }
 
@@ -63,9 +68,15 @@ export class EegFiltersComponent implements OnInit {
     });
 
   }
+  
 
 
-
+  getProvidence() {
+    this.reg.getInstituitions(this.token).subscribe((info) => {
+      this.listProvidences = info;
+      
+    });
+  }
   getFiltersFormData(): void {
     const data = this.filtersForm.value
     var x: boolean = false;

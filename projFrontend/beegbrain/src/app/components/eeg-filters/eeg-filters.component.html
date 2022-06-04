@@ -1,72 +1,163 @@
-<div class="filters" style="margin-left: 50px;">
-    <form method="GET" [formGroup]="filtersForm">
+<div class="filters" style="margin-left: 50px">
+  <form method="GET" [formGroup]="filtersForm">
+    <div class="card mb-4">
+      <h4 style="align-self: center"><strong> Search by</strong></h4>
 
-    <div class="card">
-         <h4 style="align-self: center;"> <strong> Search by</strong></h4>
-
-        <div class="card-body">
-
-            <div class="card-header"> <strong>
-                    EEG ID
-                </strong></div>
-            <div class="form-outline">
-                <input  (keyup.enter)="getFiltersFormData()"  formControlName="eeg_id" placeholder="ID" type="search" id="eegId"  autocomplete="on" class="form-control"
-                #searchTerm   />
-                <label class="form-label" for="formControlDefault"></label>
-            </div>
-        </div>
-
-
-
-        <div class="card-body">
-            <div class="card-header"> <strong> Patient </strong></div>
-            <div class="form-outline">
-                <input (keyup.enter)="getFiltersFormData()"   formControlName="patient_id" placeholder="SSN" type="search" id="patientssn" class="form-control" />
-                <label class="form-label" for="formControlDefault"></label>
-                <input (keyup.enter)="getFiltersFormData()"   formControlName="patient_id" placeholder="Name" type="search" id="patientname" class="form-control" />
-                <label class="form-label" for="formControlDefault"></label>
-            </div>
-
-        </div>
-
-        <div class="card-body">
-
-        <div class="card-header"> <strong>
-                Date
-            </strong></div>
+      <div class="card-body">
+        <div class="card-header"><strong> EEG ID </strong></div>
         <div class="form-outline">
-            <input (change)="getFiltersFormData()"   placeholder="ID" formControlName="date" type="date" id="date" #date  class="form-control" />
-            <label class="form-label" for="formControlDefault"></label>
+          <input
+            (keyup.enter)="getFiltersFormData()"
+            formControlName="eeg_id"
+            placeholder="ID"
+            type="search"
+            id="eegId"
+            autocomplete="on"
+            class="form-control"
+            #searchTerm
+          />
+          <label class="form-label" for="formControlDefault"></label>
         </div>
-       
+      </div>
 
-
-        <div class="card-header"> <strong>
-                Operator
-            </strong></div>
+      <div class="card-body">
+        <div class="card-header"><strong> Date </strong></div>
         <div class="form-outline">
+          <input
+            (change)="getFiltersFormData()"
+            placeholder="ID"
+            formControlName="date"
+            type="date"
+            id="date"
+            #date
+            class="form-control"
+          />
+          <label class="form-label" for="formControlDefault"></label>
+        </div>
+
+        <div class="card-header"><strong> Operator </strong></div>
+        <div class="form-outline">
+          <input
+            (keyup.enter)="getFiltersFormData()"
+            placeholder="Name"
+            formControlName="operator_id"
+            type="search"
+            #operator_id
+            id="operator_id"
+            class="form-control"
+          />
+          <label class="form-label" for="formControlDefault"></label>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="card-header"><strong> Patient </strong></div>
+        <div class="form-outline">
+          <input
+            (keyup.enter)="getFiltersFormData()"
+            formControlName="patient_id"
+            placeholder="SSN"
+            type="search"
+            id="patientssn"
+            class="form-control"
+          />
           
-            
-            <label class="form-label" for="formControlDefault"></label>
-            <input (keyup.enter)="getFiltersFormData()"   placeholder="Name" formControlName="operator_id" type="search" #operator_id id="operator_id" class="form-control" />
-            <label class="form-label" for="formControlDefault"></label>
-        </div>
-        </div>
+          <label class="form-label" for="formControlDefault"></label>
+          <select
+            id="patient"
+            (change)="getFiltersFormData()"
+            formControlName="patient_id"
+            class="form-select"
+            style="width: 99%"
+            aria-label="Default select example">
+            <option
+              *ngFor="let ts of lst_patients; let i = index"
+              [value]="lst_patients[i].health_number">
+              Patient Name: {{ lst_patients[i].name }}
+            </option>
+          </select>
 
-        <div class="card-body">
+          <div class="w-100" style="padding-right: 20px; display: flex; justify-content: flex-end">
+            <div class="search-box">
+              <button class="btn-search"><i class="fas fa-search"></i></button>
+              <input type="text" class="input-search" placeholder="Search for a patient..." (keyup)="getFiltersFormData()" id="searchBar"
+               >
+            </div>
             
-        <div class="card-header"> <strong> Priority </strong></div>
-        <select class="form-control" id="priority" #priority formControlName="priority" (change)="getFiltersFormData()">            
-            <option value="5">Urgent</option>
-                <option value="4">High</option>
-                <option value="3">Medium</option>
-                <option value="2">Low</option>
-                <option value="1">Very Low</option>
-                <option value="">None</option>
+            <div style="position: absolute; max-height: 200px; overflow-y: scroll; background-color: white;" >
+              <div *ngFor="let p of lst_patients; let i=index;"click)="href(lst_patients[i].health_number)">
+                <p style="padding: 20px;" > {{ lst_patients[i].name }}</p>
+              </div>
+            </div>
+          </div>
 
-            </select>
+          <label class="form-label" for="formControlDefault"></label>
         </div>
+      </div>
+
+      <div class="card-body">
+        <div class="card-header"><strong> Institution </strong></div>
+        <div class="form-outline">
+          <input
+            (keyup.enter)="getFiltersFormData()"
+            formControlName="institution_id"
+            placeholder="Institution"
+            type="search"
+            id="institution"
+            class="form-control"
+          />
+
+          <select
+            id="institution"
+            (keyup.enter)="getFiltersFormData()"
+            id="institution"
+            formControlName="institution_id"
+            class="form-select"
+            style="width: 99%"
+            aria-label="Default select example">
+            <option
+              *ngFor="let ts of listProvidences; let i = index"
+              [value]="listProvidences[i].id">
+              Providence: {{ listProvidences[i].name }}
+            </option>
+          </select>
+          <label class="form-label" for="formControlDefault"></label>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="card-header"><strong> Priority </strong></div>
+        <select
+          class="form-control"
+          id="priority"
+          #priority
+          formControlName="priority"
+          (change)="getFiltersFormData()"
+        >
+          <option value="5">Urgent</option>
+          <option value="4">High</option>
+          <option value="3">Medium</option>
+          <option value="2">Low</option>
+          <option value="1">Very Low</option>
+          <option value="">None</option>
+        </select>
+      </div>
+
+      <div class="card-body">
+        <div class="card-header"><strong> Report Status </strong></div>
+        <select
+          class="form-control"
+          id="report"
+          #report
+          formControlName="report"
+          (change)="getFiltersFormData()"
+        >
+          <option value="3">Done</option>
+          <option value="2">Progress</option>
+          <option value="1">To do</option>
+          <option value="">None</option>
+        </select>
+      </div>
     </div>
-</form>
-
+  </form>
 </div>
