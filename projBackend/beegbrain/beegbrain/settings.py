@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'beegbrain.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'beegbrain',
+        'NAME': 'information_schema',
         'HOST': 'localhost',
         'PORT': '3306',
         'USER': 'root',
@@ -101,7 +101,8 @@ DATABASES = {
         'CONN_MAX_AGE': 3600,
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1;\
-            create database if not exists beegbrain;"
+            create database if not exists beegbrain;\
+            use beegbrain;"
             }
     }
 }

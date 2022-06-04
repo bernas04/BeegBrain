@@ -2,7 +2,7 @@ from ast import operator
 from http import HTTPStatus
 import multiprocessing
 from webbrowser import Opera
-from attr import assoc
+#from attr import assoc
 import pytz
 from rest_framework.decorators import api_view
 from datetime import datetime, timedelta, timezone
@@ -341,9 +341,12 @@ def getDoctors(request):
 def createDoctor(request):
     serializer = serializers.UserSerializer(data=request.data)
     if serializer.is_valid():
+        print("CRIEIEIEIEIEIw")
         resp = serializer.createDoctor(request.data)   
         token = serializers.TokenSerializer(data={'key': resp['token'].key, 'id': resp['id'], 'type':'doctor', 'health_number' : request.data['health_number']})
         return Response(token.initial_data)
+    else:
+        print(serializer.errors)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -856,7 +859,7 @@ def getDoctorSharedFolder(request):
 @permission_classes([IsAuthenticated])
 def getOperatorSharedFolder(request):
     """GET de todas as pastas partilhadas"""
-
+    
     operator_id = int(request.GET['id'])
     try:
         operator = Operator.objects.get(id=operator_id)
