@@ -59,9 +59,19 @@ export class EEGViewerComponent implements OnChanges {
     let series: any = [];
     let counter = 0;
 
+    console.log("inittttttttt")
+
+    console.log("PAYLANCE", this.labelsSignal)
+
+    console.log(Object.entries(this.labelsSignal))
+
     for (const [label, valuesMap] of Object.entries(this.labelsSignal)) {
 
+      console.log("label", label)
+      console.log("VALORES" , valuesMap)
+
       this.signalsInSecond = valuesMap[label].length/ this.eegInfo.duration;
+      console.log("signalsinsecodnsssssssssssssssss",this.signalsInSecond)
       var signalsInWindow = this.signalsInSecond * this.interval;
       this.tmp = valuesMap[label].length;
       

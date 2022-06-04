@@ -145,6 +145,7 @@ export class EegComponent implements OnInit {
 
         if (this.labelsSignal.has(label)) {
           mergedMap = this.labelsSignal.get(label);
+
         } else {
           this.labelsSignal.set(label,mergedMap);
         }
