@@ -41,6 +41,7 @@
         [interval]=window_size
         [labels]="labels"
         (new_interval)="changeInterval($event)"
+        (initial_event)="updateInitial($event)"
         ></app-eeg-viewer> 
 
     </div>

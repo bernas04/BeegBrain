@@ -645,6 +645,26 @@ def getEegById(request):
         ret.delete()
         return True
 
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def getEegChannelLenght(request):
+
+    eeg_id = int(request.GET['id'])
+    try:
+        eeg = EEG.objects.get(id=eeg_id)
+    except EEG.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND) 
+
+    try:
+        channel = Channel.objects.filter(eeg=eeg).first()
+    except Channel.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND) 
+
+    length = len(decompress(channel.file.name))
+    return Response(length)
+
+
 
 # ############################### CHANNEL ###############################
 
@@ -688,6 +708,7 @@ def getChannelByLabel(request):
     data = { channel.label : decompress(channel.file.name) }
     return Response(data)
 
+
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -713,8 +734,11 @@ def getChannelsByLabels(request):
 def bufferWorker(data,label,eeg,start,end):
     chn = Channel.objects.get(label=label,eeg=eeg) 
     array = decompress(chn.file.name)
-    final_end = (end-start)*len(array)//eeg.duration
-    data[label] = array[start:final_end]
+    # final_end = start + (end-start)*len(array)//eeg.duration
+    valuesMap = {}
+    for idx in range(start,end):
+        valuesMap[idx + 1] = array[idx]
+    data[label] = valuesMap
     print(data[label])
 
 

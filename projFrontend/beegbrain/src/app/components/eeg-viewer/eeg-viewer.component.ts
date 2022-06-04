@@ -3,6 +3,7 @@ import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Out
 import { EEGService } from 'src/app/services/eeg.service';
 import { Router } from '@angular/router';
 import { EEG } from 'src/app/classes/EEG';
+import { throws } from 'assert';
 
 @Component({
     selector: 'app-eeg-viewer',
@@ -18,27 +19,30 @@ export class EEGViewerComponent implements OnChanges {
   intervalId! : any;
   lst_intervalId: any[] = [];
   
-  @Input('speed') speed!: number;
-  @Input('interval') interval!: number;
-  @Input('labelsSignal') labelsSignal!: any;
-  @Input('eegInfo') eegInfo!: EEG
-  @Input('labels') labels!: any;
-  @Input('control') control!: boolean;
-  @Output() new_interval = new EventEmitter<number>();
+  @Input('speed') speed! : number;
+  @Input('interval') interval! : number;
+  @Input('labelsSignal') labelsSignal! : Map<String, Map<Number,Number>>;
+  @Input('eegInfo') eegInfo! : EEG
+  @Input('labels') labels! : any;
+  @Input('control') control! : boolean;
 
-  
+  @Output() new_interval = new EventEmitter<number>();
+  @Output() initial_event = new EventEmitter<number>();
+
   constructor(private services:EEGService, private router:Router) { }
   
   yData: any[] = [];
   xData: any[] = [];
   tmp!: number;
+  initial : number = 0;
+  signalsInSecond! : number;
 
   updateSignalsInSignal:number=0;
-
 
   ngOnChanges(model: any) {
     this.changeSpeed();
     this.new_interval.emit(this.interval);
+    this.initial_event.emit(this.initial);
     this.updateData();
   }
   
@@ -49,35 +53,37 @@ export class EEGViewerComponent implements OnChanges {
   } */
 
   ngOnInit() {
+    
     const url_array = this.router.url.split("/");
     let eegId = +url_array[url_array.length - 1];
     let series: any = [];
-    let counter=0;
+    let counter = 0;
 
-    
-    
-    for (const [key, value] of this.labelsSignal) {
-      var signalsInWindow = (value[key].length/ this.eegInfo.duration)*this.interval;
-      this.tmp = value[key].length;
-      value[key] = value[key].map(function(each_element: string){
+    for (const [label, valuesMap] of Object.entries(this.labelsSignal)) {
+
+      this.signalsInSecond = valuesMap[label].length/ this.eegInfo.duration;
+      var signalsInWindow = this.signalsInSecond * this.interval;
+      this.tmp = valuesMap[label].length;
+      
+      valuesMap[label] = valuesMap[label].map(function(each_element: string){
         return Number.parseFloat(each_element).toFixed(2);
       });
 
-      
-      this.yData.push(value[key]);
+      this.yData.push(valuesMap[label]);
       var values = this.yData[counter].slice(0,signalsInWindow)
-      series.push({name:key, type:"line", showSymbol:false, data:values})
+      series.push({name:label, type:"line", showSymbol:false, data:values})
 
       counter++;
+
     }
      
     this.xData = Array.from(Array(this.tmp).keys());
     
     setTimeout(() => {
+      console.log("echarts init")
       this.chartDom = document.getElementById('chart')!;
       this.myChart = echarts.init(this.chartDom);
     }, 100);
-
 
     this.option = {
       animation: true,
@@ -171,25 +177,34 @@ export class EEGViewerComponent implements OnChanges {
       
       
     };
-    this.start(this.speed);
-    this.changeSpeed(); // This line is to adjust data
+
+    // this.start(this.speed);
+    // this.changeSpeed(); // This line is to adjust data
     this.option;
+
   }
 
   /* Esta é a função que vai estar sempre a ser chamada */
   start(speed: number) {
+
+    console.log("start")
+
     this.intervalId = setInterval(() => {
-      
       
       this.myChart.setOption<echarts.EChartsOption>({
         series: [
           {
             //data: this.yData
+            // tem de ser atualizado consoante o play do sinal
           }
         ],
         xAxis: {
-            //data : this.xData
+          data : this.xData
         },
+        // dataZoom: {
+        //   startValue: this.initial,
+        //   endValue: this.initial + this.interval * this.signalsInSecond,
+        // }
       }); 
 
     }, speed); // mudar velocidade
@@ -197,19 +212,20 @@ export class EEGViewerComponent implements OnChanges {
     this.lst_intervalId.push(this.intervalId);
   }
   
+  // Altera o intervalo de tempo
   updateData() {
+
     let min_series: any = [];
     
     console.log("Função de updateData " , this.interval);
 
-    for (const [key, value] of this.labelsSignal) {
-      /* this.yData.push(value[key]); */
-      var signalsInWindow = (value[key].length/ this.eegInfo.duration)*this.interval;
-      const firstHalf = value[key].slice(0, signalsInWindow-1)
+    for (const [label, valuesMap] of Object.entries(this.labelsSignal)) {
 
-      min_series.push({name:key, type:"line", showSymbol:false, data: firstHalf})
+      var signalsInWindow = (valuesMap[label].length / this.eegInfo.duration ) * this.interval;
+      const firstHalf = valuesMap[label].slice(this.initial, signalsInWindow-1)
+      min_series.push({name:label, type:"line", showSymbol:false, data: firstHalf})
+
     }
-
 
     this.myChart.setOption<echarts.EChartsOption>({
       yAxis:{
@@ -219,83 +235,65 @@ export class EEGViewerComponent implements OnChanges {
       series: min_series,
      
       xAxis: {
-          /* data : dataX, */
+          /* data : this.xData, */
       },
+
+     /*  dataZoom: {
+        startValue: this.initial,
+        endValue: this.initial + this.interval * this.signalsInSecond,
+      } */
     }); 
+
   }
 
+  // Clicas no botão para frente/tras
   updateDataAndTime(isUp: boolean) {
+
+    console.log("update Data and Time");
+
     let min_series: any = [];
     let xDataUpdated: any =[];
-
-    /* let velhice = <echarts.EChartsOption[]>this.myChart.getOption()["dataZoom"];
-    console.log(velhice)
-    let velhice1 = velhice[0];
-
-    let endValue = <number>velhice1['endValue'];
-    let startValue = <number>velhice1['startValue'];
-
-    console.log(velhice1['endValue']);
-    console.log(velhice1['startValue']);
-
-    for (const [key, value] of this.labelsSignal) {
-      var signalsInWindow = (value[key].length/ this.eegInfo.duration)*this.interval;
-
-      const part = value[key].slice(endValue, endValue + signalsInWindow)
-      console.log("PART: ", part)
-
-      min_series.push({name:key, type:"line", showSymbol:false, data: part})
-      xDataUpdated = this.xData.slice(endValue, endValue + signalsInWindow)
-    } */
-    
-    // esta ratisse está mal porque quando 
-    // se faz zoom os dados ficam dessincronizados
-    // ou quando se altera o tamenho o eixo do x isto vai com o pylance
 
     if (isUp) this.updateSignalsInSignal++
     else if (this.updateSignalsInSignal - 1 > 0) this.updateSignalsInSignal--
 
-    for (const [key, value] of this.labelsSignal) {
-      var signalsInWindow = (value[key].length/ this.eegInfo.duration)*this.interval;
+    for (const [label, valuesMap] of Object.entries(this.labelsSignal)) {
+      var signalsInWindow = this.signalsInSecond * this.interval;
 
       if (isUp) {
-        const part = value[key].slice(this.updateSignalsInSignal * signalsInWindow, (this.updateSignalsInSignal+1) * signalsInWindow)
+        const part = valuesMap[label].slice(this.updateSignalsInSignal * signalsInWindow, (this.updateSignalsInSignal+1) * signalsInWindow)
 
-        min_series.push({name:key, type:"line", showSymbol:false, data: part})
+        min_series.push({name:label, type:"line", showSymbol:false, data: part})
         xDataUpdated = this.xData.slice(this.updateSignalsInSignal * signalsInWindow, (this.updateSignalsInSignal+1) * signalsInWindow)
+        this.initial = xDataUpdated[0];
 
       } else {
-        const part = value[key].slice((this.updateSignalsInSignal-1) * signalsInWindow, this.updateSignalsInSignal * signalsInWindow)
+        const part = valuesMap[label].slice((this.updateSignalsInSignal-1) * signalsInWindow, this.updateSignalsInSignal * signalsInWindow)
 
-        min_series.push({name:key, type:"line", showSymbol:false, data: part})
+        min_series.push({name:label, type:"line", showSymbol:false, data: part})
         xDataUpdated = this.xData.slice((this.updateSignalsInSignal-1) * signalsInWindow, this.updateSignalsInSignal * signalsInWindow)
+        this.initial = xDataUpdated[0];
       }
          
     }
     
-    
-    
     this.myChart.setOption<echarts.EChartsOption>({
-      yAxis: {},
+
+      // yAxis: {},
 
       series: min_series,
      
       xAxis: {
-          data : xDataUpdated,
+        data : xDataUpdated,
       },
+
+      dataZoom: {
+        startValue: this.initial,
+        endValue: this.initial + this.interval * this.signalsInSecond,
+      }
+
     }); 
   }
-
-/* 
-  onDataZoom(): void {
-    const dataZoom = this.myChart.getOption().dataZoom[0];
-    console.log(
-      dataZoom.startValue, // You may need to format your output. Mine is a date as number.
-      dataZoom.endValue
-    );
-    // Here you can filter your data and update your chart data.
-  } */
-
 
   changeSpeed() {
     // clear the existing interval
