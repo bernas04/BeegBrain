@@ -113,3 +113,17 @@
  .card-body {
   background-color: #F5F5F5 !important;
  }
+
+
+
+
+
+.op:hover {
+  background-color: #f0ecec;
+  cursor: pointer;
+}
+
+.op {
+  width: 585px;
+  background-color: white;
+}
