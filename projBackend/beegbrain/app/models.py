@@ -184,7 +184,7 @@ class Event(models.Model):
 # SharedFolder -> Table responsible for defining the EEG exams that an institution (and its workers) is allowed to access.  
 class SharedFolder(models.Model):
     
-    institution = models.ForeignKey(Institution, verbose_name=('institution'), on_delete=models.CASCADE, related_name='%(class)s_institution')
-    eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE, related_name='%(class)s_eeg')
+    contract = models.ForeignKey(Contract, verbose_name=('contract'), on_delete=models.CASCADE, related_name='%(class)s_contract', null=False)
+    eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE, related_name='%(class)s_eeg', null=False)
     created_at = models.DateTimeField(auto_now_add=True)    # If now - created_at > cache_limit : remove
 

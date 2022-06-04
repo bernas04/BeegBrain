@@ -65,8 +65,8 @@ urlpatterns = [
     path('api/eegAnnotations', views.getEegAnnotations),
 
     path('api/doctorSharedFolders', views.getDoctorSharedFolder),
+    path('api/operatorSharedFolders', views.getOperatorSharedFolder),
     path('api/createSharedFolder', views.createSharedFolder),
-    path('api/institutionSharedFolder', views.getInstitutionSharedFolder),
     
     path('api/doctorRevisionCenters', views.getDoctorRevisionCenters),
     path('api/createDoctorevisioncenter', views.createDoctorRevisionCenter),

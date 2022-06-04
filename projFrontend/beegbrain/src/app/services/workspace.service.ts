@@ -15,13 +15,28 @@ export class WorkspaceService {
 
   constructor(private http: HttpClient) { }
 
-  getAllEEG(token : string) : Observable<EEG[]> {
-    return this.http.get<EEG[]>(this.BASE_URL + 'eegs', { 
-      headers: new HttpHeaders({
-        'Authorization': 'Token ' + token,
-        'Content-Type': 'application/json',
-      }),
-    });
+  getAllEEG(token : string, type : string, id : string) : Observable<EEG[]> {
+
+    if (type === 'doctor') {
+
+      return this.http.get<EEG[]>(this.BASE_URL + 'doctorSharedFolders?id=' + id , { 
+        headers: new HttpHeaders({
+          'Authorization': 'Token ' + token,
+          'Content-Type': 'application/json',
+        }),
+      });
+
+    } else {
+
+      return this.http.get<EEG[]>(this.BASE_URL + 'operatorSharedFolders?id=' + id , { 
+        headers: new HttpHeaders({
+          'Authorization': 'Token ' + token,
+          'Content-Type': 'application/json',
+        }),
+      });
+
+    }
+    
   }
 
   deleteEEG(id : number, token : string) {

@@ -1,6 +1,11 @@
+from ast import operator
+from http import HTTPStatus
 import multiprocessing
+from webbrowser import Opera
+from attr import assoc
+import pytz
 from rest_framework.decorators import api_view
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 from django.db.models import Q
 from django.shortcuts import render
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -168,9 +173,15 @@ def getContract(request):
     serializer = serializers.ContractSerializer(contracts, many=True)
     return Response(serializer.data)
 
-def getContractProvidences(revision_centers):
-    providences = [Contract.objects.get(revision_center=revision_center).providence for revision_center in revision_centers]
-    return providences
+def getContractFromRevisionCenters(revision_centers):
+    contracts = []
+    for revision_center in revision_centers:
+        try:
+            contract = Contract.objects.get(revision_center=revision_center)
+            contracts.append(contract)
+        except Contract.DoesNotExist:
+            continue
+    return contracts
 
 @api_view(['POST'])
 @authentication_classes([TokenAuthentication])
@@ -271,7 +282,7 @@ def createOperator(request):
     serializer = serializers.UserSerializer(data=request.data)
     if serializer.is_valid():
         resp = serializer.createOperator(request.data)
-        token = serializers.TokenSerializer(data={'key': resp['token'].key, 'id': resp['id'], 'type':'doctor', 'health_number' : request.data['health_number']})
+        token = serializers.TokenSerializer(data={'key': resp['token'].key, 'id': resp['id'], 'type':'operator', 'health_number' : request.data['health_number']})
         return Response(token.initial_data)
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -319,6 +330,7 @@ def createDoctor(request):
         resp = serializer.createDoctor(request.data)   
         token = serializers.TokenSerializer(data={'key': resp['token'].key, 'id': resp['id'], 'type':'doctor', 'health_number' : request.data['health_number']})
         return Response(token.initial_data)
+
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -387,10 +399,12 @@ def getDoctorRevisionCenters(doctor_id):
     """GET de todos os doctor_revision_center"""
     try:
         doctor = Doctor.objects.get(id=doctor_id)
+        print(doctor)
     except Doctor.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
+        print("doutor n existe")
+        return None
     doctor_revision_centers = DoctorRevisionCenter.objects.filter(doctor=doctor)
-    return doctor_revision_centers
+    return [doctor_revision_center.revision_center for doctor_revision_center in doctor_revision_centers]
 
 
 @api_view(['POST'])
@@ -564,6 +578,14 @@ def createEEG(request):
             signal = f.readSignal(i) 
             channelLabel = re.sub('[^0-9a-zA-Z]+', '', signal_labels[i])
             pool.apply_async(worker,(channelLabel,eegObject,signal,))
+
+        # Shared Folder
+        try:
+            contract = Contract.objects.get(providence__id=operator.providence.id)
+        except Contract.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        SharedFolder.objects.create(contract=contract,eeg=eegObject)
 
     return Response(serializer_eeg.data, status=status.HTTP_201_CREATED)
 
@@ -779,7 +801,7 @@ def createEvent(request):
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def getEventById(request, id):
+def getEventById(request):
     """GET de um evento pelo seu id"""
     eve_id = int(request.GET['id'])
     try:
@@ -799,30 +821,46 @@ def getEventById(request, id):
 @permission_classes([IsAuthenticated])
 def getDoctorSharedFolder(request):
     """GET de todas as pastas partilhadas"""
-    doctor_revision_centers = getDoctorRevisionCenters(request)
-    associated_providences = getContractProvidences(doctor_revision_centers)
-    query = Q()
-    # for providence in associated_providences:
-    #     query = query | Q(institution=revision_center)
-    doctor_shared_folders = SharedFolder.objects.filter(query)
-    serializer = serializers.SharedFolderSerializer(doctor_shared_folders, many=True)
-    return Response(serializer.data)
 
+    doctor_id = int(request.GET['id'])
+    doctor_revision_centers = getDoctorRevisionCenters(doctor_id)
+    contracts = getContractFromRevisionCenters(doctor_revision_centers)
+    eegs = []
+    for contract in contracts:
+        shared_folders = SharedFolder.objects.filter(contract=contract)
+        eegs.extend([shared_folder.eeg for shared_folder in shared_folders])
+    print(eegs)
+
+    # CHECK CACHE VALID
+
+    serializer = serializers.EEGSerializer(eegs, many=True)
+    return Response(serializer.data)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
-def getInstitutionSharedFolder(request):
+def getOperatorSharedFolder(request):
     """GET de todas as pastas partilhadas"""
 
-    institution = getInstitutionById(request)
-    institution_shared_folder = SharedFolder.objects.filter(institution=institution)
-    shared_folder = [shared_folder for shared_folder in institution_shared_folder if notExpired(shared_folder)]
-    serializer = serializers.SharedFolderSerializer(shared_folder, many=True)
+    operator_id = int(request.GET['id'])
+    try:
+        operator = Operator.objects.get(id=operator_id)
+    except Operator.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    try:
+        contract = Contract.objects.get(providence__id=operator.providence.id)
+    except Contract.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    eegs = [shared_folder.eeg for shared_folder in SharedFolder.objects.filter(contract=contract) if notExpired(shared_folder)]
+    print(eegs)
+    serializer = serializers.EEGSerializer(eegs, many=True)
     return Response(serializer.data)
 
+
 def notExpired(shared_folder):
-    return datetime.now() - shared_folder.created_at < 604800000 # alterar isto para uma semana ou x dias
+    return datetime.now(timezone.utc) - shared_folder.created_at < timedelta(days=7) # alterar isto para uma semana ou x dias
 
 
 @api_view(['POST'])

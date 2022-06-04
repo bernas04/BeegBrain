@@ -28,8 +28,8 @@ export class WorkspaceComponent implements OnInit {
   }
 
   getEEG() {
-    
-    this.service.getAllEEG(this.token).subscribe((info) => {
+
+    this.service.getAllEEG(this.token, this.type, this.id).subscribe((info) => {
 
       info.forEach((eeg) => {
         console.log(eeg.status)
@@ -42,6 +42,7 @@ export class WorkspaceComponent implements OnInit {
       })
 
     });
+
   }
 
 

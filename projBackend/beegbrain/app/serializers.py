@@ -26,6 +26,10 @@ class UserSerializer(serializers.ModelSerializer):
                    gender=validated_data['gender'],
                    medical_number=validated_data['medical_number'])
         d.save()
+        for institution_id in validated_data['institutions']:
+            revision_center = RevisionCenter.objects.get(id=institution_id)
+            DoctorRevisionCenter.objects.create(doctor=d,revision_center=revision_center)
+
         print("doctor created")
 
         return { 'token' : Token.objects.get(user=user), 'id' : d.id}
