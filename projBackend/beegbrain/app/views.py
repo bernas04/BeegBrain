@@ -2,7 +2,7 @@ from ast import operator
 from http import HTTPStatus
 import multiprocessing
 from webbrowser import Opera
-from attr import assoc
+# from attr import assoc
 import pytz
 from rest_framework.decorators import api_view
 from datetime import datetime, timedelta, timezone
@@ -546,6 +546,8 @@ def createEEG(request):
             priority = PRIORITIES[request.data['priority']]
             duration = None
 
+        if (not patient): stat = 'patient undefined'
+
         eeg = {
             "operator": operator,
             "patient": patient,
@@ -597,6 +599,7 @@ def createEEG(request):
         try:
             contract = Contract.objects.get(providence__id=operator.providence.id)
         except Contract.DoesNotExist:
+            print("CONTRACT NOT FOUND")
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         SharedFolder.objects.create(contract=contract,eeg=eegObject)
