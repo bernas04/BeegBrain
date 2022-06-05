@@ -16,6 +16,11 @@ export class WorkspaceComponent implements OnInit {
   lst_patient: Patient[] = [];
   EEGpacient = new Map<number, Patient>();
 
+
+  lst_untouchable: EEG[] = [];
+  lst_filtered: EEG[] = []
+
+
   token = ''+localStorage.getItem('token');
   type = ''+localStorage.getItem('type');
   id = ''+localStorage.getItem('id');
@@ -48,6 +53,10 @@ export class WorkspaceComponent implements OnInit {
 
     });
 
+  }
+  
+  sendFilters(lst : EEG[]){
+    this.lst_eeg = lst;
   }
 
 

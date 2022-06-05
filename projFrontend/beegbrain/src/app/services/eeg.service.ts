@@ -47,4 +47,18 @@ export class EEGService {
       })
   }
 
+  getEEGfiltered(id:string, patient_id:string, institution_id:string, date:string, operator_id:string, priority:string, report_status:string, token: string) : Observable<EEG[]>{
+    
+    let type = ''+localStorage.getItem('type');
+    let idprof = ''+localStorage.getItem('id');
+
+
+    return this.http.get<EEG[]>(this.BASE_URL+ 'filter?' +'id='+id + '&patient_id=' + patient_id + '&institution_id=' + institution_id +'&date=' + date + '&operator_id=' + operator_id + '&priority=' + priority + '&report_status=' + report_status + '&type=' + type + '&idprof=' + idprof , { 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    });
+  }
+
 }
