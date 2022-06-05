@@ -49,8 +49,13 @@ export class EEGViewerComponent implements OnChanges {
     let eegId = +url_array[url_array.length - 1];
     let series: any = [];
 
+    console.log("NG ON INIT")
+    console.log(this.labelsSignal)
+    console.log(this.signalsInSecond)
+    console.log(this.interval)
+
     for (const [label, valuesMap] of this.labelsSignal) {
-      const values = Array.from(valuesMap.values());
+      const values = Array.from(valuesMap.values()).slice(0, Math.floor(this.interval * this.signalsInSecond));
       series.push({name:label, type:"line", showSymbol:false, data:values}) 
     }
      
@@ -204,13 +209,12 @@ export class EEGViewerComponent implements OnChanges {
       
       let end = initial + this.signalsInSecond * this.interval;
 
-      console.log("UPDATE DATA", initial, end)
-
       const channelBuffer = values.slice(initial, end)
       xData = keys.slice(initial, end)
-      console.log(xData);
-      
+
       min_series.push({name:label, type:"line", showSymbol:false, data: channelBuffer})
+
+      console.log("END DO FILHO", end)
 
     }
     
@@ -232,7 +236,7 @@ export class EEGViewerComponent implements OnChanges {
       */
     });
 
-    console.log("UPDATE DATA", initial)
+    console.log("UPDATE DATA", initial, this.interval)
 
 
   }

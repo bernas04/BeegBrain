@@ -47,10 +47,10 @@ export class EegComponent implements OnInit {
   constructor(private services:ChannelService, private router: Router, private EEGservices:EEGService) { }
   
   ngOnInit() {
-    
     const url_array = this.router.url.split("/");
     let eegId = +url_array[url_array.length - 1];
     this.id = eegId;
+
     this.getLabelsFromEEG(eegId);
     this.getInformation(eegId);
 
@@ -65,7 +65,6 @@ export class EegComponent implements OnInit {
     this.EEGservices.getEEGlength(this.id, this.token).subscribe((length) => {
       this.length = <number> length;
       this.signalsInSecond = <number> length / this.eegInfo.duration;
-      console.log("signalsInSecond [PAIIIIIII→→]", this.signalsInSecond)
     })
  
   }
@@ -120,65 +119,96 @@ export class EegComponent implements OnInit {
 
   getLabelData(channels: String[]) {
 
-    console.log("GET LABEL DATAAAAAAAAAAAAAAAAAAA")
+    /*
+    Tendo o initial, end -> Ver se existem dados no labelsSignal a partir do initial até ao end
+
+      se tiver:
+        - só chamar o update data do filho, porque ele já tem os dados
+        - pedir mais caso esteja perto de não ter mais dados
+        
+      se NÃO tiver:
+        - pedir aos serviços os valores (do initial até ao end * 4)
+
+      ELIMINAR CACHE
+
+    */
+
+
+    // verificar se o end não execede o tamanho do eeg
 
     let end = this.initial + this.window_size * this.signalsInSecond
 
-    console.log("INITIAL " + this.initial + " | END " + end)
+    let hasData = false;
 
-    // PEDIR DADOS QUE AINDA NA TEMOS
+    console.log(this.labelsSignal);
 
-    this.services.getDataAboutLabel(this.id, channels, this.token, this.initial, end ).subscribe((channelsMap) => {
+    for (const [label, map] of Object.entries(this.labelsSignal)) {
 
-      for (const [label, valuesMap] of Object.entries(channelsMap)) {
+      if (map.has(this.initial) && map.has(end)) {
+        // Já tem os dados entre o initial - end
+        hasData = true;
+        console.log("HAS DATA ")
+      }
 
-        let mergedMap = new Map();
+      break;
 
-        if (this.labelsSignal.has(label)) {
-          mergedMap = this.labelsSignal.get(label);
+    }
+    
+    if (!hasData) {
 
-        } else {
-          this.labelsSignal.set(label,mergedMap);
-        }
+      console.log("DOESNT HAVE DATA :(")
+ 
+      this.services.getDataAboutLabel(this.id, channels, this.token, this.initial, end * 4).subscribe((channelsMap) => {
 
-        for (const [index, value] of Object.entries(valuesMap)) {
-
-          // Se canal existir
-          if (!mergedMap.has(index)) {
-            mergedMap.set(index,value);
-
+        for (const [label, valuesMap] of Object.entries(channelsMap)) {
+  
+          let mergedMap = new Map();
+  
+          if (this.labelsSignal.has(label)) {
+            mergedMap = this.labelsSignal.get(label);
+  
+          } else {
+            this.labelsSignal.set(label,mergedMap);
           }
+  
+          for (const [index, value] of Object.entries(valuesMap)) {
+  
+            // Se canal existir
+            if (!mergedMap.has(index)) {
+              mergedMap.set(index,value);
+  
+            }
+          }
+  
+          this.labelsSignal.set(label, mergedMap)
+  
         }
 
-        this.labelsSignal.set(label, mergedMap)
+      });
 
-      };
-      
-      console.log("Mapa", this.labelsSignal)
+    } 
+    
+    console.log("Mapa", this.labelsSignal)
 
-      console.log("EEG CALLING UPDATE DATA :::::::::: ", this.initial, end)
-
-      this.eeg_viewer.updateData(this.initial);
-      
-    });
+    this.eeg_viewer.updateData(this.initial);
+  
 
   }
 
   left() {
     this.initial = this.initial - Math.floor(this.window_size * this.signalsInSecond)
     if (this.initial < 0) this.initial = 0
-    console.log("LEFT", this.initial)
+    
     this.getLabelData(this.labels)
   }
 
   right() {
-    console.log(this.length, this.window_size)
     this.initial = this.initial +  Math.floor(this.window_size * this.signalsInSecond)
+
     if (this.initial > this.length - Math.floor(this.window_size * this.signalsInSecond)) {
-      console.log("ERROR")
       this.initial = this.length -  Math.floor(this.window_size * this.signalsInSecond);
     }
-    console.log("RIGHT", this.initial)
+
     this.getLabelData(this.labels)
   }
 
