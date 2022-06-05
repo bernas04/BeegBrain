@@ -6,14 +6,15 @@
 
     <ngx-slider class="slider" invert [(value)]="speed" [options]="options" ></ngx-slider> <!-- add :(userChangeEnd)="update() -->
 
-    <button (click)="down()" type="button" class="btn btn-primary"><i class="bi bi-caret-left-fill"></i></button>
+    <button (click)="left()" type="button" class="btn btn-primary"><i class="bi bi-caret-left-fill"></i></button>
     <!-- Dar update da view  -->
 
-    <label style="margin-left: 2em;">Time: 
-        <input (keyup.enter)="getInputValue($event)" (click)="getInputValue($event)"  id="window_interval" type="number" max="{{eegInfo.duration}}" step="10" value="{{window_size}}"><br>
+    <label>
+        <input (keyup.enter)="getInputValue($event)" (click)="getInputValue($event)"  id="window_interval" 
+        type="number" max="{{eegInfo.duration}}" step="10" min="0" value="{{window_size}}" style="text-align: center;"><br>
     </label>
 
-    <button (click)="up()" type="button" class="btn btn-primary"><i class="bi bi-caret-right-fill"></i></button>
+    <button (click)="right()" type="button" class="btn btn-primary"><i class="bi bi-caret-right-fill"></i></button>
     <!-- Carregar mais dados, se for preciso e dar update da view -->
 
     <div class="drop-container col-lg-3">
@@ -41,9 +42,6 @@
         [interval]=window_size
         [labels]="labels"
         [signalsInSecond]="signalsInSecond"
-        (new_interval)="changeInterval($event)"
-        (initial_event)="updateInitial($event)"
-        (event)="update($event)"
         ></app-eeg-viewer> 
 
     </div>

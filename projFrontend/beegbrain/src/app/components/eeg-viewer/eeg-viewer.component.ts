@@ -28,21 +28,7 @@ export class EEGViewerComponent implements OnChanges {
   @Input('control') control! : boolean;
   @Input('signalsInSecond') signalsInSecond! : number;
 
-  /* 
-  @Output() new_interval = new EventEmitter<number>();
-  @Output() initial_event = new EventEmitter<number>(); 
-  */
   @Output() event = new EventEmitter<Map<string, number>>();
-
-  // _labelsSignal! : Map<String, Map<Number,Number>>;
-  // get labelsSignal(): Map<String, Map<Number,Number>> {
-  //   return this.labelsSignal;
-  // }
-
-  // @Input('labelsSignal') set labelsSignal(labelsSignal: Map<String, Map<Number,Number>>) {
-  //   this.labelsSignal = labelsSignal;
-  //   // do your other stuff (update the input value)
-  // }
 
   constructor(private services: EEGService, private router: Router) { }
   
@@ -53,22 +39,8 @@ export class EEGViewerComponent implements OnChanges {
 
   updateSignalsInSignal:number = 0;
 
-  ngOnChanges(changes : SimpleChanges) {
+  ngOnChanges() {
 
-    console.log(changes)
-
-    console.log("======================== ngOnChanges ========================")
-    let map = new Map();
-    map.set("interval", this.interval)
-    map.set("initial", this.initial)
-    this.event.emit(map)
-
-    if (changes['labelsSignal'].currentValue !== changes['labelsSignal'].previousValue) {
-      console.log("=====================================================")
-      this.updateData();
-    } else {
-      console.log("===============!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!===============")
-    }
   }
 
   ngOnInit() {
@@ -76,20 +48,15 @@ export class EEGViewerComponent implements OnChanges {
     const url_array = this.router.url.split("/");
     let eegId = +url_array[url_array.length - 1];
     let series: any = [];
-    let counter = 0;
 
     for (const [label, valuesMap] of this.labelsSignal) {
-
       const values = Array.from(valuesMap.values());
-      console.log("VALORES TODOS " , values)
       series.push({name:label, type:"line", showSymbol:false, data:values}) 
-
     }
      
     this.xData = Array.from(Array(this.tmp).keys());
     
     setTimeout(() => {
-      console.log("echarts init")
       this.chartDom = document.getElementById('chart')!;
       this.myChart = echarts.init(this.chartDom);
     }, 100);
@@ -99,10 +66,11 @@ export class EEGViewerComponent implements OnChanges {
       grid: {
         show: true,
         backgroundColor: "#f5f5f5",
-        borderWidth: 2,
+        borderWidth: 1,
         borderColor:"#000000"
       },
       tooltip: {
+        show: true,
         trigger: 'axis',
         axisPointer: {
           animation: false,
@@ -140,7 +108,7 @@ export class EEGViewerComponent implements OnChanges {
         }
       ],
       xAxis: {
-        name: "Quantity",
+        //name: "Quantity",
         type: "category",
         minorTick: {
           show: true,
@@ -161,7 +129,7 @@ export class EEGViewerComponent implements OnChanges {
       yAxis: {
         name : 'Value',
         type: 'value',
-        boundaryGap: [0, '100%'], 
+        //boundaryGap: [0, '100%'], 
         minorTick: {
           show: true,
         },
@@ -181,7 +149,6 @@ export class EEGViewerComponent implements OnChanges {
         }
 
       },
-      darkMode: true,
       series: series
       
       
@@ -227,39 +194,29 @@ export class EEGViewerComponent implements OnChanges {
   }
   
   // Altera o intervalo de tempo
-  updateData() {
-
+  updateData(initial: number) {
     let min_series: any = [];
-    
-    console.log("Função de updateData " , this.interval);
-
     var xData: any = []
 
     for (const [label, valuesMap] of this.labelsSignal) {
-
       const keys = Array.from(valuesMap.keys());
       const values = Array.from(valuesMap.values()); 
-      console.log("VALUES " , valuesMap);
       
-      let end = this.initial + this.signalsInSecond * this.interval;
+      let end = initial + this.signalsInSecond * this.interval;
 
-      const channelBuffer = values.slice(this.initial, end)
-      xData = keys.slice(this.initial, end)
+      console.log("UPDATE DATA", initial, end)
+
+      const channelBuffer = values.slice(initial, end)
+      xData = keys.slice(initial, end)
+      console.log(xData);
       
       min_series.push({name:label, type:"line", showSymbol:false, data: channelBuffer})
 
-
-      console.log("VOU DESDE " + this.initial + " ATÉ AQUI " + end);
-      console.log("channelBuffer ", channelBuffer)
-      console.log("eixo do x", xData.length)
-      console.log(" - tamanho : " + channelBuffer.length)
     }
-
     
     this.myChart.setOption<echarts.EChartsOption>({
-      yAxis:{
-        /* data: min_series, */
-      },
+
+      yAxis: {},
 
       series: min_series,
      
@@ -267,11 +224,17 @@ export class EEGViewerComponent implements OnChanges {
           data : xData,
       },
 
-     /*  dataZoom: {
-        startValue: this.initial,
-        endValue: this.initial + this.interval * this.signalsInSecond,
-      } */
+      /*  
+      dataZoom: {
+        startValue: initial,
+        endValue: initial + this.interval * this.signalsInSecond,
+      } 
+      */
     });
+
+    console.log("UPDATE DATA", initial)
+
+
   }
 
   // Clicas no botão para frente/tras
@@ -279,13 +242,10 @@ export class EEGViewerComponent implements OnChanges {
 
     console.log("update Data and Time");
 
-    let min_series: any = [];
-    let xDataUpdated: any =[];
-
     if (isUp) this.updateSignalsInSignal++
     else if (this.updateSignalsInSignal - 1 > 0) this.updateSignalsInSignal--
 
-    for (const [label, valuesMap] of Object.entries(this.labelsSignal)) {
+    /* for (const [label, valuesMap] of Object.entries(this.labelsSignal)) {
       var signalsInWindow = this.signalsInSecond * this.interval;
 
       if (isUp) {
@@ -303,7 +263,24 @@ export class EEGViewerComponent implements OnChanges {
         this.initial = xDataUpdated[0];
       }
          
+    } */
+
+    let min_series: any = [];
+    var xData: any = []
+
+    for (const [label, valuesMap] of this.labelsSignal) {
+      const keys = Array.from(valuesMap.keys());
+      const values = Array.from(valuesMap.values()); 
+      
+      let end = this.initial + this.signalsInSecond * this.interval;
+
+      const channelBuffer = values.slice(this.initial, end)
+      xData = keys.slice(this.initial, end)
+      
+      min_series.push({name:label, type:"line", showSymbol:false, data: channelBuffer})
+
     }
+
     
     this.myChart.setOption<echarts.EChartsOption>({
 
@@ -312,12 +289,12 @@ export class EEGViewerComponent implements OnChanges {
       series: min_series,
      
       xAxis: {
-        data : xDataUpdated,
+        data : xData,
       },
 
       dataZoom: {
-        startValue: this.initial,
-        endValue: this.initial + this.interval * this.signalsInSecond,
+        // startValue: this.initial,
+        // endValue: this.initial + this.interval * this.signalsInSecond,
       }
 
     }); 

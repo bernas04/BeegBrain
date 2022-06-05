@@ -115,30 +115,17 @@ export class EegComponent implements OnInit {
 
   getInputValue(event:any){
     this.window_size = event.target.value;
-  }
-
-
-
-  changeInterval(num: number) {
-    console.log("interval changed!!", num)
-    this.window_size = num;
-    // this.getLabelData(this.labels);
-  }
-
-  update(event : Map<string, number>) {
-    this.window_size = <number>event.get("interval");
-    this.initial = <number>event.get("initial");
     this.getLabelData(this.labels);
   }
 
-
   getLabelData(channels: String[]) {
 
-    let end = this.initial + this.window_size * this.signalsInSecond
-    /* console.log(this.initial + " | " + end)
+    console.log("GET LABEL DATAAAAAAAAAAAAAAAAAAA")
 
-    console.log("labelsSignal", this.labelsSignal)
-    */
+    let end = this.initial + this.window_size * this.signalsInSecond
+
+    console.log("INITIAL " + this.initial + " | END " + end)
+
     // PEDIR DADOS QUE AINDA NA TEMOS
 
     this.services.getDataAboutLabel(this.id, channels, this.token, this.initial, end ).subscribe((channelsMap) => {
@@ -169,24 +156,30 @@ export class EegComponent implements OnInit {
       
       console.log("Mapa", this.labelsSignal)
 
-      // this.eeg_viewer.updateData();
+      console.log("EEG CALLING UPDATE DATA :::::::::: ", this.initial, end)
+
+      this.eeg_viewer.updateData(this.initial);
       
     });
 
   }
 
-  down() {
-    this.eeg_viewer.updateDataAndTime(false)
+  left() {
+    this.initial = this.initial - Math.floor(this.window_size * this.signalsInSecond)
+    if (this.initial < 0) this.initial = 0
+    console.log("LEFT", this.initial)
+    this.getLabelData(this.labels)
   }
 
-  up() {
-    this.eeg_viewer.updateDataAndTime(true);
-  }
-
-  updateInitial(initial: number) {
-    console.log("NOVO INICIAL", initial)
-    this.initial = initial;
-    // this.getLabelData(this.labels);
+  right() {
+    console.log(this.length, this.window_size)
+    this.initial = this.initial +  Math.floor(this.window_size * this.signalsInSecond)
+    if (this.initial > this.length - Math.floor(this.window_size * this.signalsInSecond)) {
+      console.log("ERROR")
+      this.initial = this.length -  Math.floor(this.window_size * this.signalsInSecond);
+    }
+    console.log("RIGHT", this.initial)
+    this.getLabelData(this.labels)
   }
 
 }

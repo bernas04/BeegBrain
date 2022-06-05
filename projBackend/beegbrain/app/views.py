@@ -677,8 +677,9 @@ def getChannelLabels(request):
     """GET da LISTA (labels apenas) de um EEG"""
     eeg_id = int(request.GET['eeg'])
     channels = Channel.objects.filter(eeg_id=eeg_id)
-    channelsLabels = [chn.label for chn in channels]
-    return Response(channelsLabels)
+    channelsLabels = list(set([chn.label for chn in channels]))
+    channelLabels = sorted(channelsLabels, key=lambda x: (x[0],int(x[1:])))
+    return Response(channelLabels)
 
 """Retorna um array com os valores de um canal de um EEG, desde o momento de início (start - numero do tick inicial) até ao start + timeInterval (em segundos)"""
 def getChannelIntervalValues(eeg_id,label,timeInterval,start):
@@ -734,8 +735,9 @@ def getChannelsByLabels(request):
     return Response(data,status=status.HTTP_200_OK)
 
 def bufferWorker(data,label,eeg,start,end):
-    chn = Channel.objects.get(label=label,eeg=eeg) 
-    array = decompress(chn.file.name)
+    chn = Channel.objects.filter(label=label,eeg=eeg).last()
+    print(chn)
+    array = decompress(str(eeg.id) + "_" + label + ".npy")
     # final_end = start + (end-start)*len(array)//eeg.duration
     valuesMap = {}
     for idx in range(start,end):
