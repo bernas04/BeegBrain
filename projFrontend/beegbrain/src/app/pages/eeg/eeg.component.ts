@@ -31,6 +31,7 @@ export class EegComponent implements OnInit {
   initial: number = 0;
   window_size: number = 30;
   length! : number;
+  signalsInSecond! : number;
 
   speed: number = 1000; // default: 1 segundo
   options: Options = {
@@ -42,7 +43,6 @@ export class EegComponent implements OnInit {
       return value +' ms';
     },
   };
-  signalsInSecond! : number;
   
   constructor(private services:ChannelService, private router: Router, private EEGservices:EEGService) { }
   
@@ -65,6 +65,7 @@ export class EegComponent implements OnInit {
     this.EEGservices.getEEGlength(this.id, this.token).subscribe((length) => {
       this.length = <number> length;
       this.signalsInSecond = <number> length / this.eegInfo.duration;
+      console.log("signalsInSecond [PAIIIIIII→→]", this.signalsInSecond)
     })
  
   }
@@ -116,28 +117,31 @@ export class EegComponent implements OnInit {
     this.window_size = event.target.value;
   }
 
-  update() {
-    console.log("new speed value: "+ this.speed)
-  }
+
 
   changeInterval(num: number) {
     console.log("interval changed!!", num)
     this.window_size = num;
+    // this.getLabelData(this.labels);
+  }
+
+  update(event : Map<string, number>) {
+    this.window_size = <number>event.get("interval");
+    this.initial = <number>event.get("initial");
     this.getLabelData(this.labels);
   }
 
 
   getLabelData(channels: String[]) {
 
-    let end = this.initial + Math.floor(this.window_size * this.signalsInSecond)
-    console.log(this.initial + " | " + end)
+    let end = this.initial + this.window_size * this.signalsInSecond
+    /* console.log(this.initial + " | " + end)
 
     console.log("labelsSignal", this.labelsSignal)
-
+    */
     // PEDIR DADOS QUE AINDA NA TEMOS
 
     this.services.getDataAboutLabel(this.id, channels, this.token, this.initial, end ).subscribe((channelsMap) => {
-
 
       for (const [label, valuesMap] of Object.entries(channelsMap)) {
 
@@ -154,11 +158,9 @@ export class EegComponent implements OnInit {
 
           // Se canal existir
           if (!mergedMap.has(index)) {
-
             mergedMap.set(index,value);
 
           }
-
         }
 
         this.labelsSignal.set(label, mergedMap)
@@ -167,7 +169,7 @@ export class EegComponent implements OnInit {
       
       console.log("Mapa", this.labelsSignal)
 
-      this.eeg_viewer.updateData();
+      // this.eeg_viewer.updateData();
       
     });
 
@@ -184,7 +186,7 @@ export class EegComponent implements OnInit {
   updateInitial(initial: number) {
     console.log("NOVO INICIAL", initial)
     this.initial = initial;
-    this.getLabelData(this.labels);
+    // this.getLabelData(this.labels);
   }
 
 }

@@ -4,7 +4,7 @@
 
     <i class="bi bi-speedometer2" style="margin-left: 3px; margin-right: 3px; width: 2em; height: 2em"></i>
 
-    <ngx-slider class="slider" invert [(value)]="speed" [options]="options" (userChangeEnd)="update()" ></ngx-slider>
+    <ngx-slider class="slider" invert [(value)]="speed" [options]="options" ></ngx-slider> <!-- add :(userChangeEnd)="update() -->
 
     <button (click)="down()" type="button" class="btn btn-primary"><i class="bi bi-caret-left-fill"></i></button>
     <!-- Dar update da view  -->
@@ -40,8 +40,10 @@
         [labelsSignal]="labelsSignal" 
         [interval]=window_size
         [labels]="labels"
+        [signalsInSecond]="signalsInSecond"
         (new_interval)="changeInterval($event)"
         (initial_event)="updateInitial($event)"
+        (event)="update($event)"
         ></app-eeg-viewer> 
 
     </div>
