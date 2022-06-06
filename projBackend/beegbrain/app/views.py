@@ -341,9 +341,12 @@ def getDoctors(request):
 def createDoctor(request):
     serializer = serializers.UserSerializer(data=request.data)
     if serializer.is_valid():
+        print("CRIEIEIEIEIEIw")
         resp = serializer.createDoctor(request.data)   
         token = serializers.TokenSerializer(data={'key': resp['token'].key, 'id': resp['id'], 'type':'doctor', 'health_number' : request.data['health_number']})
         return Response(token.initial_data)
+    else:
+        print(serializer.errors)
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -451,6 +454,7 @@ def getReport(request):
 @permission_classes([IsAuthenticated])
 def createReport(request):
     """POST de um Report"""
+    print(request.data)
     serializer = serializers.ReportSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -459,20 +463,34 @@ def createReport(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def getReportById(request):
     """GET de um relatório pelo seu id"""
-    rep_id = int(request.GET['id'])
-    try:
-        ret = Report.objects.get(id=rep_id)
+
+    if request.method == 'GET': 
+        rep_id = int(request.GET['id'])
+        try:
+            ret = Report.objects.get(id=rep_id)
+            
+        except Report.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         
-    except Report.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    
-    serializer = serializers.ReportSerializer(ret)
-    return Response(serializer.data)
+        serializer = serializers.ReportSerializer(ret)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        try:
+            rep_id = int(request.data["id"])
+            report = Report.objects.get(id=rep_id)
+            report.content = request.data["content"]
+            report.save()
+            
+        except Report.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        return Response(True)
 
 
 # ############################### EEG ###############################
@@ -547,6 +565,7 @@ def createEEG(request):
             duration = None
 
         if (not patient): stat = 'patient undefined'
+        empty_report = Report.objects.create(content="", timestamp=datetime.now())
 
         eeg = {
             "operator": operator,
@@ -554,7 +573,7 @@ def createEEG(request):
             "status": stat,
             "timestamp": timestamp,
             "priority": priority,
-            "report": None,
+            "report": empty_report.id,
             "duration": duration,
         }
 
@@ -597,7 +616,9 @@ def createEEG(request):
 
         # Shared Folder
         try:
-            contract = Contract.objects.get(providence__id=operator.providence.id)
+            print("getting contract...")
+            print(" - operator: ", operator)
+            contract = Contract.objects.get(providence=operator.providence)
         except Contract.DoesNotExist:
             print("CONTRACT NOT FOUND")
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -630,6 +651,7 @@ def decompress(filename):
 @permission_classes([IsAuthenticated])
 def getEegById(request):
     """GET ou DELETE de um EEG pelo seu id"""
+    
     if request.method == 'GET':
         eeg_id = int(request.GET['id'])
         try:
@@ -638,14 +660,37 @@ def getEegById(request):
             return Response(status=status.HTTP_404_NOT_FOUND) 
         serializer = serializers.EEGSerializer(ret)
         return Response(serializer.data)
+
     elif request.method == 'DELETE':
         eeg_id = int(request.GET['id'])
         try:
+            
             ret = EEG.objects.get(id=eeg_id)
         except EEG.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
         ret.delete()
-        return True
+        return  Response(True)
+
+@api_view(['GET'])
+@authentication_classes([TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def getEegChannelLenght(request):
+
+    eeg_id = int(request.GET['id'])
+    try:
+        eeg = EEG.objects.get(id=eeg_id)
+    except EEG.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND) 
+
+    try:
+        channel = Channel.objects.filter(eeg=eeg).first()
+    except Channel.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND) 
+
+    length = len(decompress(channel.file.name))
+    return Response(length)
+
 
 
 # ############################### CHANNEL ###############################
@@ -657,8 +702,9 @@ def getChannelLabels(request):
     """GET da LISTA (labels apenas) de um EEG"""
     eeg_id = int(request.GET['eeg'])
     channels = Channel.objects.filter(eeg_id=eeg_id)
-    channelsLabels = [chn.label for chn in channels]
-    return Response(channelsLabels)
+    channelsLabels = list(set([chn.label for chn in channels]))
+    channelLabels = sorted(channelsLabels, key=lambda x: (x[0],int(x[1:])))
+    return Response(channelLabels)
 
 """Retorna um array com os valores de um canal de um EEG, desde o momento de início (start - numero do tick inicial) até ao start + timeInterval (em segundos)"""
 def getChannelIntervalValues(eeg_id,label,timeInterval,start):
@@ -690,6 +736,7 @@ def getChannelByLabel(request):
     data = { channel.label : decompress(channel.file.name) }
     return Response(data)
 
+
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
@@ -713,10 +760,14 @@ def getChannelsByLabels(request):
     return Response(data,status=status.HTTP_200_OK)
 
 def bufferWorker(data,label,eeg,start,end):
-    chn = Channel.objects.get(label=label,eeg=eeg) 
-    array = decompress(chn.file.name)
-    final_end = (end-start)*len(array)//eeg.duration
-    data[label] = array[start:final_end]
+    chn = Channel.objects.filter(label=label,eeg=eeg).last()
+    print(chn)
+    array = decompress(str(eeg.id) + "_" + label + ".npy")
+    # final_end = start + (end-start)*len(array)//eeg.duration
+    valuesMap = {}
+    for idx in range(start,end):
+        valuesMap[idx + 1] = array[idx]
+    data[label] = valuesMap
     print(data[label])
 
 
@@ -808,10 +859,34 @@ def getEegEvents(request):
 @permission_classes([IsAuthenticated])
 def createEvent(request):
     """POST de um evento"""
-    serializer = serializers.EventSerializer(data=request.data)
+
+    print(request.data)
+    data = request.data
+
+    try:
+        person = Person.objects.get(id=int(data["person"]))
+        
+    except Person.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        eeg = EEG.objects.get(id=int(data["eeg_id"]))
+        
+    except EEG.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    event = {
+        "type": data["type"],
+        "person": person.id,
+        "eeg": eeg.id
+    }
+
+    serializer = serializers.EventSerializer(data=event)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        print(serializer.errors)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -859,7 +934,7 @@ def getDoctorSharedFolder(request):
 @permission_classes([IsAuthenticated])
 def getOperatorSharedFolder(request):
     """GET de todas as pastas partilhadas"""
-
+    
     operator_id = int(request.GET['id'])
     try:
         operator = Operator.objects.get(id=operator_id)

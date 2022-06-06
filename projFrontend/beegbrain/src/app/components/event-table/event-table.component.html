@@ -1,0 +1,37 @@
+<div class="card" *ngIf="events">
+    <div class="card-body">
+
+        <div class="table-responsive" style="margin-top: 1em;">
+            <table id="eeg_table" class="table align-middle table-striped ">
+                <thead>
+
+                    <tr>
+                        <th></th>
+                        <th class="text-dark font-medium fs-4"> Type</th>
+                        <th class="text-dark font-medium fs-4"> Date </th>
+                        <th class="text-dark font-medium fs-4"> EEG </th>
+                        <th class="text-dark font-medium fs-4"> Person </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor='let e of events'>
+                        
+                        <td class="fs-4">{{e.id}}</td>
+
+                        <td class="fs-4">{{e.type}}</td>
+
+                        <td class="fs-4">{{e.timestamp  | date:'short':'UTC'}}</td>
+
+                        <td class="fs-4">{{e.eeg}}</td>
+
+                        <td class="fs-4">{{e.person}}</td>
+
+                    </tr>              
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+
+

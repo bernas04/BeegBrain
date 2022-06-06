@@ -33,6 +33,15 @@ export class EEGService {
     });
   }
 
+  getEEGlength(id:number, token: string) : Observable<Number>{
+    return this.http.get<Number>(this.BASE_URL+'eegLength?id='+id,{ 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    });
+  }
+
   sendEmail(content: string) {
       var our_email= "beeg.br4in@gmail.com";
       var text = content;

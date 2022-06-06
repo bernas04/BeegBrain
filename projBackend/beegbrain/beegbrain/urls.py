@@ -46,12 +46,13 @@ urlpatterns = [
     path('api/reports', views.getReport),
     path('api/createReport', views.createReport),
     path('api/report', views.getReportById),
-    #path('api/report/<int:id>', views.getReportByEEG),
+    # path('api/report/<int:id>', views.getReportByEEG),
 
     path('api/eegs', views.getEeg),
     path('api/createEEG', views.createEEG),
     path('api/eeg', views.getEegById),
     path('api/eegs/<int:id>', views.getEegByPatient),
+    path('api/eegLength', views.getEegChannelLenght),
 
     path('api/channel', views.getChannelByLabel),
     path('api/labels', views.getChannelLabels),

@@ -1,5 +1,5 @@
-<h4>REPORT AREA<h4>
-<div *ngIf="show">
+<div *ngIf="form">	
+	<h4>REPORT AREA<h4>
 	<form [formGroup]="form">
 		<div class="editor">
 			<ngx-editor-menu [editor]="editor" [toolbar]="toolbar"></ngx-editor-menu>
@@ -10,7 +10,7 @@
 			<button type="button" class="btn btn-warning btn-sm" (click)="save()"> <i class="bi bi-file-earmark-check-fill"></i> Save </button>
 			<button type="button" class="btn btn-success btn-sm" (click)="generatePDF(1)"> <i class="bi bi-eye-fill"></i> Preview </button>
 			<button type="button" class="btn btn-primary btn-sm" (click)="generatePDF(2)"> <i class="bi bi-file-earmark-arrow-down-fill"></i> Download </button>
+			<button type="button" class="btn btn-primary btn-sm" (click)="reportDone()"> <i class="bi bi-file-earmark-arrow-down-fill"></i> mark as done </button>
 		</div>
-		
+
 	</form>
-</div>

@@ -1,7 +1,5 @@
 <app-navbar></app-navbar>
 
-
-
 <div class="container">
     <div class="row height d-flex justify-content-center align-items-center">
         <div class="col-md-8" >
@@ -34,8 +32,8 @@
             
             <hr>
 
-            <h4 class="card-title"><strong>   EEG Exams </strong></h4>
-            <app-eeg-table *ngIf="listOfEEG.length != 0 && listOfPatients.length != 0" [allEEG]="listOfEEG" [allPatients]="listOfPatients" ></app-eeg-table>
+            <h4 class="card-title"><strong> EEG Exams </strong></h4>
+            <app-eeg-table *ngIf="listOfEEG.length != 0" [allEEG]="listOfEEG" [allPatients]="listOfPatients" ></app-eeg-table>
 
             <div *ngIf="listOfEEG.length == 0" style="margin:auto; display:inline-block">
                 <img src="../../../assets/no-data-found.png" alt="no data found :("/>
