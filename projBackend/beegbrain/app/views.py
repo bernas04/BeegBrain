@@ -2,7 +2,7 @@ from ast import operator
 from http import HTTPStatus
 import multiprocessing
 from webbrowser import Opera
-#from attr import assoc
+# from attr import assoc
 import pytz
 from rest_framework.decorators import api_view
 from datetime import date, datetime, timedelta, timezone
@@ -454,6 +454,7 @@ def getReport(request):
 @permission_classes([IsAuthenticated])
 def createReport(request):
     """POST de um Report"""
+    print(request.data)
     serializer = serializers.ReportSerializer(data=request.data)
     if serializer.is_valid():
         serializer.save()
@@ -462,20 +463,34 @@ def createReport(request):
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@api_view(['GET'])
+@api_view(['GET', 'POST'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def getReportById(request):
     """GET de um relatório pelo seu id"""
-    rep_id = int(request.GET['id'])
-    try:
-        ret = Report.objects.get(id=rep_id)
+
+    if request.method == 'GET': 
+        rep_id = int(request.GET['id'])
+        try:
+            ret = Report.objects.get(id=rep_id)
+            
+        except Report.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
         
-    except Report.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    
-    serializer = serializers.ReportSerializer(ret)
-    return Response(serializer.data)
+        serializer = serializers.ReportSerializer(ret)
+        return Response(serializer.data)
+
+    elif request.method == 'POST':
+        try:
+            rep_id = int(request.data["id"])
+            report = Report.objects.get(id=rep_id)
+            report.content = request.data["content"]
+            report.save()
+            
+        except Report.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        return Response(True)
 
 
 # ############################### EEG ###############################
@@ -549,13 +564,16 @@ def createEEG(request):
             priority = PRIORITIES[request.data['priority']]
             duration = None
 
+        if (not patient): stat = 'patient undefined'
+        empty_report = Report.objects.create(content="", timestamp=datetime.now())
+
         eeg = {
             "operator": operator,
             "patient": patient,
             "status": stat,
             "timestamp": timestamp,
             "priority": priority,
-            "report": None,
+            "report": empty_report.id,
             "duration": duration,
         }
 
@@ -601,8 +619,11 @@ def createEEG(request):
 
         # Shared Folder
         try:
-            contract = Contract.objects.get(providence__id=operator.providence.id)
+            print("getting contract...")
+            print(" - operator: ", operator)
+            contract = Contract.objects.get(providence=operator.providence)
         except Contract.DoesNotExist:
+            print("CONTRACT NOT FOUND")
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         SharedFolder.objects.create(contract=contract,eeg=eegObject)
@@ -633,6 +654,7 @@ def decompress(filename):
 @permission_classes([IsAuthenticated])
 def getEegById(request):
     """GET ou DELETE de um EEG pelo seu id"""
+    
     if request.method == 'GET':
         eeg_id = int(request.GET['id'])
         try:
@@ -641,14 +663,17 @@ def getEegById(request):
             return Response(status=status.HTTP_404_NOT_FOUND) 
         serializer = serializers.EEGSerializer(ret)
         return Response(serializer.data)
+
     elif request.method == 'DELETE':
         eeg_id = int(request.GET['id'])
         try:
+            
             ret = EEG.objects.get(id=eeg_id)
         except EEG.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
+
         ret.delete()
-        return True
+        return  Response(True)
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
@@ -837,10 +862,34 @@ def getEegEvents(request):
 @permission_classes([IsAuthenticated])
 def createEvent(request):
     """POST de um evento"""
-    serializer = serializers.EventSerializer(data=request.data)
+
+    print(request.data)
+    data = request.data
+
+    try:
+        person = Person.objects.get(id=int(data["person"]))
+        
+    except Person.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    try:
+        eeg = EEG.objects.get(id=int(data["eeg_id"]))
+        
+    except EEG.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    event = {
+        "type": data["type"],
+        "person": person.id,
+        "eeg": eeg.id
+    }
+
+    serializer = serializers.EventSerializer(data=event)
     if serializer.is_valid():
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        print(serializer.errors)
     
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

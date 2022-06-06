@@ -33,6 +33,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PieChartComponent } from './components/pie-chart/pie-chart.component';
 import { BarChartComponent } from './components/bar-chart/bar-chart.component';
 import { InfoBoxComponent } from './components/info-box/info-box.component';
+import { EventTableComponent } from './components/event-table/event-table.component';
+
+import {MatPaginatorModule} from '@angular/material/paginator';
 
 
 @NgModule({
@@ -60,6 +63,7 @@ import { InfoBoxComponent } from './components/info-box/info-box.component';
     PieChartComponent,
     BarChartComponent,
     InfoBoxComponent,
+    EventTableComponent,
   ],
   imports: [
 		BrowserModule,
@@ -73,7 +77,8 @@ import { InfoBoxComponent } from './components/info-box/info-box.component';
     }),
     NgMultiSelectDropDownModule.forRoot(),
     BrowserAnimationsModule,
-    NgxEditorModule
+    NgxEditorModule,
+    MatPaginatorModule
   ],
   providers: [],
   bootstrap: [AppComponent]

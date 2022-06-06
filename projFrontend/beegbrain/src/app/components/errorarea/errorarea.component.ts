@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EEG } from 'src/app/classes/EEG';
 import { Patient } from 'src/app/classes/Patient';
 import { EEGService } from 'src/app/services/eeg.service';
-import Swal from 'sweetalert2';
+/* import Swal from 'sweetalert2'; */
 
 @Component({
   selector: 'app-errorarea',
@@ -41,11 +41,13 @@ export class ErrorareaComponent implements OnInit {
     console.log("Conteudo", content);
     this.service.sendEmail(content);  */
 
+    /* 
+    // ----------------> ESTÁ A DAR UM ERRO DE IMPORT 
     Swal.fire(
       'Done',
       'Email sent',
       'success'
-    )
+    ) */
   }
 
 

@@ -10,6 +10,8 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 import htmlToPdfmake from 'html-to-pdfmake';
 import { ReportService } from 'src/app/services/report.service';
 import { Report } from 'src/app/classes/Report';
+import { EventService } from 'src/app/services/event.service';
+import { Event } from 'src/app/classes/Event';
 
 
 @Component({
@@ -20,7 +22,7 @@ import { Report } from 'src/app/classes/Report';
 })
 export class ReportEditorComponent implements OnInit, OnDestroy {
 
-  editor: Editor = new Editor();
+  editor!: Editor;;
   toolbar: Toolbar = [
     ['bold', 'italic'],
     ['underline', 'strike'],
@@ -31,16 +33,23 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
     ['align_left', 'align_center', 'align_right', 'align_justify'],
   ];
 
-  @Input('EEG_ID') EEG_ID!: number;
-  report!: Report;
-  show: boolean = false;
+  @Input('report') report!: Report;
+  // report!: Report;
+  show: boolean = true;
   form!: FormGroup;
+  @Input("eeg_id") eeg_id!: number;
 
-  constructor(private service: ReportService) {}
+  token = '' + localStorage.getItem('token');
+  type = ''+localStorage.getItem('type');
+  id = ''+localStorage.getItem('id');
+
+  constructor(private service: ReportService, private eventService: EventService) {}
   
   ngOnInit(): void {
+    this.editor = new Editor();
+    let id = +this.report;
 
-    this.service.getReport( this.EEG_ID ).subscribe((info) => {
+    this.service.getReport( id, this.token).subscribe((info) => {
       this.report = info;
 
       this.form = new FormGroup({
@@ -70,7 +79,11 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
     // de vez em quando esta cena buga, quando isso acontece, é meter toHTML( )
     console.log("Changes: ", this.form.value["editorContent"] )
     this.report.content = this.form.value["editorContent"];
-    this.service.setReport( this.report ).subscribe();
+    this.service.setReport( this.report, this.token).subscribe();
+
+    let json = { "type": "Report changed", "person": this.id, "eeg_id": ''+this.eeg_id}
+    let jsonObject = <JSON><unknown>json;
+    this.eventService.addEvent(jsonObject, this.token).subscribe();
   }
 
 
@@ -86,6 +99,10 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
 
       case 2:
         // DOWNLOAD PDF
+        let json = { "type": "Report downloaded", "person": this.id, "eeg_id": ''+this.eeg_id}
+        let jsonObject = <JSON><unknown>json;
+        this.eventService.addEvent(jsonObject, this.token).subscribe();
+
         pdfMake.createPdf(documentDefinition).download();
         break;
       
@@ -94,5 +111,11 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
     }
      
   }  
+
+  reportDone() {
+    let json = { "type": "Report marked as done", "person": this.id, "eeg_id": ''+this.eeg_id}
+    let jsonObject = <JSON><unknown>json;
+    this.eventService.addEvent(jsonObject, this.token).subscribe();
+  }
 
 }
