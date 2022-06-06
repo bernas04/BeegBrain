@@ -30,7 +30,7 @@ export class EegComponent implements OnInit {
   token = '' + localStorage.getItem('token');
   initial: number = 0;
   window_size: number = 30;
-  length! : number;
+  indices! : number;
   signalsInSecond! : number;
   endLimit! : number;
 
@@ -65,9 +65,10 @@ export class EegComponent implements OnInit {
       unSelectAllText : 'Unselect all'
     };    
 
-    this.EEGservices.getEEGlength(this.id, this.token).subscribe((length) => {
-      this.length = <number> length;
-      this.signalsInSecond = <number> length / this.eegInfo.duration;
+    this.EEGservices.getEEGlength(this.id, this.token).subscribe((indices) => {
+      console.log("INDICES ::: ", indices)
+      this.indices = <number> indices;
+      this.signalsInSecond = <number> indices / this.eegInfo.duration;
     })
  
   }
@@ -249,8 +250,8 @@ export class EegComponent implements OnInit {
 
   right() {
     this.initial = this.initial +  Math.floor(this.window_size * this.signalsInSecond)
-    if (this.initial > this.length - Math.floor(this.window_size * this.signalsInSecond)) {
-      this.initial = this.length -  Math.floor(this.window_size * this.signalsInSecond);
+    if (this.initial > this.indices - Math.floor(this.window_size * this.signalsInSecond)) {
+      this.initial = this.indices -  Math.floor(this.window_size * this.signalsInSecond);
     }
     this.removeSpeedInterval()
     this.getLabelData(this.labels)

@@ -28,6 +28,7 @@ export class EEGViewerComponent implements OnChanges {
   @Input('control') control! : boolean;
   @Input('signalsInSecond') signalsInSecond! : number;
   @Input('initial') initial! : number;
+  @Input('indices') indices! : number;
 
   @Output() currentInitial = new EventEmitter<any>();
 
@@ -58,7 +59,6 @@ export class EEGViewerComponent implements OnChanges {
     }, 100);
     
     for (const [label, valuesMap] of this.labelsSignal) {
-      //console.log("ENTROU NO FOR DO NG I«ON INIT")
       const values = Array.from(valuesMap.values()).slice(this.initial, Math.floor(this.interval * this.signalsInSecond));
       series.push({name:label, type:"line", showSymbol:false, data:values}) 
     }
@@ -99,14 +99,19 @@ export class EEGViewerComponent implements OnChanges {
         {
           id: 'dataZoomX',
           type: 'slider',
-          xAxisIndex: [0],
-          filterMode: 'filter'
+          handleSize: '100%',
+          startValue: this.initial,
+          endValue: this.initial + this.interval * this.signalsInSecond,
         },
         {
           id: 'dataZoomY',
           type: 'slider',
           yAxisIndex: [0],
           filterMode: 'empty'
+        },
+        //mexer com o rato dentro do grafico
+        {
+          type: 'inside'
         }
       ],
       xAxis: {
@@ -160,7 +165,6 @@ export class EEGViewerComponent implements OnChanges {
     this.changeSpeed(); // This line is to adjust data
     this.option;
 
-
   }
 
   /* Esta é a função que vai estar sempre a ser chamada */
@@ -183,7 +187,8 @@ export class EEGViewerComponent implements OnChanges {
   updateData() {
 
     let min_series: any = [];
-    var xData: any = []
+
+    var xData: any = [...Array(this.indices).keys()]
 
     for (const [label, valuesMap] of this.labelsSignal) {
       const keys = Array.from(valuesMap.keys());
@@ -192,7 +197,7 @@ export class EEGViewerComponent implements OnChanges {
       let end = this.initial + this.signalsInSecond * this.interval;
 
       const channelBuffer = values.slice(this.initial, end)
-      xData = keys.slice(this.initial, end)
+      //xData = keys.slice(this.initial, end)
 
       min_series.push({name: label, type: "line", showSymbol: false, data: channelBuffer})
 
@@ -207,13 +212,12 @@ export class EEGViewerComponent implements OnChanges {
       xAxis: {
           data : xData,
       },
-
-      /*  
-      dataZoom: {
-        startValue: initial,
-        endValue: initial + this.interval * this.signalsInSecond,
-      } 
-      */
+       
+      // dataZoom: {
+      //   startValue: this.initial,
+      //   endValue: this.initial + this.interval * this.signalsInSecond,
+      // } 
+    
     });
 
 
