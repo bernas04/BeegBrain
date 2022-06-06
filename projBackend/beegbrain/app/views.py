@@ -5,7 +5,7 @@ from webbrowser import Opera
 #from attr import assoc
 import pytz
 from rest_framework.decorators import api_view
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from django.db.models import Q
 from django.shortcuts import render
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -593,6 +593,9 @@ def createEEG(request):
         pool = multiprocessing.Pool(poolSize)
         for i in np.arange(n):
             signal = f.readSignal(i) 
+            np_array = np. array(signal)
+            np_round_to_tenths = np. around(np_array, 5)
+            signal = list(np_round_to_tenths)
             channelLabel = re.sub('[^0-9a-zA-Z]+', '', signal_labels[i])
             pool.apply_async(worker,(channelLabel,eegObject,signal,))
 
@@ -729,6 +732,7 @@ def getChannelsByLabels(request):
     data = manager.dict()
     for label in labels:
         pool.apply_async(bufferWorker(data,label,eeg,start,end),)
+    
     pool.close()
     pool.join() 
     connection.close()
@@ -740,7 +744,7 @@ def bufferWorker(data,label,eeg,start,end):
     # final_end = start + (end-start)*len(array)//eeg.duration
     valuesMap = {}
     for idx in range(start,end):
-        valuesMap[idx + 1] = array[idx]
+        valuesMap[idx + 1] = round(array[idx], 5)
     data[label] = valuesMap
     print("label done --> " + label)
 

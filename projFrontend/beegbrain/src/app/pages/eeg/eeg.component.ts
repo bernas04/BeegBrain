@@ -34,6 +34,7 @@ export class EegComponent implements OnInit {
   signalsInSecond! : number;
   endLimit! : number;
 
+
   speed: number = 1000; // default: 1 segundo
   options: Options = {
     floor: 0,
@@ -273,6 +274,32 @@ export class EegComponent implements OnInit {
     }
 
     this.getLabelData(this.labels)
+  }
+
+
+
+
+  // Dá update dos dados e guarda-os num mapa
+  // Passando-os depois para a componente
+  updateView() {
+    let updatedValuesAndInitialValue : Map<String, Map<Number, Array<number>>> = new Map();
+    let tmpMap = new Map();
+    
+    
+    for (const [key, valueMap] of this.labelsSignal) {
+      const values = Array.from(valueMap.values()); 
+      const initialValue = <number>values[0];
+
+      // Esta função vai adicionar o primeiro valor de cada canal a todos 
+      var updatedValuesOfChannel = values.map( function(value) { 
+        return <number>value - initialValue; 
+      } );
+
+      tmpMap.set(initialValue, updatedValuesOfChannel)
+      updatedValuesAndInitialValue.set(key, tmpMap);
+    }
+
+    this.eeg_viewer.updateViewWithData(updatedValuesAndInitialValue);
   }
 
 }

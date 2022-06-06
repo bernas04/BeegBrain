@@ -60,6 +60,7 @@ export class EEGViewerComponent implements OnChanges {
       //console.log("ENTROU NO FOR DO NG I«ON INIT")
       const values = Array.from(valuesMap.values()).slice(this.initial, Math.floor(this.interval * this.signalsInSecond));
       series.push({name:label, type:"line", showSymbol:false, data:values}) 
+      console.log("Values " ,values)
     }
 
     this.option = {
@@ -154,7 +155,7 @@ export class EEGViewerComponent implements OnChanges {
       
       
     };
-
+     
     this.start(this.speed);
     this.changeSpeed(); // This line is to adjust data
     this.option;
@@ -165,7 +166,6 @@ export class EEGViewerComponent implements OnChanges {
   /* Esta é a função que vai estar sempre a ser chamada */
   start(speed: number) {
 
-    console.log("start -> series : ", this.yData)
 
     this.intervalId = setInterval(() => {
 
@@ -179,9 +179,6 @@ export class EEGViewerComponent implements OnChanges {
         series.push({name:label, type:"line", showSymbol:false, data:values}) 
       }
 
-      console.log("======== START ==========")
-      console.log(series)
-      console.log(xData)
 
       this.myChart.setOption<echarts.EChartsOption>({
         series: series,
@@ -257,6 +254,38 @@ export class EEGViewerComponent implements OnChanges {
 
     // just start a new one
     this.start(this.speed);
+  }
+
+  updateViewWithData(mapOfValues: Map<String, Map<Number, Array<number>>>){
+    let ySeries: any = [];
+    let contador = 0;
+
+    for (const [key, valueMap] of mapOfValues){
+      let label = key
+      let initialValue= Array.from(valueMap.keys());
+      let updatedValue = Array.from(valueMap.values());
+
+      ySeries.push({name:label, type:"line", showSymbol:false, data:updatedValue[contador++]}) 
+    }
+    
+    for (var id in this.lst_intervalId)
+      clearInterval( parseInt(id) );
+
+    clearInterval( this.intervalId );
+
+
+    console.log("series " , ySeries)
+    this.myChart.setOption<echarts.EChartsOption>({
+
+      yAxis: {},
+
+      series: ySeries,
+
+      xAxis: {
+      },
+     
+    });
+
   }
 
 }
