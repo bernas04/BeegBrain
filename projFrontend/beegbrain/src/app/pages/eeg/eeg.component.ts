@@ -33,6 +33,7 @@ export class EegComponent implements OnInit {
   length! : number;
   signalsInSecond! : number;
   endLimit! : number;
+  updateViewControl: boolean = true;
 
 
   speed: number = 1000; // default: 1 segundo
@@ -120,6 +121,10 @@ export class EegComponent implements OnInit {
   getInputValue(event:any){
     this.window_size = event.target.value;
     this.getLabelData(this.labels);
+  }
+
+  newItem($event : any) {
+    this.updateViewControl=$event
   }
 
   getLabelData(channels: String[]) {
@@ -298,8 +303,8 @@ export class EegComponent implements OnInit {
       tmpMap.set(initialValue, updatedValuesOfChannel)
       updatedValuesAndInitialValue.set(key, tmpMap);
     }
-
-    this.eeg_viewer.updateViewWithData(updatedValuesAndInitialValue);
+    
+    this.eeg_viewer.updateViewWithData(updatedValuesAndInitialValue, this.updateViewControl);
   }
 
 }

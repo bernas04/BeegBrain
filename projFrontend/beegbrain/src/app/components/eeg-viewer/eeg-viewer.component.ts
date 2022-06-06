@@ -27,7 +27,9 @@ export class EEGViewerComponent implements OnChanges {
   @Input('labels') labels! : any;
   @Input('control') control! : boolean;
   @Input('signalsInSecond') signalsInSecond! : number;
+  @Input('updateViewControl') updateViewControl! : boolean;
 
+  @Output() newItemEvent = new EventEmitter<boolean>();
   @Output() event = new EventEmitter<Map<string, number>>();
 
   constructor(private services: EEGService, private router: Router) { }
@@ -256,35 +258,43 @@ export class EEGViewerComponent implements OnChanges {
     this.start(this.speed);
   }
 
-  updateViewWithData(mapOfValues: Map<String, Map<Number, Array<number>>>){
-    let ySeries: any = [];
-    let contador = 0;
-
-    for (const [key, valueMap] of mapOfValues){
-      let label = key
-      let initialValue= Array.from(valueMap.keys());
-      let updatedValue = Array.from(valueMap.values());
-
-      ySeries.push({name:label, type:"line", showSymbol:false, data:updatedValue[contador++]}) 
+  updateViewWithData(mapOfValues: Map<String, Map<Number, Array<number>>>, control:boolean){
+    if (control){
+      let ySeries: any = [];
+      let contador = 0;
+  
+      for (const [key, valueMap] of mapOfValues){
+        let label = key
+        let initialValue= Array.from(valueMap.keys());
+        let updatedValue = Array.from(valueMap.values());
+  
+        ySeries.push({name:label, type:"line", showSymbol:false, data:updatedValue[contador++]}) 
+      }
+      
+      for (var id in this.lst_intervalId)
+        clearInterval( parseInt(id) );
+  
+      clearInterval( this.intervalId );
+  
+  
+      this.myChart.setOption<echarts.EChartsOption>({
+  
+        yAxis: {},
+  
+        series: ySeries,
+  
+        xAxis: {
+        },
+       
+      });
+      this.updateViewControl=false;
+      this.newItemEvent.emit(this.updateViewControl);
     }
-    
-    for (var id in this.lst_intervalId)
-      clearInterval( parseInt(id) );
-
-    clearInterval( this.intervalId );
-
-
-    console.log("series " , ySeries)
-    this.myChart.setOption<echarts.EChartsOption>({
-
-      yAxis: {},
-
-      series: ySeries,
-
-      xAxis: {
-      },
-     
-    });
+    else{
+      this.updateViewControl=true;
+      this.newItemEvent.emit(this.updateViewControl);
+      this.start(this.speed)
+    }
 
   }
 

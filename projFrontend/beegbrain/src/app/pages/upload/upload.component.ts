@@ -70,6 +70,7 @@ export class UploadComponent implements OnInit {
       }
     });
 
+    //window.location.href="/workspace";
     
 
   }

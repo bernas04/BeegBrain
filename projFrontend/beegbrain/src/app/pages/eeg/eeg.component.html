@@ -29,7 +29,7 @@
         </ng-multiselect-dropdown>
     </div>
     <div class="col-lg-3">
-        <button (click)="updateView()" type="button" class="btn btn-dark">Update view</button>
+        <button (click)="updateView()" type="button" class="btn btn-dark">Alter view</button>
     </div>
 
 </div>
@@ -46,6 +46,8 @@
         [interval]=window_size
         [labels]="labels"
         [signalsInSecond]="signalsInSecond"
+        [updateViewControl]="updateViewControl"
+        (newItemEvent)="newItem($event)"
         ></app-eeg-viewer> 
 
     </div>

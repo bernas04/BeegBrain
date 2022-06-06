@@ -527,7 +527,6 @@ def createEEG(request):
     
     PRIORITIES = {'Very Low':1,'Low':2,'Medium':3,'High':4,'Very High':5}
 
-    print(request.data)
 
     try:
         operator = Operator.objects.get(health_number=request.data['operatorID'])
@@ -611,9 +610,6 @@ def createEEG(request):
         pool = multiprocessing.Pool(poolSize)
         for i in np.arange(n):
             signal = f.readSignal(i) 
-            np_array = np. array(signal)
-            np_round_to_tenths = np. around(np_array, 5)
-            signal = list(np_round_to_tenths)
             channelLabel = re.sub('[^0-9a-zA-Z]+', '', signal_labels[i])
             pool.apply_async(worker,(channelLabel,eegObject,signal,))
 
