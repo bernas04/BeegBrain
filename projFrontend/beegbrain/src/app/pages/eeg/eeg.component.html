@@ -28,6 +28,11 @@
         >
         </ng-multiselect-dropdown>
     </div>
+
+    <div class="col-lg-3">
+        <h1>Cona</h1>
+        <button type="button" class="btn btn-dark">Change view</button>
+    </div>
 </div>
 
 <div class="row">
@@ -35,6 +40,7 @@
         <app-eeg-viewer 
         #child 
         *ngIf="control" 
+        [initial]="initial"
         [control]="control"
         [speed]=speed 
         [eegInfo]="eegInfo" 

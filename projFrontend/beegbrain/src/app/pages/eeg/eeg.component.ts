@@ -34,14 +34,15 @@ export class EegComponent implements OnInit {
   signalsInSecond! : number;
   endLimit! : number;
 
-  speed: number = 1000; // default: 1 segundo
+  speed: number = 1; // default: 0.1 segundo
   options: Options = {
-    floor: 0,
-    ceil: 1000,
-    step: 50,         // de 0.05 em 0.05 segundos
-    rightToLeft: true,
+    floor: 1,
+    ceil: 100,
+    step: 1,        
+    rightToLeft: false,
     translate: (value: number): string => {
-      return value +' ms';
+      if (value == 1) return value + ' tick';
+      else return value + ' ticks';
     },
   };
   
@@ -123,9 +124,6 @@ export class EegComponent implements OnInit {
 
   getLabelData(channels: String[]) {
 
-
-    console.log("LABELS PARA DAR FETCH", channels)
-
     let end = this.initial + Math.floor(this.window_size * this.signalsInSecond)
 
     let newChannels : String[] = [];
@@ -149,8 +147,6 @@ export class EegComponent implements OnInit {
   
           // Já tem os dados entre o initial - end
   
-          console.log("HAS DATA ")
-  
           let bufferInitial = this.initial;
           let bufferEnd! : number;
   
@@ -169,16 +165,12 @@ export class EegComponent implements OnInit {
 
           if (bufferInitial > this.endLimit) {
   
-            console.log("CHAMAR O BUFFER DE " + bufferInitial + " a " + bufferEnd)
-  
             this.getBackendData(this.endLimit,bufferEnd,channels);
   
           }
   
         } else {
 
-          console.log("DOESNT HAVE DATA :(")
-  
           // Multiplicador consoante numero de canais que pedimos
           if (channels.length > 50) {
             end += Math.floor(this.window_size * this.signalsInSecond);
@@ -194,9 +186,7 @@ export class EegComponent implements OnInit {
   
       }
 
-
     } else {
-
 
       // Multiplicador consoante numero de canais que pedimos
       if (channels.length > 50) {
@@ -206,8 +196,6 @@ export class EegComponent implements OnInit {
       } else if (channels.length <= 25 ) {
         end += 4 * Math.floor(this.window_size * this.signalsInSecond);
       }
-  
-      console.log("INITIAL ->", this.initial)
 
       if (this.endLimit !== undefined) {
         end = this.endLimit;
@@ -215,13 +203,9 @@ export class EegComponent implements OnInit {
 
       this.getBackendData(0,end,newChannels);
 
-
-
     }
 
-    console.log("O GRÁFICO VAI MOSTRAR DADOS A PARTIR DO " + this.initial)
-    this.eeg_viewer.updateData(this.initial);
-  
+    this.eeg_viewer.updateData();
 
   }
 
@@ -252,8 +236,6 @@ export class EegComponent implements OnInit {
 
       }
 
-      console.log("AAAAAAAAAAKJWNKFJEWFKUWHEUJKWFNWIJEFWUIEHFIWHEFIUWFHEIUWHFIUWHFW")
-      console.log(this.labelsSignal)
 
     });
   }
@@ -261,18 +243,26 @@ export class EegComponent implements OnInit {
   left() {
     this.initial = this.initial - Math.floor(this.window_size * this.signalsInSecond)
     if (this.initial < 1) this.initial = 1
-    
+    this.removeSpeedInterval()
     this.getLabelData(this.labels)
   }
 
   right() {
     this.initial = this.initial +  Math.floor(this.window_size * this.signalsInSecond)
-
     if (this.initial > this.length - Math.floor(this.window_size * this.signalsInSecond)) {
       this.initial = this.length -  Math.floor(this.window_size * this.signalsInSecond);
     }
-
+    this.removeSpeedInterval()
     this.getLabelData(this.labels)
   }
 
+  removeSpeedInterval() {
+
+    for (var id in this.eeg_viewer.lst_intervalId) {
+      clearInterval( parseInt(id) );
+    }
+    clearInterval( this.eeg_viewer.intervalId );
+    this.eeg_viewer.start();
+
+  }
 }
