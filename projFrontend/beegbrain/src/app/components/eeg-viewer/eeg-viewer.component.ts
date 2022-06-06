@@ -165,29 +165,38 @@ export class EEGViewerComponent implements OnChanges {
   /* Esta é a função que vai estar sempre a ser chamada */
   start(speed: number) {
 
-    console.log("start")
+    console.log("start -> series : ", this.yData)
 
     this.intervalId = setInterval(() => {
 
-      console.log(this.xData)
-      
+      let series: any = [];
+
+      var xData: any = []
+
+      for (const [label, valuesMap] of this.labelsSignal) {
+        xData = Array.from(valuesMap.keys()).slice(this.initial, this.initial + Math.floor(this.interval*this.signalsInSecond));
+        const values = Array.from(valuesMap.values()).slice(this.initial, Math.floor(this.interval * this.signalsInSecond));
+        series.push({name:label, type:"line", showSymbol:false, data:values}) 
+      }
+
+      console.log("======== START ==========")
+      console.log(series)
+      console.log(xData)
+
       this.myChart.setOption<echarts.EChartsOption>({
-        series: [
-          {
-            // data: this.yData
-            // tem de ser atualizado consoante o play do sinal
-          }
-        ],
+        series: series,
         xAxis: {
-          data : this.xData
+          data : xData
         },
         // dataZoom: {
         //   startValue: this.initial,
         //   endValue: this.initial + this.interval * this.signalsInSecond,
         // }
       });  
+
+      this.initial += 1;
   
-    }, speed); // mudar velocidade
+    }, 1 / this.signalsInSecond / 5); // mudar velocidade
     
     this.lst_intervalId.push(this.intervalId);
   }
@@ -209,7 +218,7 @@ export class EEGViewerComponent implements OnChanges {
       const channelBuffer = values.slice(initial, end)
       xData = keys.slice(initial, end)
 
-      min_series.push({name:label, type:"line", showSymbol:false, data: channelBuffer})
+      min_series.push({name: label, type: "line", showSymbol: false, data: channelBuffer})
 
     }
     
