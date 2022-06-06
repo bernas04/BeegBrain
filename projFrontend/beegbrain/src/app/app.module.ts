@@ -35,7 +35,8 @@ import { BarChartComponent } from './components/bar-chart/bar-chart.component';
 import { InfoBoxComponent } from './components/info-box/info-box.component';
 import { EventTableComponent } from './components/event-table/event-table.component';
 
-import {MatPaginatorModule} from '@angular/material/paginator';
+import { NgxPaginationModule } from 'ngx-pagination';
+
 
 
 @NgModule({
@@ -78,7 +79,7 @@ import {MatPaginatorModule} from '@angular/material/paginator';
     NgMultiSelectDropDownModule.forRoot(),
     BrowserAnimationsModule,
     NgxEditorModule,
-    MatPaginatorModule
+    NgxPaginationModule
   ],
   providers: [],
   bootstrap: [AppComponent]

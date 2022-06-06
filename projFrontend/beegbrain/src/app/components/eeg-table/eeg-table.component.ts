@@ -15,12 +15,14 @@ export class EegTableComponent implements OnInit {
   @Input('allEEG') lst_EEG!: EEG[];
   @Input('allPatients') lst_Patients!: Patient[];
   @Output() eeg_deleted = new EventEmitter<any>();
-  private id! : number;
+  private eeg2delete! : EEG;
   public map = new Map<number, string>();
 
   token = '' + localStorage.getItem('token');
   type = ''+localStorage.getItem('type');
   person_id = ''+localStorage.getItem('id');
+
+  config: any;
 
   constructor(private router : Router, private eventService: EventService) { }
 
@@ -38,18 +40,24 @@ export class EegTableComponent implements OnInit {
       else this.map.set(eeg.id, 'undefined')
     });
 
+    this.config = {
+      itemsPerPage: 10,
+      currentPage: 1,
+      totalItems: this.lst_EEG.length
+    };
+
   }
 
   delete() {
-    let json = { "type": "EEG deleted", "person": this.person_id, "eeg_id": ''+this.id}
+    let json = { "type": "EEG deleted", "person": this.person_id, "eeg_id": ''+this.eeg2delete.id}
     let jsonObject = <JSON><unknown>json;
     this.eventService.addEvent(jsonObject, this.token).subscribe();
 
-    this.eeg_deleted.emit(this.id);
+    this.eeg_deleted.emit(this.eeg2delete);
   }
   
-  save2delete(id : number) {
-    this.id = id;
+  save2delete(eeg : EEG) {
+    this.eeg2delete = eeg;
   }
 
   redirect(id: number) {
@@ -58,6 +66,10 @@ export class EegTableComponent implements OnInit {
     this.eventService.addEvent(jsonObject, this.token).subscribe();
 
     this.router.navigate(["/workspace/"+id]);
+  }
+
+  pageChanged(event: any){
+    this.config.currentPage = event;
   }
 
 

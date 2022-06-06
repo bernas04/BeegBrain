@@ -45,6 +45,7 @@
     "ng5-slider": "^1.2.6",
     "ngx-echarts": "^8.0.1",
     "ngx-editor": "^12.4.1",
+    "ngx-pagination": "^6.0.1",
     "pdfmake": "^0.2.5",
     "rxjs": "~7.5.0",
     "sweetalert2": "^11.4.17",

@@ -50,7 +50,6 @@ export class WorkspaceComponent implements OnInit {
 
   }
 
-
   getPatients() {
     this.patient_service.getPatients(this.token).subscribe((info) => {
       this.lst_patient = info;
@@ -58,14 +57,21 @@ export class WorkspaceComponent implements OnInit {
     });
   }
 
-  onDelete(id : number) {
-    this.service.deleteEEG(id, this.token).subscribe();
+  onDelete(eeg : EEG) {
+    const index = this.lst_eeg.indexOf(eeg, 0);
+    if (index > -1) {
+      this.lst_eeg.splice(index, 1);
+    }
+
+    const index1 = this.lst_error_eeg.indexOf(eeg, 0);
+    if (index1 > -1) {
+      this.lst_eeg.splice(index1, 1);
+    }
+
+    this.service.deleteEEG(eeg.id, this.token).subscribe();
   }
 
   refresh() {
     window.location.reload();
   }
-
-
-
 }
