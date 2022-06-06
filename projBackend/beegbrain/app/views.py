@@ -589,7 +589,7 @@ def createEEG(request):
             Annotation.objects.create(start=start,duration=duration,description=description,eeg=eegObject)
 
         # Split EEG by channels
-        poolSize = 4
+        poolSize = multiprocessing.cpu_count()
         pool = multiprocessing.Pool(poolSize)
         for i in np.arange(n):
             signal = f.readSignal(i) 
@@ -717,7 +717,8 @@ def getChannelByLabel(request):
 @permission_classes([IsAuthenticated])
 def getChannelsByLabels(request):
     """GET de channels por um array de labels e id do EEG"""
-    poolSize = 4
+    poolSize = multiprocessing.cpu_count()
+    print(poolSize)
     pool = multiprocessing.Pool(poolSize)
     start = int(request.GET['start'])  
     end = int(request.GET['end'])  
@@ -727,7 +728,6 @@ def getChannelsByLabels(request):
     manager = multiprocessing.Manager()
     data = manager.dict()
     for label in labels:
-        print("label")
         pool.apply_async(bufferWorker(data,label,eeg,start,end),)
     pool.close()
     pool.join() 
@@ -735,15 +735,14 @@ def getChannelsByLabels(request):
     return Response(data,status=status.HTTP_200_OK)
 
 def bufferWorker(data,label,eeg,start,end):
-    chn = Channel.objects.filter(label=label,eeg=eeg).last()
-    print(chn)
+    # chn = Channel.objects.filter(label=label,eeg=eeg).last()
     array = decompress(str(eeg.id) + "_" + label + ".npy")
     # final_end = start + (end-start)*len(array)//eeg.duration
     valuesMap = {}
     for idx in range(start,end):
         valuesMap[idx + 1] = array[idx]
     data[label] = valuesMap
-    print(data[label])
+    print("label done --> " + label)
 
 
 @api_view(['GET'])
@@ -751,7 +750,7 @@ def bufferWorker(data,label,eeg,start,end):
 @permission_classes([IsAuthenticated])
 def getAllEegChannels(request):
     """GET de todos os channels de um eeg"""
-    poolSize = 4
+    poolSize = multiprocessing.cpu_count()
     pool = multiprocessing.Pool(poolSize)
     eeg_id = int(request.GET['eeg'])    
     manager = multiprocessing.Manager()

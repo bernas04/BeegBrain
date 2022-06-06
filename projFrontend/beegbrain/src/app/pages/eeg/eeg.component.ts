@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { EEGService } from 'src/app/services/eeg.service';
 import { EEG } from 'src/app/classes/EEG';
 import { EEGViewerComponent } from 'src/app/components/eeg-viewer/eeg-viewer.component';
-import { map } from 'rxjs';
+import { buffer, map } from 'rxjs';
 
 
 @Component({
@@ -24,14 +24,15 @@ export class EegComponent implements OnInit {
   dropdownList! : String[];
   labels : String[] = [];
   eegInfo! : EEG;
-  labelsSignal = new Map();
+  labelsSignal : Map<String,Map<Number,Number>> = new Map();
   id! : number 
-  control! : boolean;
+  control : boolean = false;
   token = '' + localStorage.getItem('token');
   initial: number = 0;
   window_size: number = 30;
   length! : number;
   signalsInSecond! : number;
+  endLimit! : number;
 
   speed: number = 1000; // default: 1 segundo
   options: Options = {
@@ -47,6 +48,7 @@ export class EegComponent implements OnInit {
   constructor(private services:ChannelService, private router: Router, private EEGservices:EEGService) { }
   
   ngOnInit() {
+
     const url_array = this.router.url.split("/");
     let eegId = +url_array[url_array.length - 1];
     this.id = eegId;
@@ -82,18 +84,19 @@ export class EegComponent implements OnInit {
     })
   }
   
-  onItemSelect(item: any) {
+  onItemSelect(item : any) {
+    console.log("PEDI LABEL -----> ", item)
     this.labels.push(item);
     this.getLabelData(this.labels);
+    this.control = false;
 
-    this.control=false;
   }
 
-  onDropDownClose(item:any){
+  onDropDownClose(item : any){
     this.control = true;
   }
 
-  onItemDeselect(item:any){
+  onItemDeselect(item : any){
 
     let indx = this.labels.indexOf(item);
     if (this.labels.length==1){
@@ -108,8 +111,9 @@ export class EegComponent implements OnInit {
   }
 
   onSelectAll(items: any) {
-    this.labels= items;
+    this.labels = items;
     this.control=false;
+    this.getLabelData(this.labels);
   }
 
   getInputValue(event:any){
@@ -119,85 +123,144 @@ export class EegComponent implements OnInit {
 
   getLabelData(channels: String[]) {
 
-    /*
-    Tendo o initial, end -> Ver se existem dados no labelsSignal a partir do initial até ao end
 
-      se tiver:
-        - só chamar o update data do filho, porque ele já tem os dados
-        - pedir mais caso esteja perto de não ter mais dados
-        
-      se NÃO tiver:
-        - pedir aos serviços os valores (do initial até ao end * 4)
+    console.log("LABELS PARA DAR FETCH", channels)
 
-      ELIMINAR CACHE
+    let end = this.initial + Math.floor(this.window_size * this.signalsInSecond)
 
-    */
+    let newChannels : String[] = [];
 
+    // Ver se há novos canais adicionados e pedir informação sobre os mesmos
+    for (const channel of channels) {
 
-    // verificar se o end não execede o tamanho do eeg
-
-    let end = this.initial + this.window_size * this.signalsInSecond
-
-    let hasData = false;
-
-    console.log(this.labelsSignal);
-
-    for (const [label, map] of Object.entries(this.labelsSignal)) {
-
-      if (map.has(this.initial) && map.has(end)) {
-        // Já tem os dados entre o initial - end
-        hasData = true;
-        console.log("HAS DATA ")
+      if (!this.labelsSignal.has(channel)) {
+        newChannels.push(channel);
       }
 
-      break;
+    }
+
+    if (newChannels.length == 0) {
+
+      // Não há novos canais, verificar se os dados que vamos ver antes/seguir existem na cache
+
+      for (const [label, map] of this.labelsSignal.entries()) {
+
+        if (map.has(this.initial+1) && map.has(end)) {
+  
+          // Já tem os dados entre o initial - end
+  
+          console.log("HAS DATA ")
+  
+          let bufferInitial = this.initial;
+          let bufferEnd! : number;
+  
+          if (channels.length > 50) {
+            bufferInitial += Math.floor(this.window_size * this.signalsInSecond);
+            bufferEnd = bufferInitial + Math.floor(this.window_size * this.signalsInSecond);
+          } else if (channels.length > 25 && channels.length < 50 ) {
+            bufferInitial += 2 * Math.floor(this.window_size * this.signalsInSecond);
+            bufferEnd = bufferInitial + Math.floor(this.window_size * this.signalsInSecond) * 2;
+          } else if (channels.length <= 25 ) {
+            bufferInitial += 4 * Math.floor(this.window_size * this.signalsInSecond);
+            bufferEnd = bufferInitial + Math.floor(this.window_size * this.signalsInSecond) * 4;
+          }
+  
+          // Se é preciso pedir dados para buffer:
+
+          if (bufferInitial > this.endLimit) {
+  
+            console.log("CHAMAR O BUFFER DE " + bufferInitial + " a " + bufferEnd)
+  
+            this.getBackendData(this.endLimit,bufferEnd,channels);
+  
+          }
+  
+        } else {
+
+          console.log("DOESNT HAVE DATA :(")
+  
+          // Multiplicador consoante numero de canais que pedimos
+          if (channels.length > 50) {
+            end += Math.floor(this.window_size * this.signalsInSecond);
+          } else if (channels.length > 25 && channels.length < 50 ) {
+            end += 2 * Math.floor(this.window_size * this.signalsInSecond);
+          } else if (channels.length <= 25 ) {
+            end += 4 * Math.floor(this.window_size * this.signalsInSecond);
+          }
+    
+          this.getBackendData(this.initial,end,channels);
+
+        }
+  
+      }
+
+
+    } else {
+
+
+      // Multiplicador consoante numero de canais que pedimos
+      if (channels.length > 50) {
+        end += Math.floor(this.window_size * this.signalsInSecond);
+      } else if (channels.length > 25 && channels.length < 50 ) {
+        end += 2 * Math.floor(this.window_size * this.signalsInSecond);
+      } else if (channels.length <= 25 ) {
+        end += 4 * Math.floor(this.window_size * this.signalsInSecond);
+      }
+  
+      console.log("INITIAL ->", this.initial)
+
+      if (this.endLimit !== undefined) {
+        end = this.endLimit;
+      }
+
+      this.getBackendData(0,end,newChannels);
+
+
 
     }
-    
-    if (!hasData) {
 
-      console.log("DOESNT HAVE DATA :(")
- 
-      this.services.getDataAboutLabel(this.id, channels, this.token, this.initial, end * 4).subscribe((channelsMap) => {
-
-        for (const [label, valuesMap] of Object.entries(channelsMap)) {
-  
-          let mergedMap = new Map();
-  
-          if (this.labelsSignal.has(label)) {
-            mergedMap = this.labelsSignal.get(label);
-  
-          } else {
-            this.labelsSignal.set(label,mergedMap);
-          }
-  
-          for (const [index, value] of Object.entries(valuesMap)) {
-  
-            // Se canal existir
-            if (!mergedMap.has(index)) {
-              mergedMap.set(index,value);
-  
-            }
-          }
-  
-          this.labelsSignal.set(label, mergedMap)
-  
-        }
-
-      });
-
-    } 
-    
-    console.log("Mapa", this.labelsSignal)
-
+    console.log("O GRÁFICO VAI MOSTRAR DADOS A PARTIR DO " + this.initial)
     this.eeg_viewer.updateData(this.initial);
   
 
   }
 
+  getBackendData(initial: number, end: number, channels: any[]){
+    
+    this.services.getDataAboutLabel(this.id, channels, this.token, initial, end).subscribe((channelsMap) => {
+
+      this.endLimit = end;
+
+      for (const [label, valuesMap] of Object.entries(channelsMap)) {
+
+        let mergedMap : Map<Number,Number> = new Map();
+
+        if (this.labelsSignal.has(label)) {
+          mergedMap = this.labelsSignal.get(label)!;
+
+        }
+
+        for (const [index, value] of Object.entries(valuesMap)) {
+
+          // Se canal existir
+          if (!mergedMap.has(Number.parseInt(index))) {
+            mergedMap.set(Number.parseInt(index),<Number>value);
+          }
+        }
+
+        this.labelsSignal.set(label, mergedMap)
+
+      }
+
+      console.log("AAAAAAAAAAKJWNKFJEWFKUWHEUJKWFNWIJEFWUIEHFIWHEFIUWFHEIUWHFIUWHFW")
+      console.log(this.labelsSignal)
+
+    });
+  }
+
   left() {
     this.initial = this.initial - Math.floor(this.window_size * this.signalsInSecond)
-    if (this.initial < 0) this.initial = 0
+    if (this.initial < 1) this.initial = 1
     
     this.getLabelData(this.labels)
   }

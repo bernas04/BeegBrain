@@ -48,16 +48,6 @@ export class EEGViewerComponent implements OnChanges {
     const url_array = this.router.url.split("/");
     let eegId = +url_array[url_array.length - 1];
     let series: any = [];
-
-    console.log("NG ON INIT")
-    console.log(this.labelsSignal)
-    console.log(this.signalsInSecond)
-    console.log(this.interval)
-
-    for (const [label, valuesMap] of this.labelsSignal) {
-      const values = Array.from(valuesMap.values()).slice(0, Math.floor(this.interval * this.signalsInSecond));
-      series.push({name:label, type:"line", showSymbol:false, data:values}) 
-    }
      
     this.xData = Array.from(Array(this.tmp).keys());
     
@@ -65,6 +55,12 @@ export class EEGViewerComponent implements OnChanges {
       this.chartDom = document.getElementById('chart')!;
       this.myChart = echarts.init(this.chartDom);
     }, 100);
+    
+    for (const [label, valuesMap] of this.labelsSignal) {
+      //console.log("ENTROU NO FOR DO NG I«ON INIT")
+      const values = Array.from(valuesMap.values()).slice(this.initial, Math.floor(this.interval * this.signalsInSecond));
+      series.push({name:label, type:"line", showSymbol:false, data:values}) 
+    }
 
     this.option = {
       animation: true,
@@ -159,12 +155,10 @@ export class EEGViewerComponent implements OnChanges {
       
     };
 
-    // this.start(this.speed);
-    // this.changeSpeed(); // This line is to adjust data
+    this.start(this.speed);
+    this.changeSpeed(); // This line is to adjust data
     this.option;
 
-    console.log("Initial interval", this.interval)
-    console.log("initial index", this.initial)
 
   }
 
@@ -174,12 +168,13 @@ export class EEGViewerComponent implements OnChanges {
     console.log("start")
 
     this.intervalId = setInterval(() => {
+
+      console.log(this.xData)
       
-      /* 
       this.myChart.setOption<echarts.EChartsOption>({
         series: [
           {
-            //data: this.yData
+            // data: this.yData
             // tem de ser atualizado consoante o play do sinal
           }
         ],
@@ -191,15 +186,17 @@ export class EEGViewerComponent implements OnChanges {
         //   endValue: this.initial + this.interval * this.signalsInSecond,
         // }
       });  
-      */
-
+  
     }, speed); // mudar velocidade
     
     this.lst_intervalId.push(this.intervalId);
   }
   
-  // Altera o intervalo de tempo
+  // Altera o intervalo de tempo | Clicar para frente/trás
   updateData(initial: number) {
+
+    console.log("UPDATE DO DATA. initial -> ", initial)
+
     let min_series: any = [];
     var xData: any = []
 
@@ -213,8 +210,6 @@ export class EEGViewerComponent implements OnChanges {
       xData = keys.slice(initial, end)
 
       min_series.push({name:label, type:"line", showSymbol:false, data: channelBuffer})
-
-      console.log("END DO FILHO", end)
 
     }
     
@@ -239,69 +234,6 @@ export class EEGViewerComponent implements OnChanges {
     console.log("UPDATE DATA", initial, this.interval)
 
 
-  }
-
-  // Clicas no botão para frente/tras
-  updateDataAndTime(isUp: boolean) {
-
-    console.log("update Data and Time");
-
-    if (isUp) this.updateSignalsInSignal++
-    else if (this.updateSignalsInSignal - 1 > 0) this.updateSignalsInSignal--
-
-    /* for (const [label, valuesMap] of Object.entries(this.labelsSignal)) {
-      var signalsInWindow = this.signalsInSecond * this.interval;
-
-      if (isUp) {
-        const part = valuesMap[label].slice(this.updateSignalsInSignal * signalsInWindow, (this.updateSignalsInSignal+1) * signalsInWindow)
-
-        min_series.push({name:label, type:"line", showSymbol:false, data: part})
-        xDataUpdated = this.xData.slice(this.updateSignalsInSignal * signalsInWindow, (this.updateSignalsInSignal+1) * signalsInWindow)
-        this.initial = xDataUpdated[0];
-
-      } else {
-        const part = valuesMap[label].slice((this.updateSignalsInSignal-1) * signalsInWindow, this.updateSignalsInSignal * signalsInWindow)
-
-        min_series.push({name:label, type:"line", showSymbol:false, data: part})
-        xDataUpdated = this.xData.slice((this.updateSignalsInSignal-1) * signalsInWindow, this.updateSignalsInSignal * signalsInWindow)
-        this.initial = xDataUpdated[0];
-      }
-         
-    } */
-
-    let min_series: any = [];
-    var xData: any = []
-
-    for (const [label, valuesMap] of this.labelsSignal) {
-      const keys = Array.from(valuesMap.keys());
-      const values = Array.from(valuesMap.values()); 
-      
-      let end = this.initial + this.signalsInSecond * this.interval;
-
-      const channelBuffer = values.slice(this.initial, end)
-      xData = keys.slice(this.initial, end)
-      
-      min_series.push({name:label, type:"line", showSymbol:false, data: channelBuffer})
-
-    }
-
-    
-    this.myChart.setOption<echarts.EChartsOption>({
-
-      // yAxis: {},
-
-      series: min_series,
-     
-      xAxis: {
-        data : xData,
-      },
-
-      dataZoom: {
-        // startValue: this.initial,
-        // endValue: this.initial + this.interval * this.signalsInSecond,
-      }
-
-    }); 
   }
 
   changeSpeed() {
