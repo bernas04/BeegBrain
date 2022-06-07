@@ -1,10 +1,7 @@
 import * as echarts from 'echarts';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { EEGService } from 'src/app/services/eeg.service';
 import { Router } from '@angular/router';
 import { EEG } from 'src/app/classes/EEG';
-import { throws } from 'assert';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 
 @Component({
     selector: 'app-eeg-viewer',
@@ -26,6 +23,7 @@ export class EEGViewerComponent implements OnChanges {
   @Input('speed') speed! : number;
   @Input('interval') interval! : number;
   @Input('labelsSignal') labelsSignal! : Map<String, Map<Number,Number>>;
+  @Input('normalizedLabelsSignal') normalizedLabelsSignal! : Map<String, Map<Number,Number>>;
   @Input('eegInfo') eegInfo! : EEG
   @Input('labels') labels! : any;
   @Input('control') control! : boolean;
@@ -37,7 +35,7 @@ export class EEGViewerComponent implements OnChanges {
   @Output() currentInitial = new EventEmitter<any>();
   @Output() newItemEvent = new EventEmitter<boolean>();
 
-  constructor(private services: EEGService, private router: Router) { }
+  constructor(private router: Router) { }
   
   ngOnChanges(changes : SimpleChanges) {
     if (changes['speed']) this.changeSpeed()
@@ -59,7 +57,6 @@ export class EEGViewerComponent implements OnChanges {
     for (const [label, valuesMap] of this.labelsSignal) {
       const values = Array.from(valuesMap.values()).slice(this.initial, Math.floor(this.interval * this.signalsInSecond));
       series.push({name:label, type:"line", showSymbol:false, data:values}) 
-      console.log("Values " ,values)
     }
 
     this.option = {
@@ -173,7 +170,7 @@ export class EEGViewerComponent implements OnChanges {
       this.initial += this.speed;
       this.currentInitial.emit(this.initial);
 
-    }, 0.05); 
+    }, 4);  // 4 ms -> minimum delay value
     
     this.lst_intervalId.push(this.intervalId);
 
@@ -188,7 +185,36 @@ export class EEGViewerComponent implements OnChanges {
 
     var xData: any = []
 
-    for (const [label, valuesMap] of this.labelsSignal) {
+    let signalsMap! : Map<String,Map<Number,Number>>;
+
+    let minY : number = +Infinity;
+    let maxY : number = -Infinity;
+
+    if (this.updateViewControl) {
+
+      signalsMap = this.normalizedLabelsSignal;
+
+    } else {
+
+      signalsMap = this.labelsSignal;
+
+    }
+
+    // limitar o eixo do y para manter tudo mais estável
+
+    for (const [label, valuesMap] of signalsMap) {
+
+      const values = <number[]> Array.from(valuesMap.values()); 
+    
+      const minValue : number = Math.min(...values)
+      const maxValue : number = Math.max(...values)
+
+      minY = (minValue < minY) ? minValue : minY;
+      maxY = (maxValue > maxY) ? maxValue : maxY;
+
+    }
+
+    for (const [label, valuesMap] of signalsMap) {
       
       const keys = Array.from(valuesMap.keys());
       const values = Array.from(valuesMap.values()); 
@@ -196,17 +222,6 @@ export class EEGViewerComponent implements OnChanges {
       let end = this.initial + this.signalsInSecond * this.interval;
 
       let channelBuffer = values.slice(this.initial, end)
-      if (this.updateViewControl) {
-
-        console.log("UPDATED")
-
-        const initialValue = <number> channelBuffer[0];
-
-        channelBuffer = channelBuffer.map( function(value) { 
-          return <number> value - initialValue; 
-        } );
-
-      }
 
       xData = keys.slice(this.initial, end)
 
@@ -216,18 +231,16 @@ export class EEGViewerComponent implements OnChanges {
     
     this.myChart.setOption<echarts.EChartsOption>({
 
-      yAxis: {},
+      yAxis: { 
+        min: Math.round(minY - 20), 
+        max: Math.round(maxY + 20),
+      },
 
       series: series,
      
       xAxis: {
           data : xData,
       },
-       
-      // dataZoom: {
-      //   startValue: this.initial,
-      //   endValue: this.initial + this.interval * this.signalsInSecond,
-      // } 
     
     });
 

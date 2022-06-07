@@ -26,6 +26,7 @@ export class EegComponent implements OnInit {
   labels : String[] = [];
   eegInfo! : EEG;
   labelsSignal : Map<String,Map<Number,Number>> = new Map();
+  normalizedLabelsSignal : Map<String,Map<Number,Number>> = new Map();
   id! : number 
   control : boolean = false;
   token = '' + localStorage.getItem('token');
@@ -70,7 +71,6 @@ export class EegComponent implements OnInit {
     };    
 
     this.EEGservices.getEEGlength(this.id, this.token).subscribe((indices) => {
-      console.log("INDICES ::: ", indices)
       this.indices = <number> indices;
       this.signalsInSecond = <number> indices / this.eegInfo.duration;
     })
@@ -91,7 +91,6 @@ export class EegComponent implements OnInit {
   }
   
   onItemSelect(item : any) {
-    console.log("PEDI LABEL -----> ", item)
     this.labels.push(item);
     this.getLabelData(this.labels);
     this.control = false;
@@ -223,7 +222,7 @@ export class EegComponent implements OnInit {
     if (end > this.indices) {
       end = this.indices - 1;
     }
-    
+
     this.services.getDataAboutLabel(this.id, channels, this.token, initial, end).subscribe((channelsMap) => {
 
       this.endLimit = end;
@@ -249,6 +248,27 @@ export class EegComponent implements OnInit {
 
       }
 
+      // Mapa normalizado para o y = 0
+
+      for (const [label, valuesMap] of this.labelsSignal.entries()) {
+
+        let mergedMap : Map<Number,Number> = new Map();
+
+        const channelValues : number[] = <number[]> Array.from(valuesMap.values());
+
+        const minValue : number = Math.min(...channelValues)
+        const maxValue : number = Math.max(...channelValues)
+        const average : number = (minValue + maxValue) / 2;
+
+        for (const [index, value] of valuesMap.entries()) {
+
+          mergedMap.set(index, (<number> value) - average);
+
+        }
+
+        this.normalizedLabelsSignal.set(label, mergedMap)
+
+      }
 
     });
   }
@@ -283,13 +303,11 @@ export class EegComponent implements OnInit {
   }
 
   play() {
-    console.log("PLAYYYYYYYY")
     this.eeg_viewer.start();
     this.playing = !this.playing;
   }
 
   pause() {
-    console.log("PAUSEEEEEEEEEEEEEEE")
     this.playing = !this.playing;
     this.removeSpeedInterval();
   }
