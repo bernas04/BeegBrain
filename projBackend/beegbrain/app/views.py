@@ -386,7 +386,7 @@ def getDoctorById(request):
     """GET de um Doutor pelo seu id"""
     doc_id = int(request.GET['medical'])
     try:
-        ret = Doctor.objects.get(medical_number=doc_id)
+        ret = Doctor.objects.get(id=doc_id)
 
     except Doctor.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
