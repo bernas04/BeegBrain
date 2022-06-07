@@ -21,6 +21,7 @@ urlpatterns = [
     path('api/createOperator', views.createOperator),
     path('api/operator', views.getOperatorById),
     
+    path('api/institutions', views.getAllInstitutions),
     path('api/doctors', views.getDoctors),
     path('api/createDoctor', views.createDoctor),
     path('api/doctor', views.getDoctorById),
@@ -34,6 +35,8 @@ urlpatterns = [
     path('api/proveniences', views.getProvidence),
     path('api/createProveniences', views.createProvidence),
     path('api/providence', views.getProvidenceById),
+    path('api/providence/operator', views.getProvidenceByOperatorId),
+
 
     path('api/revisioncenters', views.getRevisionCenter),
     path('api/createRevisionCenter', views.createRevisionCenter),
@@ -73,4 +76,9 @@ urlpatterns = [
     path('api/doctorRevisionCenters', views.getDoctorRevisionCenters),
     path('api/createDoctorevisioncenter', views.createDoctorRevisionCenter),
     
+    path('api/filter', views.getEEGfilter),
+    path('api/filter/patients', views.getPatientsEEG),
+    path('api/filter/operators', views.getOperatorsInSharedFolder),
+    path('api/filter/revcenter', views.getRevisionCentersByDoctor),
+
 ]

@@ -1,3 +1,6 @@
+import { Institution } from 'src/app/classes/Institution';
+import { Operator } from './../classes/Operator';
+
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -46,6 +49,24 @@ export class WorkspaceService {
         'Authorization': 'Token ' + token,
         'Content-Type': 'application/json',
       })
+    });
+  }
+
+  getOperators(token:string) : Observable<Operator[]> {
+    return this.http.get<Operator[]>(this.BASE_URL+'operators', { 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    });
+  }
+
+  getAllInstitutions(token:string) : Observable<Institution[]> {
+    return this.http.get<Institution[]>(this.BASE_URL+'institutions', { 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
     });
   }
 

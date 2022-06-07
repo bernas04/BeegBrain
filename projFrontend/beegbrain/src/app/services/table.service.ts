@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Doctor } from '../classes/Doctor';
 import { EEG } from '../classes/EEG';
+import { Institution } from '../classes/Institution';
 import { Operator } from '../classes/Operator';
 import { Patient } from '../classes/Patient';
 import { Report } from '../classes/Report';
@@ -24,6 +25,18 @@ export class TableService {
       }),
     });
   }
+
+
+
+  getInstitution(id:number, token: string) : Observable<Institution>{
+    return this.http.get<Institution>(this.BASE_URL+'providence/operator?id='+id, { 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    });
+  }
+
 
 
 }
