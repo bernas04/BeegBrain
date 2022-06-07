@@ -70,6 +70,9 @@ class RevisionCenter(Institution):
 # EEG exams produced by the Providence are sent only to the RevisionCenter.
 class Contract(models.Model):
 
+    class Meta:
+        db_table = 'contracts'
+
     providence = models.OneToOneField(Providence, verbose_name=('providence'), on_delete=models.CASCADE, related_name='%(class)s_providence')
     revision_center = models.OneToOneField(RevisionCenter, verbose_name=('revision_center'), on_delete=models.CASCADE, related_name='%(class)s_revision_center')
 
@@ -123,7 +126,7 @@ class Operator(Person):
     providence = models.ForeignKey(Providence, verbose_name=('providence'), on_delete=models.CASCADE, related_name='%(class)s_providence')
     
     def __str__(self) -> str:
-        return 'Operator: ' + super().__str__() + f' {self.health_number}'
+        return 'Operator: ' + super().__str__() + f' {self.health_number} |  {self.providence}'
     
 
 # DoctorRevisionCenter -> Defines what Revision Centers Doctors work on and vice versa.
@@ -141,7 +144,6 @@ class Report(models.Model):
 
     content = models.TextField(null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
-    # doctor = models.ForeignKey(Doctor, verbose_name=('doctor'), on_delete=models.CASCADE, related_name='%(class)s_doctor')
 
 
 # EEG -> Has all the information about an EEG exam
@@ -180,7 +182,7 @@ class Event(models.Model):
 
     type = models.CharField(max_length=50)
     timestamp = models.DateTimeField(auto_now_add=True)
-    eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE, related_name='%(class)s_eeg')
+    eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.DO_NOTHING ,related_name='%(class)s_eeg')
     person = models.ForeignKey(Person, verbose_name=('person'), on_delete=models.CASCADE, related_name='%(class)s_person')
 
 

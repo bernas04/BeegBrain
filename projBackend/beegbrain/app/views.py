@@ -616,13 +616,18 @@ def createEEG(request):
 
         # Shared Folder
         try:
+            providence = operator.providence
             print("getting contract...")
             print(" - operator: ", operator)
-            contract = Contract.objects.get(providence=operator.providence)
+            print(" - providence: ", providence.id)
+            print(" - all contracts: ", Contract.objects.all())
+            contract = Contract.objects.get(providence=providence.id)
         except Contract.DoesNotExist:
             print("CONTRACT NOT FOUND")
             return Response(status=status.HTTP_404_NOT_FOUND)
 
+
+        print("creating shared folder...")
         SharedFolder.objects.create(contract=contract,eeg=eegObject)
 
     return Response(serializer_eeg.data, status=status.HTTP_201_CREATED)
