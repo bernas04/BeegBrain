@@ -27,17 +27,13 @@ export class EEGViewerComponent implements OnChanges {
   @Input('labels') labels! : any;
   @Input('control') control! : boolean;
   @Input('signalsInSecond') signalsInSecond! : number;
-<<<<<<< HEAD
   @Input('initial') initial! : number;
   @Input('indices') indices! : number;
 
   @Output() currentInitial = new EventEmitter<any>();
-=======
   @Input('updateViewControl') updateViewControl! : boolean;
 
   @Output() newItemEvent = new EventEmitter<boolean>();
-  @Output() event = new EventEmitter<Map<string, number>>();
->>>>>>> da376ba1fd2b8846ea2b661c5e857c75e11be6a8
 
   yData: any[] = [];
   xData: any[] = [];
@@ -107,9 +103,8 @@ export class EEGViewerComponent implements OnChanges {
         {
           id: 'dataZoomX',
           type: 'slider',
-          handleSize: '100%',
-          startValue: this.initial,
-          endValue: this.initial + this.interval * this.signalsInSecond,
+          xAxisIndex: [0],
+          filterMode: 'empty'
         },
         {
           id: 'dataZoomY',
@@ -168,20 +163,14 @@ export class EEGViewerComponent implements OnChanges {
       
       
     };
-<<<<<<< HEAD
 
     this.start();
-=======
-     
-    this.start(this.speed);
->>>>>>> da376ba1fd2b8846ea2b661c5e857c75e11be6a8
     this.changeSpeed(); // This line is to adjust data
     this.option;
 
   }
 
   /* Esta é a função que vai estar sempre a ser chamada */
-<<<<<<< HEAD
   start() {
 
     this.intervalId = setInterval(() => {
@@ -189,23 +178,6 @@ export class EEGViewerComponent implements OnChanges {
       this.updateData();
       this.initial += this.speed;
       this.currentInitial.emit(this.initial);
-=======
-  start(speed: number) {
-
-
-    this.intervalId = setInterval(() => {
-
-      let series: any = [];
-
-      var xData: any = []
-
-      for (const [label, valuesMap] of this.labelsSignal) {
-        xData = Array.from(valuesMap.keys()).slice(this.initial, this.initial + Math.floor(this.interval*this.signalsInSecond));
-        const values = Array.from(valuesMap.values()).slice(this.initial, Math.floor(this.interval * this.signalsInSecond));
-        series.push({name:label, type:"line", showSymbol:false, data:values}) 
-      }
-
->>>>>>> da376ba1fd2b8846ea2b661c5e857c75e11be6a8
 
   
     }, 0.05); 
@@ -219,7 +191,9 @@ export class EEGViewerComponent implements OnChanges {
 
     let min_series: any = [];
 
-    var xData: any = [...Array(this.indices).keys()]
+    // var xData: any = [...Array(this.indices).keys()]
+
+    var xData: any = []
 
     for (const [label, valuesMap] of this.labelsSignal) {
       const keys = Array.from(valuesMap.keys());
@@ -228,7 +202,7 @@ export class EEGViewerComponent implements OnChanges {
       let end = this.initial + this.signalsInSecond * this.interval;
 
       const channelBuffer = values.slice(this.initial, end)
-      //xData = keys.slice(this.initial, end)
+      xData = keys.slice(this.initial, end)
 
       min_series.push({name: label, type: "line", showSymbol: false, data: channelBuffer})
 
@@ -251,7 +225,6 @@ export class EEGViewerComponent implements OnChanges {
     
     });
 
-
   }
 
   changeSpeed() {
@@ -270,23 +243,27 @@ export class EEGViewerComponent implements OnChanges {
   }
 
   updateViewWithData(mapOfValues: Map<String, Map<Number, Array<number>>>, control:boolean){
-    if (control){
+
+    if (control) {
+
+      console.log("ENTROU NO CONTROL")
+
+      for (var id in this.lst_intervalId)
+        clearInterval( parseInt(id) );
+
+      clearInterval( this.intervalId );
+
       let ySeries: any = [];
       let contador = 0;
   
-      for (const [key, valueMap] of mapOfValues){
+      for (const [key, valueMap] of mapOfValues) {
+
         let label = key
         let initialValue= Array.from(valueMap.keys());
         let updatedValue = Array.from(valueMap.values());
   
         ySeries.push({name:label, type:"line", showSymbol:false, data:updatedValue[contador++]}) 
       }
-      
-      for (var id in this.lst_intervalId)
-        clearInterval( parseInt(id) );
-  
-      clearInterval( this.intervalId );
-  
   
       this.myChart.setOption<echarts.EChartsOption>({
   
@@ -296,21 +273,19 @@ export class EEGViewerComponent implements OnChanges {
   
         xAxis: {
         },
-       
+
       });
       this.updateViewControl=false;
       this.newItemEvent.emit(this.updateViewControl);
     }
     else{
+
       this.updateViewControl=true;
       this.newItemEvent.emit(this.updateViewControl);
-      this.start(this.speed)
+      this.start()
     }
 
   }
 
-}
-function OutPut() {
-  throw new Error('Function not implemented.');
 }
 

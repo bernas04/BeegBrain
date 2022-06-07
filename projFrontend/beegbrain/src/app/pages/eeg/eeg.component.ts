@@ -263,7 +263,6 @@ export class EegComponent implements OnInit {
     this.getLabelData(this.labels)
   }
 
-<<<<<<< HEAD
   removeSpeedInterval() {
 
     for (var id in this.eeg_viewer.lst_intervalId) {
@@ -273,16 +272,15 @@ export class EegComponent implements OnInit {
     this.eeg_viewer.start();
 
   }
-=======
 
 
 
   // Dá update dos dados e guarda-os num mapa
   // Passando-os depois para a componente
   updateView() {
+
     let updatedValuesAndInitialValue : Map<String, Map<Number, Array<number>>> = new Map();
     let tmpMap = new Map();
-    
     
     for (const [key, valueMap] of this.labelsSignal) {
       const values = Array.from(valueMap.values()); 
@@ -296,9 +294,8 @@ export class EegComponent implements OnInit {
       tmpMap.set(initialValue, updatedValuesOfChannel)
       updatedValuesAndInitialValue.set(key, tmpMap);
     }
-    
+    console.log(this.updateViewControl)
     this.eeg_viewer.updateViewWithData(updatedValuesAndInitialValue, this.updateViewControl);
   }
 
->>>>>>> da376ba1fd2b8846ea2b661c5e857c75e11be6a8
 }
