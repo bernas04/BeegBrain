@@ -40,12 +40,10 @@ export class WorkspaceComponent implements OnInit {
   constructor(private service: WorkspaceService, private patient_service: PatientsService) { }
 
   ngOnInit(): void {
-
-
     this.getEEG();
     this.getPatients();
-    this.getOperators()
-    this.getInstitutions()
+    this.getOperators();
+    this.getInstitutions();
     console.log("lista de pacientes workspace", this.lst_operators)
   }
 
@@ -121,5 +119,6 @@ export class WorkspaceComponent implements OnInit {
   getFiles(files : any[]) {
     this.files = files;
   }
+
 
 }

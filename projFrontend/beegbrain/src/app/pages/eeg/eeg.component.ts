@@ -7,6 +7,7 @@ import { EEGService } from 'src/app/services/eeg.service';
 import { EEG } from 'src/app/classes/EEG';
 import { EEGViewerComponent } from 'src/app/components/eeg-viewer/eeg-viewer.component';
 import { buffer, map } from 'rxjs';
+import { Annotation } from 'src/app/classes/Annotation';
 
 
 @Component({
@@ -34,6 +35,7 @@ export class EegComponent implements OnInit {
   signalsInSecond! : number;
   endLimit! : number;
   updateViewControl: boolean = false;
+  annotations!: Annotation[];
 
 
   speed: number = 1; // default: 0.1 segundo
@@ -58,6 +60,7 @@ export class EegComponent implements OnInit {
 
     this.getLabelsFromEEG(eegId);
     this.getInformation(eegId);
+    this.getAnnotations(eegId);
 
     this.dropdownSettings = {
       singleSelection: false,
@@ -280,5 +283,11 @@ export class EegComponent implements OnInit {
   updateView() {
     this.updateViewControl = !this.updateViewControl;
   }
-
+  
+  getAnnotations(eeg_id: number) {
+    this.EEGservices.getAnotations(eeg_id, this.token).subscribe((info) => {
+        this.annotations = info;
+        console.log(info)
+    });
+  }
 }

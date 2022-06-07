@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EEG } from '../classes/EEG';
 import '../../assets/js/smtp.js'; 
-import { number } from 'echarts';
+import { Annotation } from '../classes/Annotation';
 
 declare let Email : any;
 
@@ -57,6 +57,13 @@ export class EEGService {
       })
   }
 
-
+  getAnotations(id: number, token: string) : Observable<Annotation[]>{
+    return this.http.get<Annotation[]>(this.BASE_URL+'eegAnnotations?id='+id,{ 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    });
+  }
 
 }
