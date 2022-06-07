@@ -8,11 +8,11 @@
                 <div class="card-body text-center">
                     <img src="../../../assets/doctor1.png" alt="avatar"
                         class="rounded-circle img-fluid" style="width: 150px;">
-                    <h5 class="my-3">Duarte Pereira</h5>
-                    <p class="text-muted mb-1">Neurologist</p>
-                    <div class="d-flex justify-content-center mb-2">
+                    <h5 class="my-3">{{name}}</h5>
+                    <p class="text-muted mb-1">{{type}}</p>
+                    <!-- <div class="d-flex justify-content-center mb-2">
                         <button type="button" class="btn btn-primary" routerLink="/editprofile">Edit profile</button>
-                    </div>
+                    </div> -->
                 </div>
             </div>
           
@@ -25,7 +25,7 @@
                             <p class="mb-0">Full Name</p>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">Duarte Pereira</p>
+                            <p class="text-muted mb-0">{{name}}</p>
                         </div>
                     </div>
                     <hr>
@@ -34,25 +34,28 @@
                             <p class="mb-0">Email</p>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">duartepereira@chuc.pt</p>
+                            <p class="text-muted mb-0">{{email}}</p>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
                         <div class="col-sm-3">
-                            <p class="mb-0">NIF</p>
+                            <p class="mb-0">Health Number</p>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">124459856</p>
+                            <p class="text-muted mb-0">{{health_number}}</p>
                         </div>
                     </div>
                     <hr>
                     <div class="row">
-                        <div class="col-sm-3">
+                        <div *ngIf="!isOperator" class="col-sm-3">
                             <p class="mb-0">Medical Number</p>
                         </div>
+                        <div *ngIf="isOperator" class="col-sm-3">
+                            <p class="mb-0">Operator Number</p>
+                        </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">746547458</p>
+                            <p class="text-muted mb-0">{{workerNumber}}</p>
                         </div>
                     </div>
                     <hr>
@@ -61,16 +64,16 @@
                             <p class="mb-0">Phone</p>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">914584485</p>
+                            <p class="text-muted mb-0">{{telephone}}</p>
                         </div>
                     </div>
-                    <hr>
-                    <div class="row">
+                    <hr *ngIf="isOperator">
+                    <div *ngIf="isOperator" class="row">
                         <div class="col-sm-3">
                             <p class="mb-0">Institution</p>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">Centro Hospitalar e Universitário de Coimbra</p>
+                            <p class="text-muted mb-0">{{nameInstitution}}</p>
                         </div>
                     </div>
                     <hr>
@@ -79,7 +82,7 @@
                             <p class="mb-0">Address</p>
                         </div>
                         <div class="col-sm-9">
-                            <p class="text-muted mb-0">Rua das Flores, nº12, Coimbra</p>
+                            <p class="text-muted mb-0">{{address}}</p>
                         </div>
                     </div>
                     

@@ -11,19 +11,19 @@ export class Doctor implements Person {
     telephone!: string;
     birthday!: Date;
     gender!: string;
-    medicalNumber!: string;
+    medical_number!: string;
     pass!:string;
     listChosenRevisions: RevisionCenter[] = [];
 
 
 
-    constructor(health_number:string, email:string, pass:string, address:string, telephone:string, birthday:Date, gender:string, medicalNumber:string, listChosenRevisions:RevisionCenter[]){
+    constructor(health_number:string, email:string, pass:string, address:string, telephone:string, birthday:Date, gender:string, medical_number:string, listChosenRevisions:RevisionCenter[]){
         this.health_number = health_number
         this.email = email
         this.address = address
         this.telephone = telephone
         this.birthday = birthday
-        this.medicalNumber = medicalNumber
+        this.medical_number = medical_number
         this.gender = gender
         this.pass = pass
         this.listChosenRevisions=listChosenRevisions

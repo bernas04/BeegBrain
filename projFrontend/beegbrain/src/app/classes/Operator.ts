@@ -10,19 +10,19 @@ export class Operator implements Person {
     telephone!: string;
     birthday!: Date;
     gender!: string;
-    operatorNumber! : string;
-    providence! : Providence;
-    pass!: string;
+    operator_number! : string;
+    providence! : string;
 
-    constructor(health_number:string, email:string, pass:string, address:string, telephone:string, birthday:Date, gender:string, operatorNumber:string, providence:Providence){
+    constructor(id: number, health_number:string,name:string, email:string, address:string, telephone:string, birthday:Date, gender:string, operator_number:string, providence:string){
+        this.id=id
         this.health_number = health_number
+        this.name = name
         this.email = email
         this.address = address
         this.telephone = telephone
         this.birthday = birthday
-        this.operatorNumber = operatorNumber
         this.gender = gender
-        this.pass = pass
+        this.operator_number = operator_number
         this.providence = providence
     }
 }

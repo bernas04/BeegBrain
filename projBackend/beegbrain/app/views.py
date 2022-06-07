@@ -307,8 +307,9 @@ def createOperator(request):
 def getOperatorById(request):
     """GET de um operator pelo seu id"""
     op_id = int(request.GET['operator'])
+    print("tenho este id" ,op_id)
     try:
-        ret = Operator.objects.get(operator_number=op_id)
+        ret = Operator.objects.get(id=op_id)
     except Operator.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -356,7 +357,7 @@ def getDoctorById(request):
     """GET de um Doutor pelo seu id"""
     doc_id = int(request.GET['medical'])
     try:
-        ret = Doctor.objects.get(medical_number=doc_id)
+        ret = Doctor.objects.get(id=doc_id)
         
     except Doctor.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -616,10 +617,17 @@ def createEEG(request):
         # Shared Folder
         try:
             print("getting contract...")
-            print(" - operator: ", operator)
+
+            
+
+            op = Operator.objects.filter(person_ptr_id=operator.id)
+            providence_id = op.values('providence_id').get()['providence_id']
+            print("---------------------------------------------------------------------------------")
+            print("------> " , providence_id)
+
             contract = Contract.objects.get(providence=operator.providence)
         except Contract.DoesNotExist:
-            print("CONTRACT NOT FOUND")
+            print("------------------------------------------------------------------- CONTRACT NOT FOUND")
             return Response(status=status.HTTP_404_NOT_FOUND)
 
         SharedFolder.objects.create(contract=contract,eeg=eegObject)

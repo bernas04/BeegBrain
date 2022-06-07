@@ -70,7 +70,7 @@ class RevisionCenter(Institution):
 # EEG exams produced by the Providence are sent only to the RevisionCenter.
 class Contract(models.Model):
 
-    providence = models.OneToOneField(Providence, verbose_name=('providence'), on_delete=models.CASCADE, related_name='%(class)s_providence')
+    providence = models.OneToOneField(Providence,unique=True ,verbose_name=('providence'), on_delete=models.CASCADE, related_name='%(class)s_providence')
     revision_center = models.OneToOneField(RevisionCenter, verbose_name=('revision_center'), on_delete=models.CASCADE, related_name='%(class)s_revision_center')
 
     def __str__(self) -> str:
@@ -123,7 +123,7 @@ class Operator(Person):
     providence = models.ForeignKey(Providence, verbose_name=('providence'), on_delete=models.CASCADE, related_name='%(class)s_providence')
     
     def __str__(self) -> str:
-        return 'Operator: ' + super().__str__() + f' {self.health_number}'
+        return 'Operator: ' + self.name
     
 
 # DoctorRevisionCenter -> Defines what Revision Centers Doctors work on and vice versa.
