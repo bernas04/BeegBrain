@@ -24,7 +24,6 @@ export class EegTableComponent implements OnInit {
   @Input("allOperators") lst_op!: Operator[]
 
   @Output() eeg_deleted = new EventEmitter<any>();
-
   private eeg2delete! : EEG;
   private id!: number;
   public map = new Map<number, string>();
@@ -36,8 +35,7 @@ export class EegTableComponent implements OnInit {
   person_id = ''+localStorage.getItem('id');
   config: any;
 
-
-  constructor(private router: Router, private tableService: TableService, private eventService: EventService) {}
+  constructor(private router: Router, private tableService: TableService,  private eventService: EventService) {}
 
   ngOnInit(): void {
 
