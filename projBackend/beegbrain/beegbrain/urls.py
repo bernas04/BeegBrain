@@ -21,6 +21,7 @@ urlpatterns = [
     path('api/createOperator', views.createOperator),
     path('api/operator', views.getOperatorById),
     
+    path('api/institutions', views.getAllInstitutions),
     path('api/doctors', views.getDoctors),
     path('api/createDoctor', views.createDoctor),
     path('api/doctor', views.getDoctorById),

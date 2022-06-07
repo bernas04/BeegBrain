@@ -26,16 +26,8 @@ export class TableService {
     });
   }
 
-  getOperators( token:string) : Observable<Operator[]>{
-    return this.http.get<Operator[]>(this.BASE_URL+'operators', { 
-      headers: new HttpHeaders({
-        'Authorization': 'Token ' + token,
-        'Content-Type': 'application/json',
-      }),
-    });
 
-  }
-  
+
   getInstitution(id:number, token: string) : Observable<Institution>{
     return this.http.get<Institution>(this.BASE_URL+'providence/operator?id='+id, { 
       headers: new HttpHeaders({
@@ -44,6 +36,7 @@ export class TableService {
       }),
     });
   }
+
 
 
 }

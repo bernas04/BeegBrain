@@ -312,6 +312,7 @@ def getPatientById(request, id):
 @permission_classes([IsAuthenticated])
 def getOperators(request):
     """GET de todos os Operators"""
+    print("all operators...")
     operators = Operator.objects.all()
     serializer = serializers.OperatorSerializer(operators, many=True)
     return Response(serializer.data)

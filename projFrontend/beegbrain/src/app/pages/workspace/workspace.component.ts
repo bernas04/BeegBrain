@@ -1,4 +1,7 @@
+import { subscribeOn } from 'rxjs';
 import { Institution } from 'src/app/classes/Institution';
+import { Operator } from 'src/app/classes/Operator';
+
 import { Component, OnInit } from '@angular/core';
 import { EEG } from 'src/app/classes/EEG';
 import { Patient } from 'src/app/classes/Patient';
@@ -16,6 +19,9 @@ export class WorkspaceComponent implements OnInit {
   lst_error_eeg: EEG[] = [];  
   lst_patient: Patient[] = [];
   lst_institutions: Institution[] = []
+  lst_operators: Operator[] = []
+
+
   EEGpacient = new Map<number, Patient>();
 
   lst_untouchable: EEG[] = [];
@@ -25,20 +31,22 @@ export class WorkspaceComponent implements OnInit {
   token = ''+localStorage.getItem('token');
   type = ''+localStorage.getItem('type');
   id = ''+localStorage.getItem('id');
+  tableService: any;
 
   constructor(private service: WorkspaceService, private patient_service: PatientsService) { }
 
   ngOnInit(): void {
     this.getEEG();
     this.getPatients();
+    this.getOperators()
+    this.getInstitutions()
+    console.log("lista de pacientes workspace", this.lst_operators)
   }
 
   getEEG() {
-
     this.service.getAllEEG(this.token, this.type, this.id).subscribe((info) => {
 
       info.forEach((eeg) => {
-        console.log(eeg)
         if (eeg.status != null) {
           this.lst_error_eeg.push(eeg);
 
@@ -60,11 +68,17 @@ export class WorkspaceComponent implements OnInit {
     this.lst_eeg = lst;
   }
 
+  getInstitutions() {
+    this.service.getAllInstitutions(this.token).subscribe((info) => {
+      this.lst_institutions = info;
+      console.log("INSTITUTIONS",this.lst_institutions)
+    })
 
+  }
   getPatients() {
     this.patient_service.getPatients(this.token).subscribe((info) => {
       this.lst_patient = info;
-      console.log(this.lst_patient)
+      console.log("patients",this.lst_patient)
     });
   }
 
@@ -74,6 +88,15 @@ export class WorkspaceComponent implements OnInit {
 
   refresh() {
     window.location.reload();
+  }
+
+  getOperators() {
+    console.log("ANALYZING")
+    this.service.getOperators(this.token).subscribe((info) => {
+      this.lst_operators = info;
+      console.log("OPERATORS",this.lst_operators)
+    });
+
   }
 
 

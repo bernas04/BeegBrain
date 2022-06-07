@@ -14,7 +14,7 @@
                         <th></th>
                         <th class="text-dark font-medium fs-4"> <i class="bi bi-file-person-fill" style="margin-right: 0.3em;"></i> Patient</th>
                         <th class="text-dark font-medium fs-4"> <i class="bi bi-calendar-week-fill" style="margin-right: 0.3em;"></i> Date</th>
-                        <th class="text-dark font-medium fs-4"> <i class="bi bi-file-earmark-text-fill" style="margin-right: 0.3em;"></i> Institution</th>
+                        <th class="text-dark font-medium fs-4"> <i class="bi bi-hospital" style="margin-right: 0.3em;"></i> Institution</th>
                         <th class="text-dark font-medium fs-4"> <i class="bi bi-exclamation-diamond-fill" style="margin-right: 0.3em;"></i> Priority</th>
                         <th class="text-dark font-medium fs-4"> <i class="bi bi-file-earmark-text-fill" style="margin-right: 0.3em;"></i> Report</th>
                         <th></th>
@@ -42,7 +42,7 @@
                         <td>
                         
                             <!-- <h5 class="mb-0 font-medium">{{eeg.timestamp | date:'dd/MM/yyyy'}}</h5> -->
-                            <span class="text-muted">{{map_eeg_institution.get(+eeg.operator) }}</span>
+                            <span class="text-muted">{{map_operator_institution.get(+eeg.operator) }}</span>
                         </td>
 
                         <td>

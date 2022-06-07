@@ -1,3 +1,4 @@
+import { number } from 'echarts';
 import { Operator } from "./../../classes/Operator";
 import { Institution } from "src/app/classes/Institution";
 import {
@@ -27,39 +28,42 @@ export class EegTableComponent implements OnInit {
   @Output() eeg_deleted = new EventEmitter<any>();
   private id!: number;
   public map = new Map<number, string>();
-  public map_eeg_institution = new Map<number, string>();
+  public map_operator_institution = new Map<number, string>();
 
-  lst_institutions: Providence[] = [];
 
   institution!: Institution;
-  lst_operator: Operator[] = [];
   token = "" + localStorage.getItem("token");
   operator!: Operator;
+
+  @Input("allInstitutions") lst_inst!: Institution[];
+  @Input("allOperators") lst_op!: Operator[]
+
   constructor(private router: Router, private tableService: TableService) {}
 
   ngOnInit(): void {
-    console.log("ON INIT", this.lst_EEG);
-    this.lst_EEG.forEach((eeg) => {
-      this.lst_operator.push(eeg.operator);
-    });
-    console.log("operators", this.lst_operator);
 
-    this.lst_operator.forEach((operator) => {
-      console.log(operator);
-      this.lst_institutions.push(operator.providence);
-    });
-    this.getInstitutions();
 
   }
 
   ngOnChanges(model: any) {
+    console.log("im hereeeee")
     // criar o map com key = id do EEG, e value = nome do paciente
     this.lst_EEG.forEach((eeg) => {
+      console.log("now here")
       let pat = this.lst_Patients.find((x) => x.id == eeg.patient);
       if (pat) this.map.set(eeg.id, pat.name);
       else this.map.set(eeg.id, "undefined");
     });
-    this.getInstitutions();
+
+    //Mapa {operator:institution_name}
+    this.lst_op.forEach((op) => {
+      console.log("im doing it")
+      let inst = this.lst_inst.find((x) => x.id == +op.providence);
+      if (inst) this.map_operator_institution.set(op.id, inst.name);
+      else this.map_operator_institution.set(op.id, "undefined");
+      console.log("FINAL RESULT", this.map_operator_institution)
+
+    });
 
 
   }
@@ -76,34 +80,7 @@ export class EegTableComponent implements OnInit {
     this.router.navigate(["/workspace/" + id]);
   }
 
-  // getInstitution(id: number) {
-  //   console.log("INSTITUICAO", id);
-  //   this.tableService.getInstitution(id, this.token).subscribe((info) => {
-  //     this.institution = info;
-  //     this.lst_operator.forEach((o) => {
-  //       console.log("lista operadores", this.lst_operator);
-  //       this.map_eeg_institution.set(o.id, info.name);
-  //     });
-  //   });
-  //   console.log(this.map_eeg_institution);
-  // }
 
-  getInstitutions() {
-    this.lst_operator.forEach((o) => {
-      console.log("lista operadores", this.lst_operator);
-      let op_id = Number(o);
-      this.tableService.getInstitution(op_id, this.token).subscribe((info) => {
-        this.map_eeg_institution.set(op_id, info.name);
-      });
-    });
-    console.log(this.map_eeg_institution);
-  }
 
-  getOperators() {
-    this.tableService.getOperators(this.token).subscribe((info) => {
-      this.lst_operator = info;
-    });
-
-  }
 
 }
