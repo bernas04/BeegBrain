@@ -15,7 +15,7 @@ export class ErrorareaComponent implements OnInit {
   @Input('allPatients') lst_Patients!: Patient[];
   @Output() eeg_deleted = new EventEmitter<any>();
   public map = new Map<number, string>();
-  private id! : number;
+  private eeg2delete! : EEG;
 
   constructor(private service: EEGService) { }
 
@@ -52,11 +52,11 @@ export class ErrorareaComponent implements OnInit {
 
 
   delete() {
-    this.eeg_deleted.emit(this.id);
+    this.eeg_deleted.emit(this.eeg2delete);
   }
   
-  save2delete(id : number) {
-    this.id = id;
+  save2delete(eeg : EEG) {
+    this.eeg2delete = eeg;
   }
 
 }

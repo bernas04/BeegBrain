@@ -20,7 +20,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor='let eeg of lst_EEG'>
+                    <tr *ngFor='let eeg of lst_EEG  | paginate: config'>
 
                         <td class="fs-4">{{eeg.id}}</td>
 
@@ -55,13 +55,16 @@
                         <td style="text-align: right; vertical-align: middle;">
 
                             <button type="button" class="btn btn-primary" (click)="redirect(eeg.id)" style="margin-right: 1em;"> <i class="bi bi-eye-fill" ></i> </button>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#my-modal" style="margin-right: 1em;" (click)="save2delete( eeg.id )"> <i class="bi bi-trash-fill"></i> </button>
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#my-modal" style="margin-right: 1em;" (click)="save2delete( eeg )"> <i class="bi bi-trash-fill"></i> </button>
 
                         </td>
 
                     </tr>              
                 </tbody>
             </table>
+            
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+
         </div>
     </div>
     

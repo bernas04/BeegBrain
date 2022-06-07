@@ -14,7 +14,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor='let e of events'>
+                    <tr *ngFor='let e of events  | paginate: config'>
                         
                         <td class="fs-4">{{e.id}}</td>
 
@@ -29,9 +29,10 @@
                     </tr>              
                 </tbody>
             </table>
+
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+            
         </div>
 
     </div>
 </div>
-
-

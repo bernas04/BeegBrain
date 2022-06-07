@@ -1,69 +1,53 @@
 <app-navbar></app-navbar>
 
-<div class="card w-100">
 
-    <div class="content card-body">
+<div class="content card-body">
 
-        <div class="card">
-            <div class="card-header">
-                <h3> <strong> Upload an EEG </strong></h3>
-            </div>
-            <div class="card-body">
-                <form (ngSubmit)="submitEEG()">
-                    <div class="patient row">
-                        <div class="col-4">
-                            <label for="patient">Patient ID:</label>
-
-                        </div>
-
-                        <div class="col-8">
-                            <input [(ngModel)]="patientID" type="text" id="patient" name="patient" required>
-                        </div>
-
-                       
-
-                    </div>
-
-                    <div class="priority row">
-                        <div class="col-4">
-                            <label for="priority">Priority</label>
-
-                        </div>
-
-                        <div class="col-8">
-                            <select [(ngModel)]="priority" id="priority" name="priority" required>
-                                <option value="Very High">Very High</option>
-                                <option value="High">High</option>
-                                <option value="Medium">Medium</option>
-                                <option value="Low">Low</option>
-                                <option value="Very Low">Very Low</option>
-                              </select>
-                        </div>
-
-                       
-
-                    </div>
-
-
-                    <div class="upload">
-                        <div class="col-12 ">
-
-                        
-
-                            <label for="file">Upload file</label>
-                                <!-- <input [(ngModel)]="file" type="file" id="file" name="file" accept=".edf" required> -->
-                                <app-uploading (newFileEvent)="getFiles($event)"></app-uploading>
-
-
-                        </div>
-                  
-
-                    </div>
-
-                </form>
-            </div>
-
+    <div class="card">
+        <div class="card-header">
+            <h3> <strong> Upload an EEG </strong></h3>
         </div>
-        <button type="button" (click)="submitEEG()">upload</button>
+
+        <div class="card-body">
+            <form (ngSubmit)="submitEEG()">
+
+                <div class="patient row">
+                    <div class="col-4">
+                        <label for="patient">Patient ID:</label>
+
+                    </div>
+
+                    <div class="col-8">
+                        <input [(ngModel)]="patientID" type="text" id="patient" name="patient" required>
+                    </div>
+                </div>
+
+                <div class="priority row">
+                    <div class="col-4">
+                        <label for="priority">Priority</label>
+                    </div>
+
+                    <div class="col-8">
+                        <select [(ngModel)]="priority" id="priority" name="priority" required>
+                            <option value="Very High">Very High</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                            <option value="Very Low">Very Low</option>
+                        </select>
+                    </div>
+                </div>
+
+
+                <div class="upload">
+                    <div class="col-12 ">
+                        <app-uploading (newFileEvent)="getFiles($event)"></app-uploading>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+
     </div>
+    <button type="button" (click)="submitEEG()">upload</button>
 </div>

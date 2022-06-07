@@ -9,7 +9,10 @@ import { EventService } from 'src/app/services/event.service';
 })
 export class EventTableComponent implements OnInit {
 
-  constructor(private service: EventService) { }
+  config: any;
+
+  constructor(private service: EventService) { 
+  }
 
   events! : Event[];
   token = '' + localStorage.getItem('token');
@@ -23,7 +26,19 @@ export class EventTableComponent implements OnInit {
       this.events = data;
       this.events.reverse(); 
       console.log(this.events)
+
+      this.config = {
+        itemsPerPage: 10,
+        currentPage: 1,
+        totalItems: this.events.length
+      };
+
     });
   }
 
+  pageChanged(event: any){
+    this.config.currentPage = event;
+  }
+
 }
+

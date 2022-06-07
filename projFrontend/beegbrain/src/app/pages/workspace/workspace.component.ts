@@ -31,8 +31,10 @@ export class WorkspaceComponent implements OnInit {
 
     this.service.getAllEEG(this.token, this.type, this.id).subscribe((info) => {
 
+      console.log("ALLEEGs ",info)
+
       info.forEach((eeg) => {
-        console.log(eeg)
+
         if (eeg.status != null) {
           this.lst_error_eeg.push(eeg);
 
@@ -48,8 +50,9 @@ export class WorkspaceComponent implements OnInit {
 
     });
 
-  }
+    console.log("ERROR LIST ", this.lst_error_eeg)
 
+  }
 
   getPatients() {
     this.patient_service.getPatients(this.token).subscribe((info) => {
@@ -58,14 +61,21 @@ export class WorkspaceComponent implements OnInit {
     });
   }
 
-  onDelete(id : number) {
-    this.service.deleteEEG(id, this.token).subscribe();
+  onDelete(eeg : EEG) {
+    const index = this.lst_eeg.indexOf(eeg, 0);
+    if (index > -1) {
+      this.lst_eeg.splice(index, 1);
+    }
+
+    const index1 = this.lst_error_eeg.indexOf(eeg, 0);
+    if (index1 > -1) {
+      this.lst_eeg.splice(index1, 1);
+    }
+
+    this.service.deleteEEG(eeg.id, this.token).subscribe();
   }
 
   refresh() {
     window.location.reload();
   }
-
-
-
 }
