@@ -201,7 +201,19 @@ export class EEGViewerComponent implements OnChanges {
     
       let end = this.initial + this.signalsInSecond * this.interval;
 
-      const channelBuffer = values.slice(this.initial, end)
+      let channelBuffer = values.slice(this.initial, end)
+      if (this.updateViewControl) {
+
+        console.log("UPDATED")
+
+        const initialValue = <number> channelBuffer[0];
+
+        channelBuffer = channelBuffer.map( function(value) { 
+          return <number> value - initialValue; 
+        } );
+
+      }
+
       xData = keys.slice(this.initial, end)
 
       min_series.push({name: label, type: "line", showSymbol: false, data: channelBuffer})
@@ -248,7 +260,10 @@ export class EEGViewerComponent implements OnChanges {
 
       console.log("ENTROU NO CONTROL")
 
+      console.log(this.lst_intervalId);
+
       for (var id in this.lst_intervalId)
+      
         clearInterval( parseInt(id) );
 
       clearInterval( this.intervalId );
@@ -259,10 +274,11 @@ export class EEGViewerComponent implements OnChanges {
       for (const [key, valueMap] of mapOfValues) {
 
         let label = key
-        let initialValue= Array.from(valueMap.keys());
+        let initialValue = Array.from(valueMap.keys());
         let updatedValue = Array.from(valueMap.values());
   
         ySeries.push({name:label, type:"line", showSymbol:false, data:updatedValue[contador++]}) 
+        
       }
   
       this.myChart.setOption<echarts.EChartsOption>({

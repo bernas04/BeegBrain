@@ -33,7 +33,7 @@ export class EegComponent implements OnInit {
   indices! : number;
   signalsInSecond! : number;
   endLimit! : number;
-  updateViewControl: boolean = true;
+  updateViewControl: boolean = false;
 
 
   speed: number = 1; // default: 0.1 segundo
@@ -278,24 +278,7 @@ export class EegComponent implements OnInit {
   // Dá update dos dados e guarda-os num mapa
   // Passando-os depois para a componente
   updateView() {
-
-    let updatedValuesAndInitialValue : Map<String, Map<Number, Array<number>>> = new Map();
-    let tmpMap = new Map();
-    
-    for (const [key, valueMap] of this.labelsSignal) {
-      const values = Array.from(valueMap.values()); 
-      const initialValue = <number>values[0];
-
-      // Esta função vai adicionar o primeiro valor de cada canal a todos 
-      var updatedValuesOfChannel = values.map( function(value) { 
-        return <number>value - initialValue; 
-      } );
-
-      tmpMap.set(initialValue, updatedValuesOfChannel)
-      updatedValuesAndInitialValue.set(key, tmpMap);
-    }
-    console.log(this.updateViewControl)
-    this.eeg_viewer.updateViewWithData(updatedValuesAndInitialValue, this.updateViewControl);
+    this.updateViewControl = !this.updateViewControl;
   }
 
 }
