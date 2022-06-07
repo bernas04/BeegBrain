@@ -6,6 +6,9 @@
 
     <ngx-slider class="slider" invert [(value)]="speed" [options]="options" ></ngx-slider> <!-- add :(userChangeEnd)="update() -->
 
+    <button *ngIf="playing === false" (click)="play()"><i class="bi bi-play"></i></button>
+    <button *ngIf="playing === true" (click)="pause()"><i class="bi bi-pause"></i></button>
+
     <button (click)="left()" type="button" class="btn btn-primary"><i class="bi bi-caret-left-fill"></i></button>
     <!-- Dar update da view  -->
 

@@ -34,6 +34,7 @@ export class EegComponent implements OnInit {
   signalsInSecond! : number;
   endLimit! : number;
   updateViewControl: boolean = false;
+  playing: boolean = true;
 
 
   speed: number = 1; // default: 0.1 segundo
@@ -164,8 +165,8 @@ export class EegComponent implements OnInit {
             bufferInitial += 2 * Math.floor(this.window_size * this.signalsInSecond);
             bufferEnd = bufferInitial + Math.floor(this.window_size * this.signalsInSecond) * 2;
           } else if (channels.length <= 25 ) {
-            bufferInitial += 4 * Math.floor(this.window_size * this.signalsInSecond);
-            bufferEnd = bufferInitial + Math.floor(this.window_size * this.signalsInSecond) * 4;
+            bufferInitial += 3 * Math.floor(this.window_size * this.signalsInSecond);
+            bufferEnd = bufferInitial + Math.floor(this.window_size * this.signalsInSecond) * 3;
           }
   
           // Se é preciso pedir dados para buffer:
@@ -184,7 +185,7 @@ export class EegComponent implements OnInit {
           } else if (channels.length > 25 && channels.length < 50 ) {
             end += 2 * Math.floor(this.window_size * this.signalsInSecond);
           } else if (channels.length <= 25 ) {
-            end += 4 * Math.floor(this.window_size * this.signalsInSecond);
+            end += 3 * Math.floor(this.window_size * this.signalsInSecond);
           }
     
           this.getBackendData(this.initial,end,channels);
@@ -201,7 +202,7 @@ export class EegComponent implements OnInit {
       } else if (channels.length > 25 && channels.length < 50 ) {
         end += 2 * Math.floor(this.window_size * this.signalsInSecond);
       } else if (channels.length <= 25 ) {
-        end += 4 * Math.floor(this.window_size * this.signalsInSecond);
+        end += 3 * Math.floor(this.window_size * this.signalsInSecond);
       }
 
       if (this.endLimit !== undefined) {
@@ -265,15 +266,26 @@ export class EegComponent implements OnInit {
 
   removeSpeedInterval() {
 
-    for (var id in this.eeg_viewer.lst_intervalId) {
+    for (var id of this.eeg_viewer.lst_intervalId) {
       clearInterval( parseInt(id) );
     }
-    clearInterval( this.eeg_viewer.intervalId );
-    this.eeg_viewer.start();
+    if (this.playing) {
+      this.eeg_viewer.start();
+    }
 
   }
 
+  play() {
+    console.log("PLAYYYYYYYY")
+    this.eeg_viewer.start();
+    this.playing = !this.playing;
+  }
 
+  pause() {
+    console.log("PAUSEEEEEEEEEEEEEEE")
+    this.playing = !this.playing;
+    this.removeSpeedInterval();
+  }
 
   // Dá update dos dados e guarda-os num mapa
   // Passando-os depois para a componente
