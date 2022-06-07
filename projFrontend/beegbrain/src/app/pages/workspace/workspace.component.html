@@ -25,7 +25,7 @@
     </li>
 
     <div class="ml-auto">
-      <button *ngIf="type === 'operator'" type="button"  [routerLink]="'/upload'" class="btn btn-primary" style="font-size: medium;">
+      <button *ngIf="type === 'operator'" type="button"  data-toggle="modal" data-target="#my-modal"  class="btn btn-primary" style="font-size: medium;"> <!-- [routerLink]="'/upload'" -->
         <i class="bi bi-file-earmark-arrow-up"></i> <strong> Upload </strong> 
       </button>
     </div>
@@ -66,3 +66,66 @@
     </div>
   </div> 
 
+<!-- ------------------------------------------- UPLOAD MODAL ------------------------------------------- -->
+<div id="my-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content border-0" >
+          <div class="modal-body p-0">
+              <div class="card border-0 p-sm-3 p-2">
+
+                <h3 style="text-align: center;"> <strong> Upload an EEG </strong></h3>
+        
+                <div class="card-body">
+                    <form > <!-- (ngSubmit)="submitEEG()" -->
+        
+                      <div class="col-10">
+                        <input class="effect-1" type="text" placeholder="Patient Health Number">
+                          <span class="focus-border"></span>
+                      </div>
+
+                      <div class="col-lg-12">
+                        <!-- <select  id="priority" name="priority"  required>
+                            <option value="null"> --- Priority --- </option>
+                            <option value="Very High">Very High</option>
+                            <option value="High">High</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Low">Low</option>
+                            <option value="Very Low">Very Low</option>
+                        </select> -->
+
+                        <igx-combo #combo class="combo" [itemsMaxHeight]="250"
+                            [data]="lData" [displayKey]="'field'" [valueKey]="'field'"
+                            placeholder="Location(s)" searchPlaceholder="Search...">
+                        </igx-combo>
+
+                        
+                      </div>
+        
+                      <div class="col-lg-12">
+                          <app-uploading (newFileEvent)="getFiles($event)"></app-uploading>
+                      </div>
+        
+                    </form>
+
+                  
+              </div>
+              
+
+                  <div class="card-body px-sm-4 mb-2 pt-1 pb-0"> 
+                      <div class="row justify-content-end no-gutters">
+
+                          <div class="col-auto">
+                              <button type="button" class="btn btn-light text-muted" id="button" data-dismiss="modal" style="font-weight: bold">Cancel</button>
+                          </div>
+
+                          <div class="col-auto">
+                            <!-- <button type="button" (click)="submitEEG()">upload</button> -->
+                              <button type="button" class="btn btn-danger px-4" id="button" data-dismiss="modal"  style="font-weight: bold">Delete</button>
+                          </div>
+                      </div>
+                  </div>
+              </div>  
+          </div>
+      </div>
+  </div>
+</div>

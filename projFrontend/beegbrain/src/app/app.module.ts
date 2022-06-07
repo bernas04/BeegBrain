@@ -36,8 +36,7 @@ import { InfoBoxComponent } from './components/info-box/info-box.component';
 import { EventTableComponent } from './components/event-table/event-table.component';
 
 import { NgxPaginationModule } from 'ngx-pagination';
-
-
+import { IgxComboModule } from "igniteui-angular";
 
 @NgModule({
   declarations: [
@@ -79,7 +78,8 @@ import { NgxPaginationModule } from 'ngx-pagination';
     NgMultiSelectDropDownModule.forRoot(),
     BrowserAnimationsModule,
     NgxEditorModule,
-    NgxPaginationModule
+    NgxPaginationModule,
+    IgxComboModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -9,6 +9,7 @@ import { PatientsService } from 'src/app/services/patients.service';
 import { PersonService } from 'src/app/services/person.services';
 import { WorkspaceService } from 'src/app/services/workspace.service';
 
+
 @Component({
   selector: 'app-workspace',
   templateUrl: './workspace.component.html',
@@ -27,25 +28,26 @@ export class WorkspaceComponent implements OnInit {
 
   lst_untouchable: EEG[] = [];
   lst_filtered: EEG[] = []
-
+  files : File[] = [];
 
   token = ''+localStorage.getItem('token');
   type = ''+localStorage.getItem('type');
   id = ''+localStorage.getItem('id');
   tableService: any;
 
+  public lData!: any[];
+
   constructor(private service: WorkspaceService, private patient_service: PatientsService) { }
 
   ngOnInit(): void {
+
+
     this.getEEG();
     this.getPatients();
     this.getOperators()
     this.getInstitutions()
     console.log("lista de pacientes workspace", this.lst_operators)
   }
-
-
-
 
 
   getEEG() {
@@ -114,6 +116,10 @@ export class WorkspaceComponent implements OnInit {
       console.log("OPERATORS",this.lst_operators)
     });
 
+  }
+
+  getFiles(files : any[]) {
+    this.files = files;
   }
 
 }
