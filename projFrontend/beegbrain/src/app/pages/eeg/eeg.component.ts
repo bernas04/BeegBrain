@@ -33,6 +33,8 @@ export class EegComponent implements OnInit {
   indices! : number;
   signalsInSecond! : number;
   endLimit! : number;
+  updateViewControl: boolean = true;
+
 
   speed: number = 1; // default: 0.1 segundo
   options: Options = {
@@ -121,6 +123,10 @@ export class EegComponent implements OnInit {
   getInputValue(event:any){
     this.window_size = event.target.value;
     this.getLabelData(this.labels);
+  }
+
+  newItem($event : any) {
+    this.updateViewControl=$event
   }
 
   getLabelData(channels: String[]) {
@@ -257,6 +263,7 @@ export class EegComponent implements OnInit {
     this.getLabelData(this.labels)
   }
 
+<<<<<<< HEAD
   removeSpeedInterval() {
 
     for (var id in this.eeg_viewer.lst_intervalId) {
@@ -266,4 +273,32 @@ export class EegComponent implements OnInit {
     this.eeg_viewer.start();
 
   }
+=======
+
+
+
+  // Dá update dos dados e guarda-os num mapa
+  // Passando-os depois para a componente
+  updateView() {
+    let updatedValuesAndInitialValue : Map<String, Map<Number, Array<number>>> = new Map();
+    let tmpMap = new Map();
+    
+    
+    for (const [key, valueMap] of this.labelsSignal) {
+      const values = Array.from(valueMap.values()); 
+      const initialValue = <number>values[0];
+
+      // Esta função vai adicionar o primeiro valor de cada canal a todos 
+      var updatedValuesOfChannel = values.map( function(value) { 
+        return <number>value - initialValue; 
+      } );
+
+      tmpMap.set(initialValue, updatedValuesOfChannel)
+      updatedValuesAndInitialValue.set(key, tmpMap);
+    }
+    
+    this.eeg_viewer.updateViewWithData(updatedValuesAndInitialValue, this.updateViewControl);
+  }
+
+>>>>>>> da376ba1fd2b8846ea2b661c5e857c75e11be6a8
 }

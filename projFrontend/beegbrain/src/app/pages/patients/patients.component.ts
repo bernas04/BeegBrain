@@ -27,15 +27,7 @@ export class PatientsComponent implements OnInit {
       this.getPatientbyId(pat_id);
       this.getEEGbyPatient(pat_id);    // para lista os exames EEG da respetiva pessoa
     }
-
-    // this.getPatients();
   }
-
-  getPatients() {
-    this.services.getPatients(this.token).subscribe((info) => {
-      this.listOfPatients = info;
-    });
-  } 
 
   getPatient(){
     let text = (<HTMLInputElement>document.getElementById("patient_search")).value;

@@ -1,7 +1,5 @@
 <app-navbar></app-navbar>
 
-
-
 <div class="container">
     <div class="row height d-flex justify-content-center align-items-center">
         <div class="col-md-8" >
@@ -14,8 +12,9 @@
             </div>
 
             <div *ngIf="show()" style="position: absolute; max-height: 250px; overflow-y: scroll; background-color: white; box-shadow: 0px 0px 10px 1px;" >
-                <div *ngFor="let pat of listOfPatients" (click)="choose(pat.id)" class="op" >
-                  <p style="padding: 20px;" > {{ pat.name }}v</p>
+                <div *ngFor="let pat of listOfPatients" (click)="choose(pat.id)" class="op d-flex" >
+                  <p style="padding-top: 20px; padding-left: 20px; font-size: medium;" > {{ pat.name }} </p>
+                  <p class="text-muted" style="padding-top: 20px; margin-left: 1em; font-size: small;" > ( {{ pat.health_number }} )</p>
                 </div>
             </div>
             
@@ -33,12 +32,13 @@
             
             <hr>
 
-            <h4 class="card-title"><strong>   EEG Exams </strong></h4>
-            <app-eeg-table *ngIf="listOfEEG.length != 0 && listOfPatients.length != 0" [allEEG]="listOfEEG" [allPatients]="listOfPatients" ></app-eeg-table>
-            <div *ngIf="listOfEEG.length == 0 " class="alert alert-warning d-flex align-items-center" role="alert" style="width: 20em;">
-                <i class="bi bi-exclamation-triangle-fill"></i>
-                <div> This person hasn't had EEG exams, yet </div>
+            <h4 class="card-title"><strong> EEG Exams </strong></h4>
+            <app-eeg-table *ngIf="listOfEEG.length != 0" [allEEG]="listOfEEG" [allPatients]="listOfPatients" ></app-eeg-table>
+
+            <div *ngIf="listOfEEG.length == 0" style="margin:auto; display:inline-block">
+                <img src="../../../assets/no-data-found.png" alt="no data found :("/>
             </div>
+            
         </div>
     </div>
 

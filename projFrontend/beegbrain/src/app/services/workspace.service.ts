@@ -41,12 +41,11 @@ export class WorkspaceService {
 
   deleteEEG(id : number, token : string) {
     console.log("removing EEG<"+ id +">...")
-    return this.http.delete<any>(this.BASE_URL + 'eeg', { 
+    return this.http.delete<any>(this.BASE_URL + 'eeg?id='+id, { 
       headers: new HttpHeaders({
         'Authorization': 'Token ' + token,
         'Content-Type': 'application/json',
-      }),
-      body: { id }
+      })
     });
   }
 

@@ -2,6 +2,7 @@ import { Component, Input, OnInit } from '@angular/core';
 import { EEGService } from 'src/app/services/eeg.service';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { EventService } from 'src/app/services/event.service';
 
 @Component({
   selector: 'app-upload',
@@ -21,7 +22,7 @@ export class UploadComponent implements OnInit {
 
   public form!: FormGroup;
 
-  constructor(private eegService: EEGService, private router: Router) {
+  constructor(private eegService: EEGService, private router: Router, private eventService: EventService) {
 
     if (this.token === null || this.type !== 'operator' ) {
       this.router.navigate(['/']);
@@ -57,12 +58,20 @@ export class UploadComponent implements OnInit {
       next: (eeg) => {
         console.log("FETCH SUCCESS")
         console.log(eeg);
+
+        let json = { "type": "EEG uploaded", "person": this.id, "eeg_id": ''+eeg.id}
+        let jsonObject = <JSON><unknown>json;
+        this.eventService.addEvent(jsonObject, this.token).subscribe();
+
         this.router.navigate(['/workspace']);
       },
       error: (error) => {
         console.log(error);
       }
     });
+
+    //window.location.href="/workspace";
+    
 
   }
   
