@@ -254,54 +254,5 @@ export class EEGViewerComponent implements OnChanges {
     this.start();
   }
 
-  updateViewWithData(mapOfValues: Map<String, Map<Number, Array<number>>>, control:boolean){
-
-    if (control) {
-
-      console.log("ENTROU NO CONTROL")
-
-      console.log(this.lst_intervalId);
-
-      for (var id in this.lst_intervalId)
-      
-        clearInterval( parseInt(id) );
-
-      clearInterval( this.intervalId );
-
-      let ySeries: any = [];
-      let contador = 0;
-  
-      for (const [key, valueMap] of mapOfValues) {
-
-        let label = key
-        let initialValue = Array.from(valueMap.keys());
-        let updatedValue = Array.from(valueMap.values());
-  
-        ySeries.push({name:label, type:"line", showSymbol:false, data:updatedValue[contador++]}) 
-        
-      }
-  
-      this.myChart.setOption<echarts.EChartsOption>({
-  
-        yAxis: {},
-  
-        series: ySeries,
-  
-        xAxis: {
-        },
-
-      });
-      this.updateViewControl=false;
-      this.newItemEvent.emit(this.updateViewControl);
-    }
-    else{
-
-      this.updateViewControl=true;
-      this.newItemEvent.emit(this.updateViewControl);
-      this.start()
-    }
-
-  }
-
 }
 
