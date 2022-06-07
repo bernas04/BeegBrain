@@ -7,6 +7,7 @@ import { EEGService } from 'src/app/services/eeg.service';
 import { EEG } from 'src/app/classes/EEG';
 import { EEGViewerComponent } from 'src/app/components/eeg-viewer/eeg-viewer.component';
 import { buffer, map } from 'rxjs';
+import { throws } from 'assert';
 
 
 @Component({
@@ -218,6 +219,10 @@ export class EegComponent implements OnInit {
   }
 
   getBackendData(initial: number, end: number, channels: any[]){
+
+    if (end > this.indices) {
+      end = this.indices - 1;
+    }
     
     this.services.getDataAboutLabel(this.id, channels, this.token, initial, end).subscribe((channelsMap) => {
 
@@ -259,6 +264,8 @@ export class EegComponent implements OnInit {
     this.initial = this.initial +  Math.floor(this.window_size * this.signalsInSecond)
     if (this.initial > this.indices - Math.floor(this.window_size * this.signalsInSecond)) {
       this.initial = this.indices -  Math.floor(this.window_size * this.signalsInSecond);
+      this.getLabelData(this.labels)
+      this.pause()
     }
     this.removeSpeedInterval()
     this.getLabelData(this.labels)
