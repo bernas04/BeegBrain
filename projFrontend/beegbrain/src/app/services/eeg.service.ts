@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EEG } from '../classes/EEG';
 import '../../assets/js/smtp.js'; 
+import { number } from 'echarts';
 
 declare let Email : any;
 
@@ -55,5 +56,7 @@ export class EEGService {
           Body : text,
       })
   }
+
+
 
 }

@@ -1,8 +1,24 @@
 <app-navbar></app-navbar>
 
+<<<<<<< HEAD
 <div class="col-lg-3 col-sm-12 col-md-4">
   <app-eeg-filters> </app-eeg-filters>
 </div>
+=======
+  <div class="col-lg-3 col-sm-12 col-md-4">
+    <app-eeg-filters (sendFiltersEvent)="sendFilters($event)" > </app-eeg-filters>
+  </div>
+
+  <div class="float-md-right mb-5 pr-4 d-flex">
+
+    <button type="button" class="btn btn-success mb-5 text-center d-flex justify-content-center" (click)="refresh()"> 
+      <i class="bi bi-arrow-clockwise"></i> Refresh </button>
+
+    <button *ngIf="type === 'operator'" type="button"  [routerLink]="'/upload'" class="btn btn-primary mb-5 text-center d-flex justify-content-center">
+      <i class="bi bi-file-earmark-arrow-up"></i> Upload </button>
+
+  </div>
+>>>>>>> 50e8cfe8b0e1de1ba19da6551d8f5a19dbd2e0ca
 
   
 <div class="col-lg-8 col-sm-12 col-md-7">
@@ -29,7 +45,11 @@
       </button>
     </div>
 
+<<<<<<< HEAD
   </ul>
+=======
+        <app-eeg-table *ngIf="lst_eeg.length != 0" [allInstitutions]="lst_institutions" [allOperators]="lst_operators" [allEEG]="lst_eeg" [allPatients]="lst_patient" (eeg_deleted)="onDelete($event)"></app-eeg-table>
+>>>>>>> 50e8cfe8b0e1de1ba19da6551d8f5a19dbd2e0ca
 
   <div class="tab-content" id="myTabContent">
     <div class="tab-pane fade in show active" id="allexams" role="tabpanel" aria-labelledby="allexams-tab">
