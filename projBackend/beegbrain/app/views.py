@@ -593,7 +593,6 @@ def createEEG(request):
 
         if stat is not None:
             print("RETURN DO EEG COM ERRO")
-            # continue
             return Response(serializer_eeg.data, status=status.HTTP_201_CREATED)
 
 
@@ -950,6 +949,11 @@ def getOperatorSharedFolder(request):
         contract = Contract.objects.get(providence__id=operator.providence.id)
     except Contract.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
+
+
+    print(contract)
+    print(SharedFolder.objects.all())
+    print(SharedFolder.objects.filter(contract=contract))
 
     eegs = [shared_folder.eeg for shared_folder in SharedFolder.objects.filter(contract=contract) if notExpired(shared_folder)]
     print(eegs)

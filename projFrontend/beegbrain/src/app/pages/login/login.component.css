@@ -306,7 +306,7 @@
   }
   
   .input100:focus + .focus-input100 + .symbol-input100 {
-    color: #57b846;
+    color: #1ABC9C;
     padding-left: 28px;
   }
   
@@ -351,7 +351,7 @@
   }
   
   .login100-form-btn:hover {
-    background: #1BAF94;
+    background: #1ABC9C;
   }
   
   
