@@ -14,6 +14,7 @@
                         <th></th>
                         <th class="text-dark font-medium fs-4"> <i class="bi bi-file-person-fill" style="margin-right: 0.3em;"></i> Patient</th>
                         <th class="text-dark font-medium fs-4"> <i class="bi bi-calendar-week-fill" style="margin-right: 0.3em;"></i> Date</th>
+                        <th class="text-dark font-medium fs-4"> <i class="bi bi-file-earmark-text-fill" style="margin-right: 0.3em;"></i> Institution</th>
                         <th class="text-dark font-medium fs-4"> <i class="bi bi-exclamation-diamond-fill" style="margin-right: 0.3em;"></i> Priority</th>
                         <th class="text-dark font-medium fs-4"> <i class="bi bi-file-earmark-text-fill" style="margin-right: 0.3em;"></i> Report</th>
                         <th></th>
@@ -38,13 +39,18 @@
                             <!-- <h5 class="mb-0 font-medium">{{eeg.timestamp | date:'dd/MM/yyyy'}}</h5> -->
                             <span class="text-muted">{{eeg.timestamp | date:'dd/MM/yyyy'}}</span>
                         </td>
+                        <td>
+                        
+                            <!-- <h5 class="mb-0 font-medium">{{eeg.timestamp | date:'dd/MM/yyyy'}}</h5> -->
+                            <span class="text-muted">{{map_eeg_institution.get(+eeg.operator) }}</span>
+                        </td>
 
                         <td>
                             <span *ngIf="eeg.priority == '1'" class="badge text-bg-success"> very low </span>
                             <span *ngIf="eeg.priority == '2'" class="badge text-bg-info"> low </span>
                             <span *ngIf="eeg.priority == '3'" class="badge text-bg-secondary" style="font-size:medium;"> medium </span>
                             <span *ngIf="eeg.priority == '4'" class="badge text-bg-light"> high </span>
-                            <span *ngIf="eeg.priority == '5'" class="badge text-bg-dark"> very high </span> 
+                            <span *ngIf="eeg.priority == '5'" class="badge text-bg-dark"> urgent </span> 
                         </td>
 
                         <td>

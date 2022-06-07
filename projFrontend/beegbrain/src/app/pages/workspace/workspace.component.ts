@@ -1,3 +1,4 @@
+import { Institution } from 'src/app/classes/Institution';
 import { Component, OnInit } from '@angular/core';
 import { EEG } from 'src/app/classes/EEG';
 import { Patient } from 'src/app/classes/Patient';
@@ -14,8 +15,8 @@ export class WorkspaceComponent implements OnInit {
   lst_eeg: EEG[] = [];  
   lst_error_eeg: EEG[] = [];  
   lst_patient: Patient[] = [];
+  lst_institutions: Institution[] = []
   EEGpacient = new Map<number, Patient>();
-
 
   lst_untouchable: EEG[] = [];
   lst_filtered: EEG[] = []

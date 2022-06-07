@@ -1,3 +1,6 @@
+import { RevisionCenter } from './../../classes/RevisionCenter';
+import { Operator } from './../../classes/Operator';
+import { FiltersService } from './../../services/filters.service';
 import { EEG } from './../../classes/EEG';
 import { EEGService } from 'src/app/services/eeg.service';
 import { PatientsService } from './../../services/patients.service';
@@ -19,6 +22,8 @@ import { Institution } from 'src/app/classes/Institution';
 })
 export class EegFiltersComponent implements OnInit {
   token = '' + localStorage.getItem('token');
+  type = ''+localStorage.getItem('type');
+  id = ''+localStorage.getItem('id');
 
   idSearch = '';
 
@@ -37,17 +42,15 @@ export class EegFiltersComponent implements OnInit {
 
 
 
-
-
-
-  constructor(private fb: FormBuilder, private reg:RegistrationService, private patientService: PatientsService, private eegService: EEGService) { }
+  constructor(private fb: FormBuilder, private reg:RegistrationService, private filterService:FiltersService) { }
   
   public listProvidences: Institution[] = []
+  public listOperators: Operator[] = []
+  public listRevision: RevisionCenter[] = []
 
   public eegs_filtered: EEG[] = [];
 
   ngOnInit(): void {
-    console.log(this.lst_patients)
     this.getPatientsList()
     this.filtersForm = this.fb.group({
       eeg_id: [null],
@@ -59,11 +62,13 @@ export class EegFiltersComponent implements OnInit {
       date: [null],
     })
     this.getProvidence()
+    this.getOperator()
+    this.getRevisionCenters()
 
   }
 
   getPatientsList() {
-    this.patientService.getPatients(this.token).subscribe((info) => {
+    this.filterService.getTheirPatients(this.token).subscribe((info) => {
       this.lst_patients = info;
     });
 
@@ -72,11 +77,33 @@ export class EegFiltersComponent implements OnInit {
 
 
   getProvidence() {
-    this.reg.getInstituitions().subscribe((info) => {
+    this.filterService.getEEgOperators(this.token).subscribe((info) => {
       this.listProvidences = info;
-      
     });
+
   }
+
+  getRevisionCenters(){
+    console.log("DOCTOR ID", this.id)
+
+    this.filterService.getRevisionCentersByDoctor(this.id, this.token).subscribe((info) => {
+      this.listRevision = info;
+    });
+    console.log("THIS Revision center",this.listRevision)
+
+  }
+
+
+
+  getOperator() {
+    this.filterService.getEEgOperators(this.token).subscribe((info) => {
+      this.listOperators = info;
+    });
+
+  }
+
+
+
   getFiltersFormData(): void {
     const data = this.filtersForm.value
     var x: boolean = false;
@@ -158,7 +185,7 @@ export class EegFiltersComponent implements OnInit {
 
     if (x) {
       this.filtering = true
-      this.eegService.getEEGfiltered(this.eeg_id, this.patient_id, this.institution_id, this.date, this.operator_id, this.priority, this.report_status, this.token).subscribe((lst) => {
+      this.filterService.getEEGfiltered(this.eeg_id, this.patient_id, this.institution_id, this.date, this.operator_id, this.priority, this.report_status, this.token).subscribe((lst) => {
         this.eegs_filtered = lst;
         this.sendFilters(this.eegs_filtered)
 
@@ -174,6 +201,9 @@ export class EegFiltersComponent implements OnInit {
 
   }
 
+  refresh() {
+    window.location.reload();
+  }
 
 
 }

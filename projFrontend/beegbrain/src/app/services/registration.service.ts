@@ -23,6 +23,7 @@ export class RegistrationService {
       }),
     });
   }
+  
 
   getRevisionCenter() : Observable<RevisionCenter[]> {
     return this.http.get<Providence[]>(this.BASE_URL + 'revisioncenters');

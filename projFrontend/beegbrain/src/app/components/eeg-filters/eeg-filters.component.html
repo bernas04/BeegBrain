@@ -34,91 +34,68 @@
           />
           <label class="form-label" for="formControlDefault"></label>
         </div>
-
-        <div class="card-header"><strong> Operator </strong></div>
-        <div class="form-outline">
-          <input
-            (keyup.enter)="getFiltersFormData()"
-            placeholder="Name"
-            formControlName="operator_id"
-            type="search"
-            #operator_id
-            id="operator_id"
-            class="form-control"
-          />
-          <label class="form-label" for="formControlDefault"></label>
-        </div>
       </div>
+
+        <div class="card-body">
+        <div class="card-header"><strong> Operator </strong></div>
+          <div class="form-outline">
+          <select
+            class="form-control"
+            id="operator"
+            #operator
+            formControlName="operator_id"
+            style="width: 99%"
+            (change)="getFiltersFormData()">
+            <option
+              *ngFor="let ts of listOperators; let i = index"
+              [value]="listOperators[i].health_number">
+            {{ listOperators[i].name }} ({{ listOperators[i].health_number }})
+            </option>
+          </select>
+
+        </div>
+        </div>
 
       <div class="card-body">
         <div class="card-header"><strong> Patient </strong></div>
         <div class="form-outline">
-          <input
-            (keyup.enter)="getFiltersFormData()"
-            formControlName="patient_id"
-            placeholder="SSN"
-            type="search"
-            id="patientssn"
-            class="form-control"
-          />
-          
-          <label class="form-label" for="formControlDefault"></label>
           <select
             id="patient"
             (change)="getFiltersFormData()"
             formControlName="patient_id"
-            class="form-select"
+            class="form-control"
             style="width: 99%"
-            aria-label="Default select example">
+            aria-label="Default select example"
+          >
             <option
               *ngFor="let ts of lst_patients; let i = index"
-              [value]="lst_patients[i].health_number">
+              [value]="lst_patients[i].health_number"
+            >
               Patient Name: {{ lst_patients[i].name }}
             </option>
           </select>
-
-          <div class="w-100" style="padding-right: 20px; display: flex; justify-content: flex-end">
-            <div class="search-box">
-              <button class="btn-search"><i class="fas fa-search"></i></button>
-              <input type="text" class="input-search" placeholder="Search for a patient..." (keyup)="getFiltersFormData()" id="searchBar"
-               >
-            </div>
-            
-            <div style="position: absolute; max-height: 200px; overflow-y: scroll; background-color: white;" >
-              <div *ngFor="let p of lst_patients; let i=index;"click)="href(lst_patients[i].health_number)">
-                <p style="padding: 20px;" > {{ lst_patients[i].name }}</p>
-              </div>
-            </div>
-          </div>
 
           <label class="form-label" for="formControlDefault"></label>
         </div>
       </div>
 
-      <div class="card-body">
+      <div class="card-body"  *ngIf="type == 'doctor'">
         <div class="card-header"><strong> Institution </strong></div>
         <div class="form-outline">
-          <input
-            (keyup.enter)="getFiltersFormData()"
-            formControlName="institution_id"
-            placeholder="Institution"
-            type="search"
-            id="institution"
-            class="form-control"
-          />
-
           <select
             id="institution"
-            (keyup.enter)="getFiltersFormData()"
-            id="institution"
+            (change)="getFiltersFormData()"
+
             formControlName="institution_id"
-            class="form-select"
+            class="form-control"
             style="width: 99%"
-            aria-label="Default select example">
+            aria-label="Default select example"
+          >
             <option
-              *ngFor="let ts of listProvidences; let i = index"
-              [value]="listProvidences[i].id">
-              Providence: {{ listProvidences[i].name }}
+              *ngFor="let ts of listRevision; let i = index"
+              [value]="listRevision[i].id"
+            >
+              {{ listRevision[i].name }}
             </option>
           </select>
           <label class="form-label" for="formControlDefault"></label>
@@ -127,6 +104,7 @@
 
       <div class="card-body">
         <div class="card-header"><strong> Priority </strong></div>
+        <div class="form-outline">
         <select
           class="form-control"
           id="priority"
@@ -142,6 +120,7 @@
           <option value="">None</option>
         </select>
       </div>
+    </div>
 
       <div class="card-body">
         <div class="card-header"><strong> Report Status </strong></div>
@@ -149,15 +128,22 @@
           class="form-control"
           id="report"
           #report
-          formControlName="report"
-          (change)="getFiltersFormData()"
-        >
+          (change)="getFiltersFormData()">
           <option value="3">Done</option>
           <option value="2">Progress</option>
           <option value="1">To do</option>
           <option value="">None</option>
         </select>
       </div>
+      
+      <button
+        type="button"
+        class="btn btn-success mb-5 mt-5 ml-5 mr-5 text-center d-flex justify-content-center"
+        (click)="refresh()">
+        <i class="bi bi-arrow-clockwise"></i> Refresh filters
+      </button>
     </div>
+  
   </form>
+
 </div>
