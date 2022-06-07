@@ -307,8 +307,9 @@ def createOperator(request):
 def getOperatorById(request):
     """GET de um operator pelo seu id"""
     op_id = int(request.GET['operator'])
+    print("tenho este id" ,op_id)
     try:
-        ret = Operator.objects.get(operator_number=op_id)
+        ret = Operator.objects.get(id=op_id)
     except Operator.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -356,7 +357,7 @@ def getDoctorById(request):
     """GET de um Doutor pelo seu id"""
     doc_id = int(request.GET['medical'])
     try:
-        ret = Doctor.objects.get(medical_number=doc_id)
+        ret = Doctor.objects.get(id=doc_id)
         
     except Doctor.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
@@ -621,7 +622,7 @@ def createEEG(request):
             print(" - all contracts: ", Contract.objects.all())
             contract = Contract.objects.get(providence=providence.id)
         except Contract.DoesNotExist:
-            print("CONTRACT NOT FOUND")
+            print("------------------------------------------------------------------- CONTRACT NOT FOUND")
             return Response(status=status.HTTP_404_NOT_FOUND)
 
 

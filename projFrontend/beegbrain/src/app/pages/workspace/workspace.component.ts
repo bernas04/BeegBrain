@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { EEG } from 'src/app/classes/EEG';
 import { Patient } from 'src/app/classes/Patient';
 import { PatientsService } from 'src/app/services/patients.service';
+import { PersonService } from 'src/app/services/person.services';
 import { WorkspaceService } from 'src/app/services/workspace.service';
 
 @Component({
@@ -26,6 +27,10 @@ export class WorkspaceComponent implements OnInit {
     this.getEEG();
     this.getPatients();
   }
+
+
+
+
 
   getEEG() {
 
