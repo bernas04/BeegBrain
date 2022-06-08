@@ -27,7 +27,7 @@ export class EegTableComponent implements OnInit {
   private id!: number;
   public map = new Map<number, string>();
   public map_operator_institution = new Map<number, string>();
-  public map_report = new Map<number, string>();
+  public map_report = new Map<Report, string>();
 
 
   institution!: Institution;
@@ -70,8 +70,8 @@ export class EegTableComponent implements OnInit {
     //Mapa {eeg_id:report_status}
     this.lst_EEG.forEach((eeg) => {
       let rep = this.lst_report.find((x) => x.id == eeg.id);
-      if (rep) this.map_report.set(eeg.id, rep.progress);
-      else this.map_report.set(eeg.id, "undefined");
+      if (rep) this.map_report.set(eeg.report, rep.progress);
+      else this.map_report.set(eeg.report, "undefined");
 
     });
 

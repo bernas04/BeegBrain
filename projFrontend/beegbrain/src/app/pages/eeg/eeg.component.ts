@@ -290,4 +290,8 @@ export class EegComponent implements OnInit {
         console.log(info)
     });
   }
+
+  checkEeg(eeg_id:number){
+    
+  }
 }

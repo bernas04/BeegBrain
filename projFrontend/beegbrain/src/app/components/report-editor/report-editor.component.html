@@ -7,10 +7,13 @@
 		</div>
 
 		<div class="d-flex">
-			<button type="button" class="btn btn-warning btn-sm" (click)="save()"> <i class="bi bi-file-earmark-check-fill"></i> Save </button>
-			<button type="button" class="btn btn-success btn-sm" (click)="generatePDF(1)"> <i class="bi bi-eye-fill"></i> Preview </button>
+			<button type="button" class="btn btn-warning btn-sm" *ngIf="report_is_done==false" (click)="save()"> <i class="bi bi-file-earmark-check-fill"></i> Save </button>
+
+			<button type="button" class="btn btn-dark btn-sm" (click)="generatePDF(1)"> <i class="bi bi-eye-fill"></i> Preview </button>
 			<button type="button" class="btn btn-primary btn-sm" (click)="generatePDF(2)"> <i class="bi bi-file-earmark-arrow-down-fill"></i> Download </button>
-			<button type="button" class="btn btn-primary btn-sm" (click)="reportDone()"> <i class="bi bi-file-earmark-arrow-down-fill"></i> mark as done </button>
+			<button type="button" class="btn btn-success btn-sm" *ngIf="report_is_done==false" (click)="reportDone()"> <i class="bi bi-file-earmark-arrow-down-fill"></i> Mark as done </button>
+			<button type="button" class="btn btn-warning btn-sm" *ngIf="report_is_done" (click)="reportDone()"> <i class="bi bi-file-earmark-arrow-down-fill"></i> Keep editing  </button>
+
 		</div>
 
 	</form>

@@ -531,13 +531,22 @@ def getReportById(request):
         try:
             rep_id = int(request.data["id"])
             report = Report.objects.get(id=rep_id)
-            report.content = request.data["content"]
+            if request.data["content"]:
+                report.content = request.data["content"]
+                report.progress = request.data["progress"]
+                
+            if request.data["progress"] == "done":
+                print('im done')
+                report.progress = request.data["progress"]
+            print("this is the report", report)
             report.save()
             
         except Report.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         return Response(True)
+    
+
 
 
 # ############################### EEG ###############################
