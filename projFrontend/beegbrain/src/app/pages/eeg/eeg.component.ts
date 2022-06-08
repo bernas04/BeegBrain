@@ -128,12 +128,9 @@ export class EegComponent implements OnInit {
 
   getLabelData(channels: String[]) {
 
-
-
     let end = this.initial + Math.floor(this.window_size * this.signalsInSecond)
     let newChannels : String[] = [];
     let indexesToRemove : number[] = [];
-
 
     console.log("LABEL DATA CHAMADO")
     console.log("INITIAL -> " + this.initial + " | END " + end)
@@ -158,14 +155,14 @@ export class EegComponent implements OnInit {
         const minCacheIndex : number = this.initial - this.window_size * this.signalsInSecond - 1;
         const maxCacheIndex : number = this.initial + 4 * this.window_size * this.signalsInSecond;
 
-        if (map.has(minCacheIndex))  {
-          const array = Array.from({ length: minCacheIndex }, (_, i) => i + 1);
-          for (let idx of array) indexesToRemove.push(idx);
-        }
+        // if (map.has(minCacheIndex))  {
+        //   const array = Array.from({ length: minCacheIndex }, (_, i) => i + 1);
+        //   for (let idx of array) indexesToRemove.push(idx);
+        // }
       
-        if (map.has(maxCacheIndex)) {
-          for (let idx = maxCacheIndex; idx <= this.indices; idx++) indexesToRemove.push(idx);
-        }
+        // if (map.has(maxCacheIndex)) {
+        //   for (let idx = maxCacheIndex; idx <= this.indices; idx++) indexesToRemove.push(idx);
+        // }
 
         console.log(map);
 
@@ -246,7 +243,7 @@ export class EegComponent implements OnInit {
 
     console.log("REQUESTING DATA ::: " + initial + " | " + end)
 
-    this.services.getDataAboutLabel(this.id, channels, this.token, initial, end+1000).subscribe((channelsMap) => {
+    this.services.getDataAboutLabel(this.id, channels, this.token, initial, end).subscribe((channelsMap) => {
 
       this.endLimit = end;
 
@@ -331,10 +328,10 @@ export class EegComponent implements OnInit {
       this.initial = this.indices -  Math.floor(this.window_size * this.signalsInSecond);
       this.getLabelData(this.labels)
       this.pause()
+    } else {
+      this.removeSpeedInterval()
+      this.getLabelData(this.labels)
     }
-    this.removeSpeedInterval()
-    this.getLabelData(this.labels)
-    
   }
 
   removeSpeedInterval() {
@@ -366,6 +363,20 @@ export class EegComponent implements OnInit {
 
   updateInitial(newInitial : number) {
     this.initial = newInitial;
+
+    // verificar se é preciso pedir dados
+    const end = this.initial + Math.floor(this.window_size * this.signalsInSecond)
+    let bufferInitial = (this.labels.length > 25) ? this.initial + Math.floor(this.window_size * this.signalsInSecond) : this.initial + 2 * Math.floor(this.window_size * this.signalsInSecond);
+    let bufferEnd : number = (this.labels.length > 25) ? end + Math.floor(this.window_size * this.signalsInSecond) : end + 2 * Math.floor(this.window_size * this.signalsInSecond);
+
+    if (bufferInitial > this.endLimit) {
+  
+      console.log("UIIII")
+      //this.endLimit = bufferEnd;
+      this.getBackendData(this.endLimit,bufferEnd,this.labels);
+      
+    }
+
   }
 
 }
