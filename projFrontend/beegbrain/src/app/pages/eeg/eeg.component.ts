@@ -6,8 +6,6 @@ import { Router } from '@angular/router';
 import { EEGService } from 'src/app/services/eeg.service';
 import { EEG } from 'src/app/classes/EEG';
 import { EEGViewerComponent } from 'src/app/components/eeg-viewer/eeg-viewer.component';
-import { buffer, map } from 'rxjs';
-import { throws } from 'assert';
 
 
 @Component({
@@ -102,7 +100,6 @@ export class EegComponent implements OnInit {
   }
 
   onItemDeselect(item : any){
-
     let indx = this.labels.indexOf(item);
     if (this.labels.length==1){
       this.labels=[];
@@ -112,7 +109,6 @@ export class EegComponent implements OnInit {
     }
     this.labelsSignal.delete(item);
     this.control=false;
-
   }
 
   onSelectAll(items: any) {
@@ -132,9 +128,15 @@ export class EegComponent implements OnInit {
 
   getLabelData(channels: String[]) {
 
-    let end = this.initial + Math.floor(this.window_size * this.signalsInSecond)
 
+
+    let end = this.initial + Math.floor(this.window_size * this.signalsInSecond)
     let newChannels : String[] = [];
+    let indexesToRemove : number[] = [];
+
+
+    console.log("LABEL DATA CHAMADO")
+    console.log("INITIAL -> " + this.initial + " | END " + end)
 
     // Ver se há novos canais adicionados e pedir informação sobre os mesmos
     for (const channel of channels) {
@@ -151,24 +153,31 @@ export class EegComponent implements OnInit {
 
       for (const [label, map] of this.labelsSignal.entries()) {
 
+        // Remover dados mais "longínquos" da cache
+
+        const minCacheIndex : number = this.initial - this.window_size * this.signalsInSecond - 1;
+        const maxCacheIndex : number = this.initial + 4 * this.window_size * this.signalsInSecond;
+
+        if (map.has(minCacheIndex))  {
+          const array = Array.from({ length: minCacheIndex }, (_, i) => i + 1);
+          for (let idx of array) indexesToRemove.push(idx);
+        }
+      
+        if (map.has(maxCacheIndex)) {
+          for (let idx = maxCacheIndex; idx <= this.indices; idx++) indexesToRemove.push(idx);
+        }
+
+        console.log(map);
+
         if (map.has(this.initial+1) && map.has(end)) {
+
+          console.log("HAS DATA :))))))))")
   
           // Já tem os dados entre o initial - end
   
-          let bufferInitial = this.initial;
-          let bufferEnd! : number;
-  
-          if (channels.length > 50) {
-            bufferInitial += Math.floor(this.window_size * this.signalsInSecond);
-            bufferEnd = bufferInitial + Math.floor(this.window_size * this.signalsInSecond);
-          } else if (channels.length > 25 && channels.length < 50 ) {
-            bufferInitial += 2 * Math.floor(this.window_size * this.signalsInSecond);
-            bufferEnd = bufferInitial + Math.floor(this.window_size * this.signalsInSecond) * 2;
-          } else if (channels.length <= 25 ) {
-            bufferInitial += 3 * Math.floor(this.window_size * this.signalsInSecond);
-            bufferEnd = bufferInitial + Math.floor(this.window_size * this.signalsInSecond) * 3;
-          }
-  
+          let bufferInitial = (channels.length > 25) ? this.initial + Math.floor(this.window_size * this.signalsInSecond) : this.initial + 2 * Math.floor(this.window_size * this.signalsInSecond);
+          let bufferEnd : number = (channels.length > 25) ? bufferInitial + Math.floor(this.window_size * this.signalsInSecond) : bufferInitial + 2 * Math.floor(this.window_size * this.signalsInSecond);
+
           // Se é preciso pedir dados para buffer:
 
           if (bufferInitial > this.endLimit) {
@@ -179,31 +188,21 @@ export class EegComponent implements OnInit {
   
         } else {
 
-          // Multiplicador consoante numero de canais que pedimos
-          if (channels.length > 50) {
-            end += Math.floor(this.window_size * this.signalsInSecond);
-          } else if (channels.length > 25 && channels.length < 50 ) {
-            end += 2 * Math.floor(this.window_size * this.signalsInSecond);
-          } else if (channels.length <= 25 ) {
-            end += 3 * Math.floor(this.window_size * this.signalsInSecond);
-          }
-    
+          console.log("NAHHHH")
+
+
+          end += (channels.length > 25) ? Math.floor(this.window_size * this.signalsInSecond) : 2 * Math.floor(this.window_size * this.signalsInSecond);
           this.getBackendData(this.initial,end,channels);
 
         }
+
+        break;
   
       }
 
     } else {
 
-      // Multiplicador consoante numero de canais que pedimos
-      if (channels.length > 50) {
-        end += Math.floor(this.window_size * this.signalsInSecond);
-      } else if (channels.length > 25 && channels.length < 50 ) {
-        end += 2 * Math.floor(this.window_size * this.signalsInSecond);
-      } else if (channels.length <= 25 ) {
-        end += 3 * Math.floor(this.window_size * this.signalsInSecond);
-      }
+      end += (channels.length > 25) ? Math.floor(this.window_size * this.signalsInSecond) : 2 * Math.floor(this.window_size * this.signalsInSecond);
 
       if (this.endLimit !== undefined) {
         end = this.endLimit;
@@ -213,7 +212,29 @@ export class EegComponent implements OnInit {
 
     }
 
+
+    if (typeof Worker !== "undefined") {
+      //console.log("WORKER")
+      //console.log("ANTES", this.labelsSignal.get("A1")?.size)
+      // Cria o worker
+      const worker = new Worker(new URL('./web-worker.worker', import.meta.url));
+      worker.onmessage = ({data}) => {
+        const [labelsSignal, normalizedLabelsSignal] = data.resp;
+        this.labelsSignal = labelsSignal;
+        this.normalizedLabelsSignal = normalizedLabelsSignal;
+        //console.log("DEPOIS", this.labelsSignal.get("A1")?.size)
+      };
+      worker.postMessage({
+        indexesToRemove: indexesToRemove,
+        labelsSignal: this.labelsSignal,
+        normalizedLabelsSignal: this.normalizedLabelsSignal
+      });
+    } else {
+
+    }
+
     this.eeg_viewer.updateData();
+
 
   }
 
@@ -223,7 +244,9 @@ export class EegComponent implements OnInit {
       end = this.indices - 1;
     }
 
-    this.services.getDataAboutLabel(this.id, channels, this.token, initial, end).subscribe((channelsMap) => {
+    console.log("REQUESTING DATA ::: " + initial + " | " + end)
+
+    this.services.getDataAboutLabel(this.id, channels, this.token, initial, end+1000).subscribe((channelsMap) => {
 
       this.endLimit = end;
 
@@ -256,8 +279,8 @@ export class EegComponent implements OnInit {
 
         const channelValues : number[] = <number[]> Array.from(valuesMap.values());
 
-        const minValue : number = Math.min(...channelValues)
-        const maxValue : number = Math.max(...channelValues)
+        const minValue : number = this.getMin(channelValues)
+        const maxValue : number = this.getMax(channelValues)
         const average : number = (minValue + maxValue) / 2;
 
         for (const [index, value] of valuesMap.entries()) {
@@ -273,11 +296,33 @@ export class EegComponent implements OnInit {
     });
   }
 
+  getMin(array : number[]) {
+    let len = array.length;
+    let currentMin = +Infinity;
+    while (len--) {
+        currentMin = array[len] < currentMin ? array[len] : currentMin;
+    }
+    return currentMin;
+  }
+
+
+  getMax(array : number[]) {
+    let len = array.length;
+    let currentMax = -Infinity;
+    while (len--) {
+        currentMax = array[len] > currentMax ? array[len] : currentMax;
+    }
+    return currentMax;
+  }
+
+
   left() {
     this.initial = this.initial - Math.floor(this.window_size * this.signalsInSecond)
     if (this.initial < 1) this.initial = 1
     this.removeSpeedInterval()
     this.getLabelData(this.labels)
+
+
   }
 
   right() {
@@ -289,6 +334,7 @@ export class EegComponent implements OnInit {
     }
     this.removeSpeedInterval()
     this.getLabelData(this.labels)
+    
   }
 
   removeSpeedInterval() {
@@ -316,6 +362,10 @@ export class EegComponent implements OnInit {
   // Passando-os depois para a componente
   updateView() {
     this.updateViewControl = !this.updateViewControl;
+  }
+
+  updateInitial(newInitial : number) {
+    this.initial = newInitial;
   }
 
 }

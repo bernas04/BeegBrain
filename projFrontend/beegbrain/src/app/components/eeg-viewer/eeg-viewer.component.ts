@@ -206,8 +206,8 @@ export class EEGViewerComponent implements OnChanges {
 
       const values = <number[]> Array.from(valuesMap.values()); 
     
-      const minValue : number = Math.min(...values)
-      const maxValue : number = Math.max(...values)
+      const minValue : number = this.getMin(values)
+      const maxValue : number = this.getMax(values)
 
       minY = (minValue < minY) ? minValue : minY;
       maxY = (maxValue > maxY) ? maxValue : maxY;
@@ -245,6 +245,27 @@ export class EEGViewerComponent implements OnChanges {
     });
 
   }
+
+  
+  getMin(array : number[]) {
+    let len = array.length;
+    let currentMin = +Infinity;
+    while (len--) {
+        currentMin = array[len] < currentMin ? array[len] : currentMin;
+    }
+    return currentMin;
+  }
+
+
+  getMax(array : number[]) {
+    let len = array.length;
+    let currentMax = -Infinity;
+    while (len--) {
+        currentMax = array[len] > currentMax ? array[len] : currentMax;
+    }
+    return currentMax;
+  }
+
 
   changeSpeed() {
 
