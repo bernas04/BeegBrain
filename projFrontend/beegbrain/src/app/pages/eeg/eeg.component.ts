@@ -23,7 +23,6 @@ export class EegComponent implements OnInit {
   dropdownList! : String[];
   labels : String[] = [];
   eegInfo! : EEG;
-  labelsSignal : Map<String,Map<Number,Number>> = new Map();
   normalizedLabelsSignal : Map<String,Map<Number,Number>> = new Map();
   id! : number 
   control : boolean = false;
@@ -107,13 +106,13 @@ export class EegComponent implements OnInit {
     else{
       this.labels.splice(indx, 1)
     }
-    this.labelsSignal.delete(item);
-    this.control=false;
+    this.normalizedLabelsSignal.delete(item);
+    this.control = false;
   }
 
   onSelectAll(items: any) {
     this.labels = items;
-    this.control=false;
+    this.control = false;
     this.getLabelData(this.labels);
   }
 
@@ -153,12 +152,12 @@ export class EegComponent implements OnInit {
         // Remover dados mais "longínquos" da cache
 
         const minCacheIndex : number = this.initial - this.window_size * this.signalsInSecond - 1;
-        const maxCacheIndex : number = this.initial + 4 * this.window_size * this.signalsInSecond;
+        // const maxCacheIndex : number = this.initial + 4 * this.window_size * this.signalsInSecond;
 
-        // if (map.has(minCacheIndex))  {
-        //   const array = Array.from({ length: minCacheIndex }, (_, i) => i + 1);
-        //   for (let idx of array) indexesToRemove.push(idx);
-        // }
+        if (map.has(minCacheIndex))  {
+          const array = Array.from({ length: minCacheIndex }, (_, i) => i + 1);
+          for (let idx of array) indexesToRemove.push(idx);
+        }
       
         // if (map.has(maxCacheIndex)) {
         //   for (let idx = maxCacheIndex; idx <= this.indices; idx++) indexesToRemove.push(idx);
@@ -270,28 +269,6 @@ export class EegComponent implements OnInit {
         this.normalizedLabelsSignal.set(label, mergedMap);
 
       }
-      
-
-      // for (const [label, valuesMap] of Object.entries(channelsMap)) {
-
-      //   let mergedMap : Map<Number,Number> = new Map();
-
-      //   if (this.normalizedLabelsSignal.has(label)) {
-      //     mergedMap = this.normalizedLabelsSignal.get(label)!;
-
-      //   }
-
-      //   for (const [index, value] of Object.entries(valuesMap)) {
-
-      //     //Se canal existir
-      //     if (!mergedMap.has(Number.parseInt(index))) {
-      //       mergedMap.set(Number.parseInt(index),<Number>value);
-      //     }
-      //   }
-
-      //   this.normalizedLabelsSignal.set(label, mergedMap)
-
-      // }
 
     });
   }
@@ -367,22 +344,26 @@ export class EegComponent implements OnInit {
   updateInitial(newInitial : number) {
     this.initial = newInitial;
 
-    // verificar se é preciso pedir dados
-    const end = this.initial + Math.floor(this.window_size * this.signalsInSecond)
-    let bufferInitial = (this.labels.length > 25) ? this.initial + Math.floor(this.window_size * this.signalsInSecond) : this.initial + 2 * Math.floor(this.window_size * this.signalsInSecond);
-    let bufferEnd : number = (this.labels.length > 25) ? end + Math.floor(this.window_size * this.signalsInSecond) : end + 2 * Math.floor(this.window_size * this.signalsInSecond);
-
-    if (bufferInitial > this.endLimit) {
-  
-      console.log("UIIII")
-      //this.endLimit = bufferEnd;
-      this.getBackendData(this.endLimit,bufferEnd,this.labels);
-      
-    }
-
     if (this.initial > this.indices - Math.floor(this.window_size * this.signalsInSecond)) {
+      console.log("CHEGOU AO FIMMMMMM")
       this.initial = this.indices -  Math.floor(this.window_size * this.signalsInSecond);
+      console.log("NOVO INITIAL ", this.initial)
       this.pause()
+
+    } else {
+
+      // verificar se é preciso pedir dados
+      const end = this.initial + Math.floor(this.window_size * this.signalsInSecond)
+      let bufferInitial = (this.labels.length > 25) ? this.initial + Math.floor(this.window_size * this.signalsInSecond) : this.initial + 2 * Math.floor(this.window_size * this.signalsInSecond);
+      let bufferEnd : number = (this.labels.length > 25) ? end + Math.floor(this.window_size * this.signalsInSecond) : end + 2 * Math.floor(this.window_size * this.signalsInSecond);
+
+      if (bufferInitial > this.endLimit) {
+
+        //this.endLimit = bufferEnd;
+        this.getBackendData(this.endLimit,bufferEnd,this.labels);
+        
+      }
+
     }
 
   }

@@ -8,9 +8,7 @@ function removeCache(indexesToRemove : number[],normalizedLabelsSignal : Map<Str
         valuesMap.delete(idx);
       }
     }
-
-    //console.log("REMOVED ", indexesToRemove)
-
+    
     return normalizedLabelsSignal;
 
 }

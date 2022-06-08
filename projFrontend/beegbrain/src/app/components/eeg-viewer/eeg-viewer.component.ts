@@ -22,7 +22,6 @@ export class EEGViewerComponent implements OnChanges {
   
   @Input('speed') speed! : number;
   @Input('interval') interval! : number;
-  @Input('labelsSignal') labelsSignal! : Map<String, Map<Number,Number>>;
   @Input('normalizedLabelsSignal') normalizedLabelsSignal! : Map<String, Map<Number,Number>>;
   @Input('eegInfo') eegInfo! : EEG
   @Input('labels') labels! : any;
@@ -47,7 +46,14 @@ export class EEGViewerComponent implements OnChanges {
     let eegId = +url_array[url_array.length - 1];
     let series: any = [];
      
-    this.xData = Array.from(Array(this.tmp).keys());
+    let indicesArr = Array.from(Array(this.tmp).keys());
+    this.xData = indicesArr.map((el) => new Date((el / this.signalsInSecond) * 1000).toISOString().substr(11, 8));
+    // this.xData = Array.from(Array(this.tmp).keys());
+    // axisLabel: {
+    //   formatter: (function(value){
+    //       return moment(value).format('HH:mm:ss');
+    //   })
+  
     
     setTimeout(() => {
       this.chartDom = document.getElementById('chart')!;
@@ -192,15 +198,7 @@ export class EEGViewerComponent implements OnChanges {
     let minY : number = +Infinity;
     let maxY : number = -Infinity;
 
-    // if (this.updateViewControl) {
-
     signalsMap = this.normalizedLabelsSignal;
-
-    // } else {
-
-    //   signalsMap = this.labelsSignal;
-
-    // }
 
     // limitar o eixo do y para manter tudo mais estável
 
@@ -225,7 +223,9 @@ export class EEGViewerComponent implements OnChanges {
 
       let channelBuffer = values.slice(this.initial, end)
 
-      xData = keys.slice(this.initial, end)
+      //xData = keys.slice(this.initial, end)
+      let arr : Number[] = keys.slice(this.initial, end);
+      xData = arr.map((el) => new Date((<number> el / this.signalsInSecond) * 1000).toISOString().substr(11, 8));
 
       series.push({name: label, type: "line", showSymbol: false, data: channelBuffer})
 
@@ -234,8 +234,8 @@ export class EEGViewerComponent implements OnChanges {
     this.myChart.setOption<echarts.EChartsOption>({
 
       yAxis: { 
-        min: Math.round(minY - 20), 
-        max: Math.round(maxY + 20),
+        // min: Math.round(minY - 20), 
+        // max: Math.round(maxY + 20),
       },
 
       series: series,
