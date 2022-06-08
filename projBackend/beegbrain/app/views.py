@@ -568,8 +568,6 @@ def getEegByPatient(request, id):
 @permission_classes([IsAuthenticated])
 def createEEG(request):
 
-    print("CREATE EEG!")
-
     PRIORITIES = {'Very Low': 1, 'Low': 2,
                   'Medium': 3, 'High': 4, 'Very High': 5}
 
@@ -663,7 +661,7 @@ def createEEG(request):
             print("getting contract...")
             print(" - operator: ", operator)
             print(" - providence: ", providence.id)
-            print(" - all contracts: ", Contract.objects.all())
+            #print(" - all contracts: ", Contract.objects.all())
             contract = Contract.objects.get(providence=providence.id)
         except Contract.DoesNotExist:
             print("------------------------------------------------------------------- CONTRACT NOT FOUND")
@@ -800,7 +798,6 @@ def getChannelByLabel(request):
 def getChannelsByLabels(request):
     """GET de channels por um array de labels e id do EEG"""
     poolSize = multiprocessing.cpu_count()
-    print(poolSize)
     pool = multiprocessing.Pool(poolSize)
     start = int(request.GET['start'])
     end = int(request.GET['end'])

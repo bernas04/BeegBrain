@@ -35,7 +35,7 @@ export class EegComponent implements OnInit {
   signalsInSecond! : number;
   endLimit! : number;
   updateViewControl: boolean = false;
-  annotations!: Annotation[];
+  allAnnotations!: Annotation[];
 
 
   speed: number = 1; // default: 0.1 segundo
@@ -131,6 +131,8 @@ export class EegComponent implements OnInit {
   newItem($event : any) {
     this.updateViewControl=$event
   }
+
+
 
   getLabelData(channels: String[]) {
 
@@ -286,8 +288,7 @@ export class EegComponent implements OnInit {
   
   getAnnotations(eeg_id: number) {
     this.EEGservices.getAnotations(eeg_id, this.token).subscribe((info) => {
-        this.annotations = info;
-        console.log(info)
+        this.allAnnotations = info;
     });
   }
 }

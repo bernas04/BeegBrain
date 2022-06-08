@@ -123,7 +123,7 @@ class Operator(Person):
     providence = models.ForeignKey(Providence, verbose_name=('providence'), on_delete=models.CASCADE, related_name='%(class)s_providence')
     
     def __str__(self) -> str:
-        return 'Operator: ' + self.name
+        return 'Operator: ' + self.name + f' {self.providence}'
     
 
 # DoctorRevisionCenter -> Defines what Revision Centers Doctors work on and vice versa.
