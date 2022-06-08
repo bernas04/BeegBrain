@@ -7,7 +7,6 @@ import { RouterModule, Routes } from '@angular/router';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { EegComponent } from './pages/eeg/eeg.component';
 import { PatientsComponent } from './pages/patients/patients.component';
-import { UploadComponent } from './pages/upload/upload.component';
 import { WorkspaceComponent } from './pages/workspace/workspace.component';
 
 const routes: Routes = [
@@ -33,8 +32,6 @@ const routes: Routes = [
   { path: 'profile', component: ProfileComponent },
   
   { path: 'login', component: LoginComponent },
-
-  { path: 'upload', component: UploadComponent },
 
   { path: 'register', component: RegisterComponent },
 
