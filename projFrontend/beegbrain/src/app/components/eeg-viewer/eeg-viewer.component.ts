@@ -54,7 +54,9 @@ export class EEGViewerComponent implements OnChanges {
       this.myChart = echarts.init(this.chartDom);
     }, 100);
     
-    for (const [label, valuesMap] of this.labelsSignal) {
+    console.log(this.normalizedLabelsSignal)
+
+    for (const [label, valuesMap] of this.normalizedLabelsSignal) {
       const values = Array.from(valuesMap.values()).slice(this.initial, Math.floor(this.interval * this.signalsInSecond));
       series.push({name:label, type:"line", showSymbol:false, data:values}) 
     }
@@ -190,15 +192,15 @@ export class EEGViewerComponent implements OnChanges {
     let minY : number = +Infinity;
     let maxY : number = -Infinity;
 
-    if (this.updateViewControl) {
+    // if (this.updateViewControl) {
 
-      signalsMap = this.normalizedLabelsSignal;
+    signalsMap = this.normalizedLabelsSignal;
 
-    } else {
+    // } else {
 
-      signalsMap = this.labelsSignal;
+    //   signalsMap = this.labelsSignal;
 
-    }
+    // }
 
     // limitar o eixo do y para manter tudo mais estável
 

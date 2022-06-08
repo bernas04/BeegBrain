@@ -33,7 +33,7 @@ export class EegComponent implements OnInit {
   indices! : number;
   signalsInSecond! : number;
   endLimit! : number;
-  updateViewControl: boolean = false;
+  updateViewControl: boolean = true;
   playing: boolean = true;
 
 
@@ -138,7 +138,7 @@ export class EegComponent implements OnInit {
     // Ver se há novos canais adicionados e pedir informação sobre os mesmos
     for (const channel of channels) {
 
-      if (!this.labelsSignal.has(channel)) {
+      if (!this.normalizedLabelsSignal.has(channel)) {
         newChannels.push(channel);
       }
 
@@ -148,7 +148,7 @@ export class EegComponent implements OnInit {
 
       // Não há novos canais, verificar se os dados que vamos ver antes/seguir existem na cache
 
-      for (const [label, map] of this.labelsSignal.entries()) {
+      for (const [label, map] of this.normalizedLabelsSignal.entries()) {
 
         // Remover dados mais "longínquos" da cache
 
@@ -216,14 +216,14 @@ export class EegComponent implements OnInit {
       // Cria o worker
       const worker = new Worker(new URL('./web-worker.worker', import.meta.url));
       worker.onmessage = ({data}) => {
-        const [labelsSignal, normalizedLabelsSignal] = data.resp;
-        this.labelsSignal = labelsSignal;
+        const normalizedLabelsSignal = data.resp;
+        //this.labelsSignal = labelsSignal;
         this.normalizedLabelsSignal = normalizedLabelsSignal;
         //console.log("DEPOIS", this.labelsSignal.get("A1")?.size)
       };
       worker.postMessage({
         indexesToRemove: indexesToRemove,
-        labelsSignal: this.labelsSignal,
+        //labelsSignal: this.labelsSignal,
         normalizedLabelsSignal: this.normalizedLabelsSignal
       });
     } else {
@@ -247,48 +247,51 @@ export class EegComponent implements OnInit {
 
       this.endLimit = end;
 
+      // Mapa normalizado para o y = 0
+
       for (const [label, valuesMap] of Object.entries(channelsMap)) {
 
         let mergedMap : Map<Number,Number> = new Map();
 
-        if (this.labelsSignal.has(label)) {
-          mergedMap = this.labelsSignal.get(label)!;
-
+        if (this.normalizedLabelsSignal.has(label)) {
+          mergedMap = this.normalizedLabelsSignal.get(label)!;
         }
 
-        for (const [index, value] of Object.entries(valuesMap)) {
-
-          // Se canal existir
-          if (!mergedMap.has(Number.parseInt(index))) {
-            mergedMap.set(Number.parseInt(index),<Number>value);
-          }
-        }
-
-        this.labelsSignal.set(label, mergedMap)
-
-      }
-
-      // Mapa normalizado para o y = 0
-
-      for (const [label, valuesMap] of this.labelsSignal.entries()) {
-
-        let mergedMap : Map<Number,Number> = new Map();
-
-        const channelValues : number[] = <number[]> Array.from(valuesMap.values());
+        const channelValues : number[]  = <number[]> Object.values(valuesMap).map(Number); 
 
         const minValue : number = this.getMin(channelValues)
         const maxValue : number = this.getMax(channelValues)
         const average : number = (minValue + maxValue) / 2;
 
-        for (const [index, value] of valuesMap.entries()) {
-
-          mergedMap.set(index, (<number> value) - average);
-
+        for (const [index, value] of Object.entries(valuesMap)) {
+          mergedMap.set(Number.parseInt(index), (<number> value) - average);
         }
 
-        this.normalizedLabelsSignal.set(label, mergedMap)
+        this.normalizedLabelsSignal.set(label, mergedMap);
 
       }
+      
+
+      // for (const [label, valuesMap] of Object.entries(channelsMap)) {
+
+      //   let mergedMap : Map<Number,Number> = new Map();
+
+      //   if (this.normalizedLabelsSignal.has(label)) {
+      //     mergedMap = this.normalizedLabelsSignal.get(label)!;
+
+      //   }
+
+      //   for (const [index, value] of Object.entries(valuesMap)) {
+
+      //     //Se canal existir
+      //     if (!mergedMap.has(Number.parseInt(index))) {
+      //       mergedMap.set(Number.parseInt(index),<Number>value);
+      //     }
+      //   }
+
+      //   this.normalizedLabelsSignal.set(label, mergedMap)
+
+      // }
 
     });
   }
@@ -375,6 +378,11 @@ export class EegComponent implements OnInit {
       //this.endLimit = bufferEnd;
       this.getBackendData(this.endLimit,bufferEnd,this.labels);
       
+    }
+
+    if (this.initial > this.indices - Math.floor(this.window_size * this.signalsInSecond)) {
+      this.initial = this.indices -  Math.floor(this.window_size * this.signalsInSecond);
+      this.pause()
     }
 
   }
