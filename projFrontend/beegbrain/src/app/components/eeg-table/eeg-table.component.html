@@ -37,8 +37,8 @@
                         </td>
                         <td>
                         
-                            <!-- <h5 class="mb-0 font-medium">{{eeg.timestamp | date:'dd/MM/yyyy'}}</h5> -->
                             <span class="text-muted">{{map_operator_institution.get(+eeg.operator) }}</span>
+                            <!-- <h5 class="mb-0 font-medium">{{eeg.timestamp | date:'dd/MM/yyyy'}}</h5> -->
                         </td>
 
                         <td>
@@ -50,8 +50,7 @@
                         </td>
 
                         <td>
-                            <span *ngIf="eeg.report == null" class="badge rounded-pill text-bg-secondary" style="font-size:medium;"> to do </span>
-                            <span *ngIf="eeg.report != null" class="badge rounded-pill text-bg-sucess" id="inprogress"> in progress </span>
+                            <span class="badge rounded-pill text-bg-sucess" id="inprogress"> {{map_report.get(eeg.id)}}</span>
                         </td>
 
                         <td style="text-align: right; vertical-align: middle;">

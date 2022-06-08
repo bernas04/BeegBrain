@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EEG } from '../classes/EEG';
+import { Report } from '../classes/Report';
 
 @Injectable({
   providedIn: 'root'
@@ -69,5 +70,17 @@ export class WorkspaceService {
       }),
     });
   }
+
+  getReports(token: string) : Observable<Report[]>{
+
+    return this.http.get<Report[]>(this.BASE_URL+'reports', { 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    });
+  }
+
+
 
 }

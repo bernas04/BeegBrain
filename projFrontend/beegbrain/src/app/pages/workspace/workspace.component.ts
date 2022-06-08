@@ -11,6 +11,7 @@ import { WorkspaceService } from 'src/app/services/workspace.service';
 import { EEGService } from 'src/app/services/eeg.service';
 import { EventService } from 'src/app/services/event.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { Report } from 'src/app/classes/Report';
 
 
 @Component({
@@ -25,6 +26,7 @@ export class WorkspaceComponent implements OnInit {
   lst_patient: Patient[] = [];
   lst_institutions: Institution[] = []
   lst_operators: Operator[] = []
+  lst_report: Report[] = []
 
   EEGpacient = new Map<number, Patient>();
 
@@ -50,10 +52,13 @@ export class WorkspaceComponent implements OnInit {
     this.getPatients();
     this.getOperators();
     this.getInstitutions();
+    this.getReports()
+
     this.uploadForm = this.fb.group({
       patient_id: [null],
       priority: [null]
     })
+
     console.log("lista de pacientes workspace", this.lst_operators)
   }
 
@@ -163,9 +168,18 @@ export class WorkspaceComponent implements OnInit {
         console.log(error);
       }
     });
+    
 
     //window.location.href="/workspace";
     
+
+  }
+
+  getReports() {
+    this.service.getReports(this.token).subscribe((info) => {
+      this.lst_report = info;
+    });
+    console.log("LIST REPORTS", this.lst_report)
 
   }
 }

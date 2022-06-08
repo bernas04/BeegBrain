@@ -489,7 +489,9 @@ def createDoctorRevisionCenter(request):
 @permission_classes([IsAuthenticated])
 def getReport(request):
     """GET de todos os relatórios"""
+    print("getting reports.............")
     reports = Report.objects.all()
+
     serializer = serializers.ReportSerializer(reports, many=True)
     return Response(serializer.data)
 
@@ -610,8 +612,8 @@ def createEEG(request):
             duration = None
 
         if (not patient): stat = 'patient undefined'
-        empty_report = Report.objects.create(content="", timestamp=datetime.now())
 
+        empty_report = Report.objects.create(content="", timestamp=datetime.now(), progress="to do")
         eeg = {
             "operator": operator,
             "patient": patient,
@@ -1004,7 +1006,6 @@ def doctorSharedFolder(id):
     for contract in contracts:
         shared_folders = SharedFolder.objects.filter(contract=contract)
         eegs.extend([shared_folder.eeg for shared_folder in shared_folders])
-    print(eegs)
     return eegs
 
 
@@ -1016,7 +1017,6 @@ def getOperatorSharedFolder(request):
     print(">> getOperatorSharedFolder")
 
     eegs = operatorSharedFolder(int(request.GET['id']))
-    print("All eegs", eegs)
     serializer = serializers.EEGSerializer(eegs, many=True)
     return Response(serializer.data)
 
@@ -1033,7 +1033,6 @@ def operatorSharedFolder(id):
     except Contract.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    print(SharedFolder.objects.all())
     eegs = [shared_folder.eeg for shared_folder in SharedFolder.objects.filter(contract=contract) if notExpired(shared_folder)]
     return eegs
 

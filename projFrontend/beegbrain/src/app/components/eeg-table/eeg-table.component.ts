@@ -10,6 +10,7 @@ import { Institution } from "src/app/classes/Institution";
 import { Providence } from "src/app/classes/Providence";
 import { table } from "console";
 import { map } from "rxjs";
+import { Report } from 'src/app/classes/Report';
 
 @Component({
   selector: "app-eeg-table",
@@ -19,11 +20,14 @@ import { map } from "rxjs";
 export class EegTableComponent implements OnInit {
   @Input("allEEG") lst_EEG!: EEG[];
   @Input("allPatients") lst_Patients!: Patient[];
+  @Input("allReports") lst_report!: Report[];
+
   @Output() eeg_deleted = new EventEmitter<any>();
   private eeg2delete! : EEG;
   private id!: number;
   public map = new Map<number, string>();
   public map_operator_institution = new Map<number, string>();
+  public map_report = new Map<number, string>();
 
 
   institution!: Institution;
@@ -36,6 +40,8 @@ export class EegTableComponent implements OnInit {
 
   @Input("allInstitutions") lst_inst!: Institution[];
   @Input("allOperators") lst_op!: Operator[]
+  
+
 
   constructor(private router: Router, private tableService: TableService,  private eventService: EventService) {}
 
@@ -55,13 +61,20 @@ export class EegTableComponent implements OnInit {
 
     //Mapa {operator:institution_name}
     this.lst_op.forEach((op) => {
-      console.log("im doing it")
       let inst = this.lst_inst.find((x) => x.id == +op.providence);
       if (inst) this.map_operator_institution.set(op.id, inst.name);
       else this.map_operator_institution.set(op.id, "undefined");
-      console.log("FINAL RESULT", this.map_operator_institution)
 
     });
+
+    //Mapa {eeg_id:report_status}
+    this.lst_EEG.forEach((eeg) => {
+      let rep = this.lst_report.find((x) => x.id == eeg.id);
+      if (rep) this.map_report.set(eeg.id, rep.progress);
+      else this.map_report.set(eeg.id, "undefined");
+
+    });
+
 
     this.config = {
       itemsPerPage: 10,
@@ -94,6 +107,9 @@ export class EegTableComponent implements OnInit {
   pageChanged(event: any){
     this.config.currentPage = event;
   }
+
+ 
+
 
 
 
