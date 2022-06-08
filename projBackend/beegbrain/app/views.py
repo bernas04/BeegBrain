@@ -646,7 +646,7 @@ def createEEG(request):
                 providence = operator.providence
                 print(" - providence: ", providence.id)
                 print(" - all contracts: ", Contract.objects.all())
-                contract = Contract.objects.get(providence=providence.id)
+                contract = Contract.objects.get(providence__id=providence.id)
             except Contract.DoesNotExist:
                 print("------------------------------------------------------------------- CONTRACT NOT FOUND")
                 return Response(status=status.HTTP_404_NOT_FOUND)
@@ -679,7 +679,8 @@ def createEEG(request):
             providence = operator.providence
             print(" - providence: ", providence.id)
             print(" - all contracts: ", Contract.objects.all())
-            contract = Contract.objects.get(providence=providence.id)
+            contract = Contract.objects.get(providence__id=providence.id)
+            print(" - contract: ", contract)
         except Contract.DoesNotExist:
             print("------------------------------------------------------------------- CONTRACT NOT FOUND")
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -1001,10 +1002,11 @@ def doctorSharedFolder(id):
     doctor_revision_centers = getDoctorRevisionCenters(id)
     contracts = getContractFromRevisionCenters(doctor_revision_centers)
     eegs = []
+
     for contract in contracts:
         shared_folders = SharedFolder.objects.filter(contract=contract)
         eegs.extend([shared_folder.eeg for shared_folder in shared_folders])
-    print(eegs)
+
     return eegs
 
 
@@ -1013,10 +1015,7 @@ def doctorSharedFolder(id):
 @permission_classes([IsAuthenticated])
 def getOperatorSharedFolder(request):
     """GET de todas as pastas partilhadas"""
-    print(">> getOperatorSharedFolder")
-
     eegs = operatorSharedFolder(int(request.GET['id']))
-    print("All eegs", eegs)
     serializer = serializers.EEGSerializer(eegs, many=True)
     return Response(serializer.data)
 
@@ -1033,7 +1032,6 @@ def operatorSharedFolder(id):
     except Contract.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-    print(SharedFolder.objects.all())
     eegs = [shared_folder.eeg for shared_folder in SharedFolder.objects.filter(contract=contract) if notExpired(shared_folder)]
     return eegs
 
@@ -1107,9 +1105,8 @@ def getPatientsEEG(request):
 @permission_classes([IsAuthenticated])
 def getOperatorsInSharedFolder(request):
     operator_list = []
-    health_profession_id = ((request.GET['id']))
-    
-    type = (request.GET['type']) # passar no frontend
+    health_profession_id = int(request.GET['id'])
+    type = request.GET['type'] # passar no frontend
 
     if type == 'doctor':
         eegs_shared = doctorSharedFolder(health_profession_id)
@@ -1117,11 +1114,9 @@ def getOperatorsInSharedFolder(request):
     if type=='operator':
         eegs_shared = operatorSharedFolder(health_profession_id)
 
-    operator_eeg_list = list(eegs_shared)
-    for o in operator_eeg_list:
-
+    for o in list(eegs_shared):
         try:
-            ret = Operator.objects.get(id=o.id)
+            ret = Operator.objects.get(id= o.operator.id)
         except Operator.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 

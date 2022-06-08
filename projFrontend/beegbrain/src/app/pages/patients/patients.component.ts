@@ -22,6 +22,8 @@ export class PatientsComponent implements OnInit {
   public listOfEEG: EEG[] = []
   public patient!: Patient
   token = ''+localStorage.getItem('token');
+  type = ''+localStorage.getItem('type');
+  id = ''+localStorage.getItem('id');
 
   ngOnInit(): void {
 
@@ -60,9 +62,14 @@ export class PatientsComponent implements OnInit {
   } 
 
   getEEGbyPatient(id: number) {
-    this.services.getEEGbyPatient(id, this.token).subscribe((info) => {
-      this.listOfEEG = info;
-    });
+    this.services.getEEGbySharedFolder(+this.id, this.type, this.token).subscribe((info) => {
+      this.listOfEEG = [];
+
+      console.log(info)
+      info.forEach((eeg) => {
+        if (eeg.status == null && eeg.patient == id) this.listOfEEG.push(eeg);
+      });
+    })
   }
 
   clean() {

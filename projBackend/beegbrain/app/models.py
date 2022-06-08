@@ -179,7 +179,7 @@ class Event(models.Model):
 
     type = models.CharField(max_length=50)
     timestamp = models.DateTimeField(auto_now_add=True)
-    eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.DO_NOTHING ,related_name='%(class)s_eeg')
+    eeg = models.ForeignKey(EEG, verbose_name=('eeg'), on_delete=models.CASCADE ,related_name='%(class)s_eeg')
     person = models.ForeignKey(Person, verbose_name=('person'), on_delete=models.CASCADE, related_name='%(class)s_person')
 
 
