@@ -1117,11 +1117,10 @@ def getOperatorsInSharedFolder(request):
     if type=='operator':
         eegs_shared = operatorSharedFolder(health_profession_id)
 
-    operator_eeg_list = list(eegs_shared)
-    for o in operator_eeg_list:
+    for o in list(eegs_shared):
 
         try:
-            ret = Operator.objects.get(id=o.id)
+            ret = Operator.objects.get(id=o.operator_id)
         except Operator.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -1129,6 +1128,7 @@ def getOperatorsInSharedFolder(request):
             operator_list.append(ret)
     
     serializer = serializers.OperatorSerializer(operator_list, many=True)
+    print("serializer", serializer.data)
     return Response(serializer.data)
 
 @api_view(['GET'])
