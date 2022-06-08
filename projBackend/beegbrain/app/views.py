@@ -637,7 +637,22 @@ def createEEG(request):
 
         if stat is not None:
             print("RETURN DO EEG COM ERRO")
-            return Response(serializer_eeg.data, status=status.HTTP_201_CREATED)
+            eegObject = EEG.objects.get(id=idEEG)
+            print("creating shared folder...")
+
+            try:
+                print("getting contract...")
+                print(" - operator: ", operator)
+                providence = operator.providence
+                print(" - providence: ", providence.id)
+                print(" - all contracts: ", Contract.objects.all())
+                contract = Contract.objects.get(providence=providence.id)
+            except Contract.DoesNotExist:
+                print("------------------------------------------------------------------- CONTRACT NOT FOUND")
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+            SharedFolder.objects.create(contract=contract,eeg=eegObject)
+            continue
 
         eegObject = EEG.objects.get(id=idEEG)
 
@@ -659,9 +674,9 @@ def createEEG(request):
 
         # Shared Folder
         try:
-            providence = operator.providence
             print("getting contract...")
             print(" - operator: ", operator)
+            providence = operator.providence
             print(" - providence: ", providence.id)
             print(" - all contracts: ", Contract.objects.all())
             contract = Contract.objects.get(providence=providence.id)
@@ -1001,6 +1016,7 @@ def getOperatorSharedFolder(request):
     print(">> getOperatorSharedFolder")
 
     eegs = operatorSharedFolder(int(request.GET['id']))
+    print("All eegs", eegs)
     serializer = serializers.EEGSerializer(eegs, many=True)
     return Response(serializer.data)
 
@@ -1017,6 +1033,7 @@ def operatorSharedFolder(id):
     except Contract.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
+    print(SharedFolder.objects.all())
     eegs = [shared_folder.eeg for shared_folder in SharedFolder.objects.filter(contract=contract) if notExpired(shared_folder)]
     return eegs
 

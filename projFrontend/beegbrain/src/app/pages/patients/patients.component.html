@@ -25,7 +25,7 @@
 <hr>
 
 <div class="container-xl">
-    <div class="row align-items-center h-100" *ngIf="patient">
+    <div class="row align-items-center h-100" *ngIf="patient" >
         <div class="col-lg-12 align-items-center">
             
             <app-patientinfo [patient]=patient ></app-patientinfo>
@@ -33,7 +33,7 @@
             <hr>
 
             <h4 class="card-title"><strong> EEG Exams </strong></h4>
-            <app-eeg-table *ngIf="listOfEEG.length != 0" [allEEG]="listOfEEG" [allPatients]="listOfPatients" ></app-eeg-table>
+            <app-eeg-table *ngIf="listOfEEG.length != 0 && lst_institutions.length != 0 && lst_operators.length != 0" [allInstitutions]="lst_institutions" [allOperators]="lst_operators"  [allEEG]="listOfEEG" [allPatients]="listOfPatients" (eeg_deleted)="onDelete($event)"></app-eeg-table>
 
             <div *ngIf="listOfEEG.length == 0" style="margin:auto; display:inline-block">
                 <img src="../../../assets/no-data-found.png" alt="no data found :("/>

@@ -1,38 +1,34 @@
-<div class="card" *ngIf="events">
-    <div class="card-body">
 
-        <div class="table-responsive" style="margin-top: 1em;">
-            <table id="eeg_table" class="table align-middle table-striped ">
-                <thead>
+<div class="table-responsive" style="margin-top: 1em;" *ngIf="events">
+    <table id="eeg_table" class="table align-middle table-striped ">
+        <thead>
 
-                    <tr>
-                        <th></th>
-                        <th class="text-dark font-medium fs-4"> Type</th>
-                        <th class="text-dark font-medium fs-4"> Date </th>
-                        <th class="text-dark font-medium fs-4"> EEG </th>
-                        <th class="text-dark font-medium fs-4"> Person </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr *ngFor='let e of events  | paginate: config'>
-                        
-                        <td class="fs-4">{{e.id}}</td>
+            <tr>
+                <th></th>
+                <th class="text-dark font-medium fs-4"> Event </th>
+                <th class="text-dark font-medium fs-4"> <i class="bi bi-calendar-week-fill" style="margin-right: 0.3em;"></i>Date </th>
+                <th class="text-dark font-medium fs-4"> <i class="bi bi-file-earmark-text-fill" style="margin-right: 0.3em;"></i>EEG </th>
+                <th class="text-dark font-medium fs-4"> <i class="bi bi-file-person-fill" style="margin-right: 0.3em;"></i>Person </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor='let e of events  | paginate: config'>
+                
+                <td class="fs-4">{{e.id}}</td>
 
-                        <td class="fs-4">{{e.type}}</td>
+                <td class="fs-4">{{e.type}}</td>
 
-                        <td class="fs-4">{{e.timestamp  | date:'short':'UTC'}}</td>
+                <td class="fs-4">{{e.timestamp  | date:'short':'UTC'}}</td>
 
-                        <td class="fs-4">{{e.eeg}}</td>
+                <td class="fs-4">{{e.eeg}}</td>
 
-                        <td class="fs-4">{{e.person}}</td>
+                <td class="fs-4">{{e.person}}</td>
 
-                    </tr>              
-                </tbody>
-            </table>
+            </tr>              
+        </tbody>
+    </table>
 
-            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
-            
-        </div>
-
-    </div>
+    <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+    
 </div>
+

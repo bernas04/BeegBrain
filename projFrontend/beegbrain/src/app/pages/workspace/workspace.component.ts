@@ -8,6 +8,9 @@ import { Patient } from 'src/app/classes/Patient';
 import { PatientsService } from 'src/app/services/patients.service';
 import { PersonService } from 'src/app/services/person.services';
 import { WorkspaceService } from 'src/app/services/workspace.service';
+import { EEGService } from 'src/app/services/eeg.service';
+import { EventService } from 'src/app/services/event.service';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 
 @Component({
@@ -23,7 +26,6 @@ export class WorkspaceComponent implements OnInit {
   lst_institutions: Institution[] = []
   lst_operators: Operator[] = []
 
-
   EEGpacient = new Map<number, Patient>();
 
   lst_untouchable: EEG[] = [];
@@ -33,17 +35,25 @@ export class WorkspaceComponent implements OnInit {
   token = ''+localStorage.getItem('token');
   type = ''+localStorage.getItem('type');
   id = ''+localStorage.getItem('id');
+  health_number = ''+localStorage.getItem('health_number');
   tableService: any;
 
-  public lData!: any[];
+  uploadForm !: FormGroup;
+  patient_id: string =''
+  priority: string = ''
 
-  constructor(private service: WorkspaceService, private patient_service: PatientsService) { }
+  constructor(private fb: FormBuilder, private service: WorkspaceService, private patient_service: PatientsService, 
+    private eegService: EEGService, private eventService: EventService ) { }
 
   ngOnInit(): void {
     this.getEEG();
     this.getPatients();
     this.getOperators();
     this.getInstitutions();
+    this.uploadForm = this.fb.group({
+      patient_id: [null],
+      priority: [null]
+    })
     console.log("lista de pacientes workspace", this.lst_operators)
   }
 
@@ -108,7 +118,6 @@ export class WorkspaceComponent implements OnInit {
   }
 
   getOperators() {
-    console.log("ANALYZING")
     this.service.getOperators(this.token).subscribe((info) => {
       this.lst_operators = info;
       console.log("OPERATORS",this.lst_operators)
@@ -121,4 +130,42 @@ export class WorkspaceComponent implements OnInit {
   }
 
 
+  submitEEG():void {
+
+    const data = this.uploadForm.value
+    this.priority = data["priority"]
+    this.patient_id = data["patient_id"]
+    
+    console.log("Submitting EEG")
+    console.log("EEG_ID",this.id)
+    console.log("patient",this.patient_id)
+    console.log("priority",this.priority)
+
+    const formData = new FormData();
+    formData.append('operatorID', this.health_number);
+    formData.append('patientID', this.patient_id);
+    formData.append('priority', this.priority);
+
+    for (let file of this.files) {
+      console.log(file.name)
+      formData.append('file', file, file.name);
+    }
+
+    this.eegService.submitEEG(formData, this.token).subscribe({
+      next: (eeg) => {
+        console.log(eeg)
+        let json = { "type": "EEG uploaded", "person": this.id, "eeg_id": ''+eeg.id}
+        let jsonObject = <JSON><unknown>json;
+        this.eventService.addEvent(jsonObject, this.token).subscribe();
+
+      },
+      error: (error) => {
+        console.log(error);
+      }
+    });
+
+    //window.location.href="/workspace";
+    
+
+  }
 }

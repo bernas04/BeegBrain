@@ -45,10 +45,9 @@ export class EegTableComponent implements OnInit {
   }
 
   ngOnChanges(model: any) {
-    console.log("im hereeeee")
+
     // criar o map com key = id do EEG, e value = nome do paciente
     this.lst_EEG.forEach((eeg) => {
-      console.log("now here")
       let pat = this.lst_Patients.find((x) => x.id == eeg.patient);
       if (pat) this.map.set(eeg.id, pat.name);
       else this.map.set(eeg.id, "undefined");

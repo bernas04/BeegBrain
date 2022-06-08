@@ -1,8 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { EEG } from 'src/app/classes/EEG';
+import { Institution } from 'src/app/classes/Institution';
+import { Operator } from 'src/app/classes/Operator';
 import { Patient } from 'src/app/classes/Patient';
 import { PatientsService } from 'src/app/services/patients.service';
+import { WorkspaceService } from 'src/app/services/workspace.service';
 
 @Component({
   selector: 'app-patients',
@@ -11,8 +14,10 @@ import { PatientsService } from 'src/app/services/patients.service';
 })
 export class PatientsComponent implements OnInit {
 
-  constructor(private services:PatientsService, private router: Router) { }
+  constructor(private services:PatientsService, private router: Router, private service: WorkspaceService) { }
   
+  lst_institutions: Institution[] = []
+  lst_operators: Operator[] = []
   public listOfPatients: Patient[] = []
   public listOfEEG: EEG[] = []
   public patient!: Patient
@@ -27,12 +32,14 @@ export class PatientsComponent implements OnInit {
       this.getPatientbyId(pat_id);
       this.getEEGbyPatient(pat_id);    // para lista os exames EEG da respetiva pessoa
     }
+
+    this.getInstitutions();
+    this.getOperators();
   }
 
   getPatient(){
     let text = (<HTMLInputElement>document.getElementById("patient_search")).value;
     if (+text == NaN) {
-      console.log("PESQUISA POR SSN")
       this.services.getPatientsbySSN(text, this.token).subscribe((info) => {
         this.patient = info;
         this.getEEGbyPatient(this.patient.id);   // para lista os exames EEG da respetiva pessoa
@@ -70,6 +77,30 @@ export class PatientsComponent implements OnInit {
     let text = (<HTMLInputElement>document.getElementById("patient_search")).value;
     if (text == "") return false
     return true
+  }
+
+  onDelete(eeg : EEG) {
+    const index = this.listOfEEG.indexOf(eeg, 0);
+    if (index > -1) {
+      this.listOfEEG.splice(index, 1);
+    }
+
+    this.service.deleteEEG(eeg.id, this.token).subscribe();
+  }
+
+  getInstitutions() {
+    this.service.getAllInstitutions(this.token).subscribe((info) => {
+      this.lst_institutions = info;
+      console.log("INSTITUTIONS",this.lst_institutions)
+    })
+  }
+
+  getOperators() {
+    this.service.getOperators(this.token).subscribe((info) => {
+      this.lst_operators = info;
+      console.log("OPERATORS",this.lst_operators)
+    });
+
   }
 
 }

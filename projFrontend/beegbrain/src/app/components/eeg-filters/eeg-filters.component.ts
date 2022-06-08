@@ -17,7 +17,7 @@ import { Institution } from 'src/app/classes/Institution';
 @Component({
   selector: 'app-eeg-filters',
   templateUrl: './eeg-filters.component.html',
-  styleUrls: ['./eeg-filters.component.css'],
+  styleUrls: ['./eeg-filters.component.scss'],
 
 })
 export class EegFiltersComponent implements OnInit {
@@ -186,7 +186,13 @@ export class EegFiltersComponent implements OnInit {
     if (x) {
       this.filtering = true
       this.filterService.getEEGfiltered(this.eeg_id, this.patient_id, this.institution_id, this.date, this.operator_id, this.priority, this.report_status, this.token).subscribe((lst) => {
-        this.eegs_filtered = lst;
+        this.eegs_filtered = [];
+
+        // radicionar só os eegs sem erro
+        lst.forEach((eeg) => {
+          if (eeg.status == null) this.eegs_filtered.push(eeg)
+        });
+        
         this.sendFilters(this.eegs_filtered)
 
       });
@@ -203,6 +209,11 @@ export class EegFiltersComponent implements OnInit {
 
   refresh() {
     window.location.reload();
+  }
+
+
+  clean() {
+    setTimeout(() => this.lst_patients = [], 500)
   }
 
 
