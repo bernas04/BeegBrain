@@ -15,6 +15,6 @@
 
 <div class="row justify-content-center">
     <div class="col-lg-8 col-md-8 col-sm-10">
-        <app-event-table></app-event-table>
+        <app-event-table *ngIf="lst_doctors.length != 0 && lst_operators.length != 0" [lst_doctors]="lst_doctors" [lst_operators]="lst_operators"></app-event-table>
     </div>
 </div>

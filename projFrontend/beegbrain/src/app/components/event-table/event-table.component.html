@@ -20,9 +20,12 @@
 
                 <td class="fs-4">{{e.timestamp  | date:'short':'UTC'}}</td>
 
-                <td class="fs-4">{{e.eeg}}</td>
+                <td class="fs-4">
+                    <button type="button" routerLink="/workspace/{{e.eeg}}" class="btn btn-primary" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
+                   {{e.eeg}} </button> 
+                </td>
 
-                <td class="fs-4">{{e.person}}</td>
+                <td class="fs-4">{{map.get(+e.person)}}</td>
 
             </tr>              
         </tbody>

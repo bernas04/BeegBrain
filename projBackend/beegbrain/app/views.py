@@ -888,7 +888,7 @@ def createAccessEeg(request):
 @permission_classes([IsAuthenticated])
 def getEegAnnotations(request):
     """GET de todas as annotations de um EEG"""
-    eeg_id = int(request.GET['eeg'])
+    eeg_id = int(request.GET['id'])
     try:
         eeg = EEG.objects.get(id=eeg_id)
     except EEG.DoesNotExist:
