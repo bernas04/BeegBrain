@@ -59,8 +59,6 @@ export class EEGViewerComponent implements OnChanges {
       this.chartDom = document.getElementById('chart')!;
       this.myChart = echarts.init(this.chartDom);
     }, 100);
-    
-    console.log(this.normalizedLabelsSignal)
 
     for (const [label, valuesMap] of this.normalizedLabelsSignal) {
       const values = Array.from(valuesMap.values()).slice(this.initial, Math.floor(this.interval * this.signalsInSecond));
@@ -234,8 +232,8 @@ export class EEGViewerComponent implements OnChanges {
     this.myChart.setOption<echarts.EChartsOption>({
 
       yAxis: { 
-        // min: Math.round(minY - 20), 
-        // max: Math.round(maxY + 20),
+        min: Math.round(minY - 20), 
+        max: Math.round(maxY + 20),
       },
 
       series: series,
