@@ -33,7 +33,6 @@ export class EegComponent implements OnInit {
   indices! : number;
   signalsInSecond! : number;
   endLimit! : number;
-  updateViewControl: boolean = true;
   playing: boolean = true;
 
 
@@ -122,10 +121,6 @@ export class EegComponent implements OnInit {
     this.getLabelData(this.labels);
   }
 
-  newItem($event : any) {
-    this.updateViewControl=$event
-  }
-
   getLabelData(channels: String[]) {
 
     let end = this.initial + Math.floor(this.window_size * this.signalsInSecond)
@@ -155,11 +150,11 @@ export class EegComponent implements OnInit {
         const minCacheIndex : number = this.initial - this.window_size * this.signalsInSecond - 1;
         // const maxCacheIndex : number = this.initial + 4 * this.window_size * this.signalsInSecond;
 
-        if (map.has(minCacheIndex))  {
-          console.log("DÁ PARA REMOVER CACHE ANTERIOR!!!!!!!!")
-          const array = Array.from({ length: minCacheIndex }, (_, i) => i + 1);
-          for (let idx of array) indexesToRemove.push(idx);
-        }
+        // if (map.has(minCacheIndex))  {
+        //   console.log("DÁ PARA REMOVER CACHE ANTERIOR!!!!!!!!")
+        //   const array = Array.from({ length: minCacheIndex }, (_, i) => i + 1);
+        //   for (let idx of array) indexesToRemove.push(idx);
+        // }
       
         // if (map.has(maxCacheIndex)) {
         //   for (let idx = maxCacheIndex; idx <= this.indices; idx++) indexesToRemove.push(idx);
@@ -170,6 +165,10 @@ export class EegComponent implements OnInit {
         if (map.has(this.initial+1) && map.has(end)) {
 
           console.log("HAS DATA :))))))))")
+
+          for (let i = this.initial+1; i <= end; i++) {
+            if (!map.has(i)) console.log("MAPA NÃO TEM O " + i)
+          }
   
           // Já tem os dados entre o initial - end
   
@@ -214,6 +213,8 @@ export class EegComponent implements OnInit {
 
     }
 
+    console.log("eegViewer.updateData() ---> ", this.initial)
+    this.eeg_viewer.setInitial(this.initial);
     this.eeg_viewer.updateData();
 
 
@@ -302,15 +303,21 @@ export class EegComponent implements OnInit {
     console.log("right")
     this.initial = this.initial +  Math.floor(this.window_size * this.signalsInSecond)
     if (this.initial > this.indices - Math.floor(this.window_size * this.signalsInSecond)) {
+      console.log("chegou ao final, deve ter o ultimo bloco do eeg e parar o gráfico")
       this.initial = this.indices -  Math.floor(this.window_size * this.signalsInSecond);
       //this.getLabelData(this.labels)
       this.pause()
     } else {
-      this.removeSpeedInterval()
-      this.getLabelData(this.labels)
+
+      let bufferInitial = (this.labels.length > 25) ? this.initial + Math.floor(this.window_size * this.signalsInSecond) : this.initial + 2 * Math.floor(this.window_size * this.signalsInSecond);
+      let bufferEnd : number = (this.labels.length > 25) ? bufferInitial + Math.floor(this.window_size * this.signalsInSecond) : bufferInitial + 2 * Math.floor(this.window_size * this.signalsInSecond);
+
+      if (bufferInitial > this.endLimit) {
+        this.endLimit = bufferEnd;
+        this.getBackendData(bufferInitial,bufferEnd,this.labels);
+      }
+      //this.getLabelData(this.labels)
     }
-    
-    console.log("INITIAL -> " + this.initial + "  " + new Date((this.initial / this.signalsInSecond) * 1000).toISOString().substr(11, 8) )
   }
 
   removeSpeedInterval() {
@@ -334,29 +341,21 @@ export class EegComponent implements OnInit {
     this.removeSpeedInterval();
   }
 
-  // Dá update dos dados e guarda-os num mapa
-  // Passando-os depois para a componente
-  updateView() {
-    this.updateViewControl = !this.updateViewControl;
-  }
-
   updateInitial(newInitial : number) {
     this.initial = newInitial;
 
     if (this.initial > this.indices - Math.floor(this.window_size * this.signalsInSecond)) {
       this.initial = this.indices -  Math.floor(this.window_size * this.signalsInSecond);
-      this.pause()
+      this.pause();
 
     } else {
-      
+
       let bufferInitial = (this.labels.length > 25) ? this.initial + Math.floor(this.window_size * this.signalsInSecond) : this.initial + 2 * Math.floor(this.window_size * this.signalsInSecond);
       let bufferEnd : number = (this.labels.length > 25) ? bufferInitial + Math.floor(this.window_size * this.signalsInSecond) : bufferInitial + 2 * Math.floor(this.window_size * this.signalsInSecond);
 
       if (bufferInitial > this.endLimit) {
-
         this.endLimit = bufferEnd;
         this.getBackendData(bufferInitial,bufferEnd,this.labels);
-        
       }
 
     }

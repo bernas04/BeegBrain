@@ -29,10 +29,8 @@ export class EEGViewerComponent implements OnChanges {
   @Input('signalsInSecond') signalsInSecond! : number;
   @Input('initial') initial! : number;
   @Input('indices') indices! : number;
-  @Input('updateViewControl') updateViewControl! : boolean;
 
   @Output() currentInitial = new EventEmitter<any>();
-  @Output() newItemEvent = new EventEmitter<boolean>();
 
   constructor(private router: Router) { }
   
@@ -48,12 +46,6 @@ export class EEGViewerComponent implements OnChanges {
      
     let indicesArr = Array.from(Array(this.tmp).keys());
     this.xData = indicesArr.map((el) => new Date((el / this.signalsInSecond) * 1000).toISOString().substr(11, 8));
-    // this.xData = Array.from(Array(this.tmp).keys());
-    // axisLabel: {
-    //   formatter: (function(value){
-    //       return moment(value).format('HH:mm:ss');
-    //   })
-  
     
     setTimeout(() => {
       this.chartDom = document.getElementById('chart')!;
@@ -197,7 +189,7 @@ export class EEGViewerComponent implements OnChanges {
     let maxY : number = -Infinity;
 
     signalsMap = this.normalizedLabelsSignal;
-
+    
     // limitar o eixo do y para manter tudo mais estável
 
     for (const [label, valuesMap] of signalsMap) {
@@ -218,6 +210,9 @@ export class EEGViewerComponent implements OnChanges {
       const values = Array.from(valuesMap.values()); 
     
       let end = this.initial + this.signalsInSecond * this.interval;
+
+      // console.log("UPDATE DATA CHAMADO")
+      // console.log("INITIAL -> " + this.initial + "  " + new Date((this.initial / this.signalsInSecond) * 1000).toISOString().substr(11, 8) + " | END " + end + "  " + new Date((end / this.signalsInSecond) * 1000).toISOString().substr(11, 8))
 
       let channelBuffer = values.slice(this.initial, end)
 
@@ -275,6 +270,10 @@ export class EEGViewerComponent implements OnChanges {
     clearInterval( this.intervalId );
 
     this.start();
+  }
+
+  setInitial(initial:number){
+    this.initial = initial;
   }
 
 }
