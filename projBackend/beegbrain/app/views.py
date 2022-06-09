@@ -535,7 +535,7 @@ def getReportById(request):
                 report.content = request.data["content"]
                 report.progress = request.data["progress"]
                 
-            if request.data["progress"] == "done":
+            if request.data["progress"]:
                 print('im done')
                 report.progress = request.data["progress"]
             print("this is the report", report)

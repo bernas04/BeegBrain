@@ -42,7 +42,7 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
   token = '' + localStorage.getItem('token');
   type = ''+localStorage.getItem('type');
   id = ''+localStorage.getItem('id');
-
+  progress!: String;
   report_is_done!: boolean 
 
   constructor(private service: ReportService, private eventService: EventService) {}
@@ -61,15 +61,20 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
         ),
       });
 
+      this.progress = this.report.progress
+      console.log("Progress", this.progress)
+
+      
+
       this.show = true;
       console.log(this.report)
 
     });
 
-    if (this.report.progress=='done'){
+    if (this.progress=='done'){
       this.report_is_done = true;
     }
-    else {
+    if (this.progress="in progress") {
       this.report_is_done = false;
     }
   }
@@ -124,7 +129,6 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
   }  
 
   reportDone() {
-    if (this.report.progress == 'in progress'){
       this.report_is_done = true
       let json = { "type": "Report marked as done", "person": this.id, "eeg_id": ''+this.eeg_id}
       let jsonObject = <JSON><unknown>json;
@@ -133,26 +137,27 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
       console.log("Progress: done")
       this.report.progress = "done";
       this.service.setReport( this.report, this.token).subscribe();
-      window.location.reload()
  
+    }
+
+    reportUndo (){
+        this.report_is_done = false
+  
+        let json = { "type": "Report marked as done", "person": this.id, "eeg_id": ''+this.eeg_id}
+        let jsonObject = <JSON><unknown>json;
+        this.eventService.addEvent(jsonObject, this.token).subscribe();
+    
+        console.log("Progress: Un Done")
+        this.report.progress = "in progress";
+        this.service.setReport( this.report, this.token).subscribe();
+        console.log("keep editing", this.report_is_done)
+      
     }
       
     
-    if (this.report.progress =="done") {
-      this.report_is_done = false
+   
 
-      let json = { "type": "Report marked as done", "person": this.id, "eeg_id": ''+this.eeg_id}
-      let jsonObject = <JSON><unknown>json;
-      this.eventService.addEvent(jsonObject, this.token).subscribe();
   
-      console.log("Progress: Un Done")
-      this.report.progress = "in progress";
-      this.service.setReport( this.report, this.token).subscribe();
-      console.log("keep editing", this.report_is_done)
-      window.location.reload()
-    }
-
-  }
 
 
 
