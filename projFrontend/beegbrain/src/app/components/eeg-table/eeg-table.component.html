@@ -50,7 +50,7 @@
                         </td>
 
                         <td>
-                            <span *ngIf="map_report.get(eeg.report) === 'done' and report_is_done" class="badge rounded-pill text-bg-success"> {{map_report.get(eeg.report)}} </span>
+                            <span *ngIf="map_report.get(eeg.report) === 'done'" class="badge rounded-pill text-bg-success"> {{map_report.get(eeg.report)}} </span>
                             <span *ngIf="map_report.get(eeg.report) === 'in progress'" class="badge rounded-pill text-bg-warning" id="inprogress"> {{map_report.get(eeg.report)}}</span>
                         </td>
 

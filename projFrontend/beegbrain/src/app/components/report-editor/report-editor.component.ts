@@ -39,10 +39,12 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
   form!: FormGroup;
   @Input("eeg_id") eeg_id!: number;
 
+  @Input('eeg_progress') report_progress!: String;
+
   token = '' + localStorage.getItem('token');
   type = ''+localStorage.getItem('type');
   id = ''+localStorage.getItem('id');
-  progress!: String;
+  progress!: String
   report_is_done!: boolean 
 
   constructor(private service: ReportService, private eventService: EventService) {}
@@ -50,6 +52,9 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.editor = new Editor();
     let id = +this.report;
+
+   console.log("SERA QUE CONSEGUI", this.report_progress)
+
 
     this.service.getReport( id, this.token).subscribe((info) => {
       this.report = info;
@@ -62,22 +67,36 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
       });
 
       this.progress = this.report.progress
-      console.log("Progress", this.progress)
 
+
+      console.log("Progressssssssssss", this.progress)
+
+      if (this.progress=='done'){
+        console.log("IM true")
+        this.report_is_done = true;
+      }
+      console.log("Progressssssssssss 2", this.progress)
+
+
+      if (this.progress=='in progress') {
+        console.log("IM FALSE")
+        console.log("are u tolo", this.progress)
+        this.report_is_done = false;
+      }
       
+      else{
+        console.log("im here")
+        this.report_is_done!
+      }
 
       this.show = true;
       console.log(this.report)
 
     });
 
-    if (this.progress=='done'){
-      this.report_is_done = true;
-    }
-    if (this.progress="in progress") {
-      this.report_is_done = false;
-    }
+ 
   }
+  
 
   ngOnDestroy(): void {
     console.log("DESTROY REPORT COMPONENT (se este console log aparacer, descomentar código abaixo)")
@@ -129,32 +148,38 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
   }  
 
   reportDone() {
+    console.log("Im doing stuff")
+
       this.report_is_done = true
       let json = { "type": "Report marked as done", "person": this.id, "eeg_id": ''+this.eeg_id}
       let jsonObject = <JSON><unknown>json;
       this.eventService.addEvent(jsonObject, this.token).subscribe();
-
+      this.progress="done"
       console.log("Progress: done")
-      this.report.progress = "done";
+      this.report.progress = "done"; //o que vai para editar o report
+      console.log("como estará isto", this.progress)
+      console.log("e isto", this.report_is_done)
+
       this.service.setReport( this.report, this.token).subscribe();
  
     }
 
     reportUndo (){
+      console.log("Im undoing stuff")
         this.report_is_done = false
   
         let json = { "type": "Report marked as done", "person": this.id, "eeg_id": ''+this.eeg_id}
         let jsonObject = <JSON><unknown>json;
         this.eventService.addEvent(jsonObject, this.token).subscribe();
     
-        console.log("Progress: Un Done")
-        this.report.progress = "in progress";
+        console.log("Progress: Keep editing")
+        this.report.progress = "in progress"; //o que vai para editar o report
+        this.progress = "in progress"
         this.service.setReport( this.report, this.token).subscribe();
         console.log("keep editing", this.report_is_done)
       
     }
-      
-    
+
    
 
   
