@@ -1211,7 +1211,15 @@ def getEEGfilter(request):
                 eegs_list.remove(eeg)
 
     if report_status:
-        eegs = EEG.objects.filter(report__contains=report_status)
+        print(report_status)
+
+        query_reports = EEG.objects.select_related(
+                'report').filter(report__progress=report_status)
+        print(query_reports)
+        
+        for eeg in temp_list:
+            if eeg not in query_reports and eeg in eegs_list:
+                eegs_list.remove(eeg)
 
     if priority:
         eegs = EEG.objects.filter(priority__contains=priority)

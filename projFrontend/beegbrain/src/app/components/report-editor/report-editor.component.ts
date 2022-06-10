@@ -69,23 +69,18 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
       this.progress = this.report.progress
 
 
-      console.log("Progressssssssssss", this.progress)
 
       if (this.progress=='done'){
-        console.log("IM true")
         this.report_is_done = true;
       }
-      console.log("Progressssssssssss 2", this.progress)
 
 
       if (this.progress=='in progress') {
-        console.log("IM FALSE")
-        console.log("are u tolo", this.progress)
+
         this.report_is_done = false;
       }
       
       else{
-        console.log("im here")
         this.report_is_done!
       }
 
@@ -148,8 +143,6 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
   }  
 
   reportDone() {
-    console.log("Im doing stuff")
-
       this.report_is_done = true
       let json = { "type": "Report marked as done", "person": this.id, "eeg_id": ''+this.eeg_id}
       let jsonObject = <JSON><unknown>json;
@@ -157,15 +150,11 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
       this.progress="done"
       console.log("Progress: done")
       this.report.progress = "done"; //o que vai para editar o report
-      console.log("como estará isto", this.progress)
-      console.log("e isto", this.report_is_done)
-
       this.service.setReport( this.report, this.token).subscribe();
  
     }
 
     reportUndo (){
-      console.log("Im undoing stuff")
         this.report_is_done = false
   
         let json = { "type": "Report marked as done", "person": this.id, "eeg_id": ''+this.eeg_id}
@@ -176,7 +165,6 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
         this.report.progress = "in progress"; //o que vai para editar o report
         this.progress = "in progress"
         this.service.setReport( this.report, this.token).subscribe();
-        console.log("keep editing", this.report_is_done)
       
     }
 

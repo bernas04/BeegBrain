@@ -170,6 +170,7 @@ export class EegFiltersComponent implements OnInit {
         this.report_status = ''
       }
       x = true;
+      console.log(this.report_status)
     }
 
 
