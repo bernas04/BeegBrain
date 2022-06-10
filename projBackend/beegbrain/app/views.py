@@ -489,7 +489,9 @@ def createDoctorRevisionCenter(request):
 @permission_classes([IsAuthenticated])
 def getReport(request):
     """GET de todos os relatórios"""
+    print("getting reports.............")
     reports = Report.objects.all()
+
     serializer = serializers.ReportSerializer(reports, many=True)
     return Response(serializer.data)
 
@@ -529,13 +531,22 @@ def getReportById(request):
         try:
             rep_id = int(request.data["id"])
             report = Report.objects.get(id=rep_id)
-            report.content = request.data["content"]
+            if request.data["content"]:
+                report.content = request.data["content"]
+                report.progress = request.data["progress"]
+                
+            if request.data["progress"]:
+                print('im done')
+                report.progress = request.data["progress"]
+            print("this is the report", report)
             report.save()
             
         except Report.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         return Response(True)
+    
+
 
 
 # ############################### EEG ###############################
@@ -610,8 +621,8 @@ def createEEG(request):
             duration = None
 
         if (not patient): stat = 'patient undefined'
-        empty_report = Report.objects.create(content="", timestamp=datetime.now())
 
+        empty_report = Report.objects.create(content="", timestamp=datetime.now(), progress="to do")
         eeg = {
             "operator": operator,
             "patient": patient,
@@ -1006,7 +1017,6 @@ def doctorSharedFolder(id):
     for contract in contracts:
         shared_folders = SharedFolder.objects.filter(contract=contract)
         eegs.extend([shared_folder.eeg for shared_folder in shared_folders])
-
     return eegs
 
 
@@ -1124,6 +1134,7 @@ def getOperatorsInSharedFolder(request):
             operator_list.append(ret)
     
     serializer = serializers.OperatorSerializer(operator_list, many=True)
+    print("serializer", serializer.data)
     return Response(serializer.data)
 
 @api_view(['GET'])
@@ -1198,7 +1209,15 @@ def getEEGfilter(request):
                 eegs_list.remove(eeg)
 
     if report_status:
-        eegs = EEG.objects.filter(report__contains=report_status)
+        print(report_status)
+
+        query_reports = EEG.objects.select_related(
+                'report').filter(report__progress=report_status)
+        print(query_reports)
+        
+        for eeg in temp_list:
+            if eeg not in query_reports and eeg in eegs_list:
+                eegs_list.remove(eeg)
 
     if priority:
         eegs = EEG.objects.filter(priority__contains=priority)

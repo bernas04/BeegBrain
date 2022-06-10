@@ -2,8 +2,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Doctor } from '../classes/Doctor';
+import { EEG } from '../classes/EEG';
 import { Event } from '../classes/Event';
 import { Operator } from '../classes/Operator';
+import { Report } from '../classes/Report';
 
 declare let Email : any;
 
@@ -50,6 +52,38 @@ export class EventService {
         'Content-Type': 'application/json',
       }),
     })
+  }
+
+  getAllEegs(id: string, type: string, token: string): Observable<EEG[]> {
+    if (type === 'doctor') {
+
+      return this.http.get<EEG[]>(this.BASE_URL + 'doctorSharedFolders?id=' + id , { 
+        headers: new HttpHeaders({
+          'Authorization': 'Token ' + token,
+          'Content-Type': 'application/json',
+        }),
+      });
+
+    } else {
+
+      return this.http.get<EEG[]>(this.BASE_URL + 'operatorSharedFolders?id=' + id , { 
+        headers: new HttpHeaders({
+          'Authorization': 'Token ' + token,
+          'Content-Type': 'application/json',
+        }),
+      });
+
+    }
+  }
+
+  getAllReport( token: string) : Observable<Report[]> {
+    return this.http.get<Report[]>(this.BASE_URL + 'reports', { 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    });
+
   }
 
 }

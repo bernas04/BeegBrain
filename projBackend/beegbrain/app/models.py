@@ -141,7 +141,7 @@ class Report(models.Model):
 
     content = models.TextField(null=True)
     timestamp = models.DateTimeField(auto_now_add=True)
-
+    progress = models.TextField(null=True)
 
 # EEG -> Has all the information about an EEG exam
 class EEG(models.Model):

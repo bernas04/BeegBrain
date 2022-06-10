@@ -4,6 +4,7 @@ import { EEG } from 'src/app/classes/EEG';
 import { Institution } from 'src/app/classes/Institution';
 import { Operator } from 'src/app/classes/Operator';
 import { Patient } from 'src/app/classes/Patient';
+import { Report } from 'src/app/classes/Report';
 import { PatientsService } from 'src/app/services/patients.service';
 import { WorkspaceService } from 'src/app/services/workspace.service';
 
@@ -20,6 +21,7 @@ export class PatientsComponent implements OnInit {
   lst_operators: Operator[] = []
   public listOfPatients: Patient[] = []
   public listOfEEG: EEG[] = []
+  public lst_report: Report[] = []
   public patient!: Patient
   token = ''+localStorage.getItem('token');
   type = ''+localStorage.getItem('type');
@@ -37,6 +39,7 @@ export class PatientsComponent implements OnInit {
 
     this.getInstitutions();
     this.getOperators();
+    this.getReports();
   }
 
   getPatient(){
@@ -48,7 +51,6 @@ export class PatientsComponent implements OnInit {
       });
 
     } else {
-      console.log("PESQUISA POR NOME")
       this.services.getPatientsbyName(text, this.token).subscribe(data => this.listOfPatients = data);
     }
 
@@ -108,6 +110,13 @@ export class PatientsComponent implements OnInit {
       console.log("OPERATORS",this.lst_operators)
     });
 
+  }
+
+  getReports() {
+    this.service.getReports(this.token).subscribe((info) => {
+      this.lst_report = info;
+      console.log("OPERATORS",this.lst_report)
+    });
   }
 
 }

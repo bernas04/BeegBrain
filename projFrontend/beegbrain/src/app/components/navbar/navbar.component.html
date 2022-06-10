@@ -1,7 +1,9 @@
 <script src='https://kit.fontawesome.com/a076d05399.js' crossorigin='anonymous'></script>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 
-<nav class="navbar navbar-expand-sm navbar-dark bg-dark navbar-static-top">
+<!-- <nav class="navbarnavbar-dark bg-dark "> -->
+
+<nav class="navbar navbar-expand-sm  navbar-static-top" style="background-color: #2C3E50;">
 
     <a href="/dashboard">
         <img src="../../../assets/beegbrain.png"  width="200"  alt=""> <!--  width="150" height="40" -->
@@ -37,17 +39,21 @@
         </button>
     </form> -->
 
-    <div class="dropdown open">
+    <div class="dropdown">
+
         <button role="button" type="button" class="btn dropdown" data-toggle="dropdown" style="color:white; font-size:large; margin-right:3em"> 
             <i  class="bi bi-person-circle" style="margin-right: 0.3em;"></i>
             {{name}}
         </button>
+
         <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            
             <a class="dropdown-item" routerLink="/profile" >Profile</a>
 
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" (click)="clearInfo()" routerLink="/login"> <i class="glyphicon glyphicon-log-out" style="margin-right: 0.3em;"></i> Log Out</a></li>
         </div>
+
     </div>
 
 </nav>

@@ -11,7 +11,7 @@
                 <button class="btn btn-primary" style="font-weight:bold" (click)="getPatient()" >Search</button>
             </div>
 
-            <div *ngIf="show()" style="position: absolute; max-height: 250px; overflow-y: scroll; background-color: white; box-shadow: 0px 0px 10px 1px;" >
+            <div *ngIf="show()" style="z-index: 10;position: absolute; max-height: 250px; overflow-y: scroll; background-color: white; box-shadow: 0px 0px 10px 1px;" >
                 <div *ngFor="let pat of listOfPatients" (click)="choose(pat.id)" class="op d-flex" >
                   <p style="padding-top: 20px; padding-left: 20px; font-size: medium;" > {{ pat.name }} </p>
                   <p class="text-muted" style="padding-top: 20px; margin-left: 1em; font-size: small;" > ( {{ pat.health_number }} )</p>
@@ -33,7 +33,7 @@
             <hr>
 
             <h4 class="card-title"><strong> EEG Exams </strong></h4>
-            <app-eeg-table *ngIf="listOfEEG.length != 0 && lst_institutions.length != 0 && lst_operators.length != 0" [allInstitutions]="lst_institutions" [allOperators]="lst_operators"  [allEEG]="listOfEEG" [allPatients]="listOfPatients" (eeg_deleted)="onDelete($event)"></app-eeg-table>
+            <app-eeg-table *ngIf="listOfEEG.length != 0 && lst_institutions.length != 0 && lst_operators.length != 0 && lst_report.length != 0" [allReports]="lst_report" [allInstitutions]="lst_institutions" [allOperators]="lst_operators"  [allEEG]="listOfEEG" [allPatients]="listOfPatients" (eeg_deleted)="onDelete($event)"></app-eeg-table>
 
             <div *ngIf="listOfEEG.length == 0" style="margin:auto; display:inline-block">
                 <img src="../../../assets/no-data-found.png" alt="no data found :("/>

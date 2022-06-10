@@ -6,5 +6,5 @@ export class Report {
     content! : string;
     timestamp! : Date;
     doctor! : Doctor;
-
+    progress!: string;
 }

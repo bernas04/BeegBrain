@@ -114,7 +114,7 @@
 
       <div class="card-body"  *ngIf="type == 'doctor'">
         <div class="col-lg-12">
-          <strong> Institution </strong>
+          <strong> Revision Center </strong>
         </div>
         <div class="col-lg-12 form-outline">
           <select
@@ -166,11 +166,12 @@
         <div class="col-lg-12 form-outline">
           <select class="form-control"
             id="report"
+            formControlName="report_status"
             #report
             (change)="getFiltersFormData()">
-            <option value="3">Done</option>
-            <option value="2">Progress</option>
-            <option value="1">To do</option>
+            <option value="done">Done</option>
+            <option value="in progress">In Progress</option>
+            <option value="to do">To do</option>
           </select>
           <label class="form-label" fo="formControlDefault"></label>
         </div>

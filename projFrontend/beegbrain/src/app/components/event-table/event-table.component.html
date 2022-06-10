@@ -7,8 +7,8 @@
                 <th></th>
                 <th class="text-dark font-medium fs-4"> Event </th>
                 <th class="text-dark font-medium fs-4"> <i class="bi bi-calendar-week-fill" style="margin-right: 0.3em;"></i>Date </th>
-                <th class="text-dark font-medium fs-4"> <i class="bi bi-file-earmark-text-fill" style="margin-right: 0.3em;"></i>EEG </th>
                 <th class="text-dark font-medium fs-4"> <i class="bi bi-file-person-fill" style="margin-right: 0.3em;"></i>Person </th>
+                <th class="text-dark font-medium fs-4"> <i class="bi bi-file-earmark-text-fill" style="margin-right: 0.3em;"></i>EEG </th>
             </tr>
         </thead>
         <tbody>
@@ -20,12 +20,12 @@
 
                 <td class="fs-4">{{e.timestamp  | date:'short':'UTC'}}</td>
 
+                <td class="fs-4">{{map.get(+e.person)}}</td>
+
                 <td class="fs-4">
                     <button type="button" routerLink="/workspace/{{e.eeg}}" class="btn btn-primary" style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
-                   {{e.eeg}} </button> 
+                    <i class="bi bi-eye-fill" ></i> </button> 
                 </td>
-
-                <td class="fs-4">{{map.get(+e.person)}}</td>
 
             </tr>              
         </tbody>

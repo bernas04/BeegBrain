@@ -15,6 +15,7 @@
     </label>
 
     <button (click)="right()" type="button" class="btn btn-primary"><i class="bi bi-caret-right-fill"></i></button>
+    
     <!-- Carregar mais dados, se for preciso e dar update da view -->
 
     <div class="drop-container col-lg-3">
@@ -37,6 +38,8 @@
             <option *ngFor="let opt of annotations">{{opt.description}}</option>
           </select>
     </div>
+
+    
 
 </div>
 
@@ -61,7 +64,7 @@
     </div>
 
     <div class="col-lg-3 col-sm-6">
-        <app-report-editor [report]="eegInfo.report" [eeg_id]="eegInfo.id"></app-report-editor>
+        <app-report-editor [report]="eegInfo.report" [eeg_id]="eegInfo.id"> </app-report-editor>
     </div>
 
 </div>

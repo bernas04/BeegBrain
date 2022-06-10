@@ -84,12 +84,10 @@ export class EegFiltersComponent implements OnInit {
   }
 
   getRevisionCenters(){
-    console.log("DOCTOR ID", this.id)
 
     this.filterService.getRevisionCentersByDoctor(this.id, this.token).subscribe((info) => {
       this.listRevision = info;
     });
-    console.log("THIS Revision center",this.listRevision)
 
   }
 
@@ -110,7 +108,6 @@ export class EegFiltersComponent implements OnInit {
     if (data["eeg_id"] !== undefined) {
       if (data["eeg_id"] !== null) {
         this.eeg_id = data["eeg_id"]
-        console.log("new WAY", this.eeg_id)
       }
       else {
         this.eeg_id = ''
@@ -121,7 +118,6 @@ export class EegFiltersComponent implements OnInit {
     if (data["patient_id"] !== undefined) {
       if (data["patient_id"] !== null) {
         this.patient_id = data["patient_id"]
-        console.log(this.patient_id)
       }
       else {
         this.patient_id = ''
@@ -132,7 +128,6 @@ export class EegFiltersComponent implements OnInit {
     if (data["institution_id"] !== undefined) {
       if (data["institution_id"] !== null) {
         this.institution_id = data["institution_id"]
-        console.log(this.institution_id)
       }
       else {
         this.institution_id = ''
@@ -143,7 +138,6 @@ export class EegFiltersComponent implements OnInit {
     if (data["date"] !== undefined) {
       if (data["date"] !== null) {
         this.date = data["date"]
-        console.log(this.date)
       }
       else {
         this.date = ''
@@ -153,7 +147,6 @@ export class EegFiltersComponent implements OnInit {
     if (data["operator_id"] !== undefined) {
       if (data["operator_id"] !== null) {
         this.operator_id = data["operator_id"]
-        console.log("operator", this.operator_id)
       }
       else {
         this.operator_id = ''
@@ -163,7 +156,6 @@ export class EegFiltersComponent implements OnInit {
     if (data["priority"] !== undefined) {
       if (data["priority"] !== null) {
         this.priority = data["priority"]
-        console.log(this.priority)
       }
       else {
         this.priority = ''
@@ -173,12 +165,12 @@ export class EegFiltersComponent implements OnInit {
     if (data["report_status"] !== undefined) {
       if (data["report_status"] !== null) {
         this.report_status = data["report_status"]
-        console.log(this.report_status)
       }
       else {
         this.report_status = ''
       }
       x = true;
+      console.log(this.report_status)
     }
 
 
@@ -202,7 +194,6 @@ export class EegFiltersComponent implements OnInit {
 
   @Output() sendFiltersEvent = new EventEmitter<any>();
   sendFilters(value: EEG[]) {
-    console.log(value)
     this.sendFiltersEvent.emit(value);
 
   }

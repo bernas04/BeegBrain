@@ -49,8 +49,8 @@
                         </td>
 
                         <td style="text-align: right; vertical-align: middle;">
-                            <button type="button" class="btn btn-primary" style="margin-right: 1em;" data-toggle="modal" data-target="#form"> <i class="bi bi-envelope-plus-fill"></i> </button>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#my-modal" style="margin-right: 1em;" (click)="save2delete( eeg )"> <i class="bi bi-trash-fill"></i> </button>
+                           <!--  <button type="button" class="btn btn-primary" style="margin-right: 1em;" data-toggle="modal" data-target="#form"> <i class="bi bi-envelope-plus-fill"></i> </button> -->
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete" style="margin-right: 1em;" (click)="save2delete( eeg )"> <i class="bi bi-trash-fill"></i> </button>
                         </td>
 
                     </tr>              
@@ -100,7 +100,7 @@
 
 
 <!-- ------------------------------------------- ARE YOU SURE U WANNA DELETE THE EXAM ------------------------------------------- -->
-<div id="my-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+<div id="delete" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content border-0">
             <div class="modal-body p-0">

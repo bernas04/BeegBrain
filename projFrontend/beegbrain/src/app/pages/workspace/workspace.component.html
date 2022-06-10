@@ -36,7 +36,7 @@
     <div class="tab-content" id="myTabContent">
       <div class="tab-pane fade in show active" id="allexams" role="tabpanel" aria-labelledby="allexams-tab">
 
-        <app-eeg-table *ngIf="lst_eeg.length != 0" [allInstitutions]="lst_institutions" [allOperators]="lst_operators" [allEEG]="lst_eeg" [allPatients]="lst_patient" (eeg_deleted)="onDelete($event)"></app-eeg-table>
+        <app-eeg-table *ngIf="lst_eeg.length != 0" [allReports]="lst_report "[allInstitutions]="lst_institutions" [allOperators]="lst_operators" [allEEG]="lst_eeg" [allPatients]="lst_patient" (eeg_deleted)="onDelete($event)"></app-eeg-table>
 
 
         <div *ngIf="lst_eeg.length == 0">
@@ -66,26 +66,36 @@
               <div class="card border-0 p-sm-3 p-2">
 
                 <h3 style="text-align: center;"> <strong> Upload an EEG </strong></h3>
-        
+
                 <div class="card-body">
-                    <form [formGroup] = "uploadForm"> <!-- (ngSubmit)="submitEEG()" -->
+                    <form [formGroup] = "uploadForm">
         
                       <div class="col-10">
-                        <input (click)="submitEEG()"  formControlName="patient_id" #patient_id class="effect-1" type="text" id="health_number" placeholder="Patient Health Number">
+                        <input formControlName="patient_id" #patient_id class="effect-1" type="text" id="health_number" placeholder="Patient Health Number">
                           <span class="focus-border"></span>
                       </div>
 
                       <div class="col-lg-12">
-                        <select id="priority" #priority formControlName="priority">
+                        <!-- <select id="priority" #priority formControlName="priority">
                             <option value="Very High">Very High</option>
                             <option value="High">High</option>
                             <option value="Medium" selected="selected">Medium</option>
                             <option value="Low">Low</option>
                             <option value="Very Low">Very Low</option>
-                        </select>                        
+                        </select> --> 
+
+                        <select class="form-control"  id="priority" #priority formControlName="priority" style="width: 50%" >
+                          <option value="" selected="selected" disabled>Select the priority</option>
+                          <option value="Very High">Very High</option>
+                          <option value="High">High</option>
+                          <option value="Medium">Medium</option>
+                          <option value="Low">Low</option>
+                          <option value="Very Low">Very Low</option>
+                        </select>
+                        <label class="form-label" for="formControlDefault"></label>
                       </div>
         
-                      <div class="col-lg-12">
+                      <div class="col-lg-12  justify-content-center">
                           <app-uploading (newFileEvent)="getFiles($event)"></app-uploading>
                       </div>
         
