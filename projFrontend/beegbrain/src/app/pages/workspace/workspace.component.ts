@@ -2,11 +2,10 @@ import { subscribeOn } from 'rxjs';
 import { Institution } from 'src/app/classes/Institution';
 import { Operator } from 'src/app/classes/Operator';
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { EEG } from 'src/app/classes/EEG';
 import { Patient } from 'src/app/classes/Patient';
 import { PatientsService } from 'src/app/services/patients.service';
-import { PersonService } from 'src/app/services/person.services';
 import { WorkspaceService } from 'src/app/services/workspace.service';
 import { EEGService } from 'src/app/services/eeg.service';
 import { EventService } from 'src/app/services/event.service';
@@ -20,6 +19,8 @@ import { Report } from 'src/app/classes/Report';
   styleUrls: ['./workspace.component.css']
 })
 export class WorkspaceComponent implements OnInit {
+
+  @ViewChild('close') closebutton!: any;
 
   lst_eeg: EEG[] = [];  
   lst_error_eeg: EEG[] = [];  
@@ -58,15 +59,11 @@ export class WorkspaceComponent implements OnInit {
       patient_id: [null],
       priority: [null]
     })
-
-    console.log("lista de pacientes workspace", this.lst_operators)
   }
 
 
   getEEG() {
     this.service.getAllEEG(this.token, this.type, this.id).subscribe((info) => {
-
-      console.log("ALLEEGs ",info)
 
       info.forEach((eeg) => {
         if (eeg.status != null) {
@@ -82,6 +79,10 @@ export class WorkspaceComponent implements OnInit {
 
       })
 
+
+      this.lst_eeg.reverse();
+      this.lst_error_eeg.reverse();
+
     });
 
   }
@@ -93,14 +94,13 @@ export class WorkspaceComponent implements OnInit {
   getInstitutions() {
     this.service.getAllInstitutions(this.token).subscribe((info) => {
       this.lst_institutions = info;
-      console.log("INSTITUTIONS",this.lst_institutions)
     })
 
   }
+  
   getPatients() {
     this.patient_service.getPatients(this.token).subscribe((info) => {
       this.lst_patient = info;
-      console.log("patients",this.lst_patient)
     });
   }
 
@@ -125,7 +125,6 @@ export class WorkspaceComponent implements OnInit {
   getOperators() {
     this.service.getOperators(this.token).subscribe((info) => {
       this.lst_operators = info;
-      console.log("OPERATORS",this.lst_operators)
     });
 
   }
@@ -136,15 +135,9 @@ export class WorkspaceComponent implements OnInit {
 
 
   submitEEG():void {
-
     const data = this.uploadForm.value
     this.priority = data["priority"]
     this.patient_id = data["patient_id"]
-    
-    console.log("Submitting EEG")
-    console.log("EEG_ID",this.id)
-    console.log("patient",this.patient_id)
-    console.log("priority",this.priority)
 
     const formData = new FormData();
     formData.append('operatorID', this.health_number);
@@ -158,10 +151,31 @@ export class WorkspaceComponent implements OnInit {
 
     this.eegService.submitEEG(formData, this.token).subscribe({
       next: (eeg) => {
-        console.log(eeg)
+        
         let json = { "type": "EEG uploaded", "person": this.id, "eeg_id": ''+eeg.id}
         let jsonObject = <JSON><unknown>json;
         this.eventService.addEvent(jsonObject, this.token).subscribe();
+
+        /* 
+        this.eegService.getPatientbyID(+eeg.patient, this.token).subscribe((info) => {
+          this.lst_patient.push(info)
+
+          if (eeg.status == null) {  
+            this.eegService.getReportbyID(+eeg.report, this.token).subscribe((info) => {
+              this.lst_report.push(info)
+              this.lst_eeg.push(eeg);
+            });
+  
+          } else this.lst_error_eeg.push(eeg);
+          
+        });
+
+        this.lst_eeg.reverse();
+        this.lst_error_eeg.reverse(); */
+
+        
+        this.closebutton.nativeElement.click();
+        window.location.reload()
 
       },
       error: (error) => {
@@ -171,8 +185,6 @@ export class WorkspaceComponent implements OnInit {
     
 
     //window.location.href="/workspace";
-    
-
   }
 
   getReports() {
@@ -180,4 +192,13 @@ export class WorkspaceComponent implements OnInit {
       this.lst_report = info;
     });
   }
+
+
+  activeTab = 'allexams';
+
+  changeTab(activeTab: string){
+    this.activeTab = activeTab;
+    console.log(this.activeTab)
+  }
+
 }

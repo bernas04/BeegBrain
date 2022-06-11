@@ -20,7 +20,6 @@ export class PieChartComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-      
   }
 
   ngOnChanges(changes: any) {
@@ -30,17 +29,14 @@ export class PieChartComponent implements OnInit, OnChanges {
     let to_do = 0;
     let error = 0;
 
-    console.log("eegs", this.eegs)
-    console.log("reports", this.reports)
-
     this.eegs.forEach((eeg) => { 
       let report = this.reports.find(x => x.id == +eeg.report)
-      console.log("report found: ", report)
+
       if ( eeg.status != null )  error += 1;
       else {
         if ( report?.progress == "done" ) done += 1; 
         if ( report?.progress == "in progress" ) in_progress += 1;
-        if ( report?.progress == null ) to_do += 1;
+        if ( report?.progress == "to do" ) to_do += 1;
       }
       
     });
