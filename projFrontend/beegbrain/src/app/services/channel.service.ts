@@ -22,7 +22,7 @@ export class ChannelService {
 
   getDataAboutLabel(eegId : any, channel: any, token: string, initial: number, end: number): Observable<Map<String,Map<Number,Number>>>{
 
-    console.log("[API] >> pedido para as labels: ", channel)
+    // console.log("[API] >> pedido para as labels: ", channel)
 
     let tmp = '';
     for (var i of channel) {

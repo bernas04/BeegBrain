@@ -1,10 +1,7 @@
 import * as echarts from 'echarts';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
-import { EEGService } from 'src/app/services/eeg.service';
 import { Router } from '@angular/router';
 import { EEG } from 'src/app/classes/EEG';
-import { throws } from 'assert';
-import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
 
 @Component({
     selector: 'app-eeg-viewer',
@@ -19,10 +16,13 @@ export class EEGViewerComponent implements OnChanges {
   option!: echarts.EChartsOption;
   intervalId! : any;
   lst_intervalId: any[] = [];
+  yData: any[] = [];
+  xData: any[] = [];
+  tmp!: number;
   
   @Input('speed') speed! : number;
   @Input('interval') interval! : number;
-  @Input('labelsSignal') labelsSignal! : Map<String, Map<Number,Number>>;
+  @Input('normalizedLabelsSignal') normalizedLabelsSignal! : Map<String, Map<Number,Number>>;
   @Input('eegInfo') eegInfo! : EEG
   @Input('labels') labels! : any;
   @Input('control') control! : boolean;
@@ -31,19 +31,9 @@ export class EEGViewerComponent implements OnChanges {
   @Input('indices') indices! : number;
 
   @Output() currentInitial = new EventEmitter<any>();
-  @Input('updateViewControl') updateViewControl! : boolean;
 
-  @Output() newItemEvent = new EventEmitter<boolean>();
-
-  yData: any[] = [];
-  xData: any[] = [];
-  tmp!: number;
-
-  updateSignalsInSignal:number = 0;
-
-  constructor(private services: EEGService, private router: Router) { }
+  constructor(private router: Router) { }
   
-
   ngOnChanges(changes : SimpleChanges) {
     if (changes['speed']) this.changeSpeed()
   }
@@ -54,17 +44,17 @@ export class EEGViewerComponent implements OnChanges {
     let eegId = +url_array[url_array.length - 1];
     let series: any = [];
      
-    this.xData = Array.from(Array(this.tmp).keys());
+    let indicesArr = Array.from(Array(this.tmp).keys());
+    this.xData = indicesArr.map((el) => new Date((el / this.signalsInSecond) * 1000).toISOString().substr(11, 8));
     
     setTimeout(() => {
       this.chartDom = document.getElementById('chart')!;
       this.myChart = echarts.init(this.chartDom);
     }, 100);
-    
-    for (const [label, valuesMap] of this.labelsSignal) {
+
+    for (const [label, valuesMap] of this.normalizedLabelsSignal) {
       const values = Array.from(valuesMap.values()).slice(this.initial, Math.floor(this.interval * this.signalsInSecond));
       series.push({name:label, type:"line", showSymbol:false, data:values}) 
-      console.log("Values " ,values)
     }
 
     this.option = {
@@ -161,7 +151,6 @@ export class EEGViewerComponent implements OnChanges {
       },
       series: series
       
-      
     };
 
     this.start();
@@ -179,8 +168,7 @@ export class EEGViewerComponent implements OnChanges {
       this.initial += this.speed;
       this.currentInitial.emit(this.initial);
 
-  
-    }, 0.05); 
+    }, 4);  // 4 ms -> minimum delay value
     
     this.lst_intervalId.push(this.intervalId);
 
@@ -189,69 +177,103 @@ export class EEGViewerComponent implements OnChanges {
   // Altera o intervalo de tempo | Clicar para frente/trás
   updateData() {
 
-    let min_series: any = [];
+    let series: any = [];
 
     // var xData: any = [...Array(this.indices).keys()]
 
     var xData: any = []
 
-    for (const [label, valuesMap] of this.labelsSignal) {
+    let signalsMap! : Map<String,Map<Number,Number>>;
+
+    let minY : number = +Infinity;
+    let maxY : number = -Infinity;
+
+    signalsMap = this.normalizedLabelsSignal;
+    
+    // limitar o eixo do y para manter tudo mais estável
+
+    for (const [label, valuesMap] of signalsMap) {
+
+      const values = <number[]> Array.from(valuesMap.values()); 
+    
+      const minValue : number = this.getMin(values)
+      const maxValue : number = this.getMax(values)
+
+      minY = (minValue < minY) ? minValue : minY;
+      maxY = (maxValue > maxY) ? maxValue : maxY;
+
+    }
+
+    for (const [label, valuesMap] of signalsMap) {
+      
       const keys = Array.from(valuesMap.keys());
       const values = Array.from(valuesMap.values()); 
     
       let end = this.initial + this.signalsInSecond * this.interval;
 
+      // console.log("UPDATE DATA CHAMADO")
+      // console.log("INITIAL -> " + this.initial + "  " + new Date((this.initial / this.signalsInSecond) * 1000).toISOString().substr(11, 8) + " | END " + end + "  " + new Date((end / this.signalsInSecond) * 1000).toISOString().substr(11, 8))
+
       let channelBuffer = values.slice(this.initial, end)
-      if (this.updateViewControl) {
 
-        console.log("UPDATED")
+      //xData = keys.slice(this.initial, end)
+      let arr : Number[] = keys.slice(this.initial, end);
+      xData = arr.map((el) => new Date((<number> el / this.signalsInSecond) * 1000).toISOString().substr(11, 8));
 
-        const initialValue = <number> channelBuffer[0];
-
-        channelBuffer = channelBuffer.map( function(value) { 
-          return <number> value - initialValue; 
-        } );
-
-      }
-
-      xData = keys.slice(this.initial, end)
-
-      min_series.push({name: label, type: "line", showSymbol: false, data: channelBuffer})
+      series.push({name: label, type: "line", showSymbol: false, data: channelBuffer})
 
     }
     
     this.myChart.setOption<echarts.EChartsOption>({
 
-      yAxis: {},
+      yAxis: { 
+        min: Math.round(minY - 20), 
+        max: Math.round(maxY + 20),
+      },
 
-      series: min_series,
+      series: series,
      
       xAxis: {
           data : xData,
       },
-       
-      // dataZoom: {
-      //   startValue: this.initial,
-      //   endValue: this.initial + this.interval * this.signalsInSecond,
-      // } 
     
     });
 
   }
 
+  
+  getMin(array : number[]) {
+    let len = array.length;
+    let currentMin = +Infinity;
+    while (len--) {
+        currentMin = array[len] < currentMin ? array[len] : currentMin;
+    }
+    return currentMin;
+  }
+
+
+  getMax(array : number[]) {
+    let len = array.length;
+    let currentMax = -Infinity;
+    while (len--) {
+        currentMax = array[len] > currentMax ? array[len] : currentMax;
+    }
+    return currentMax;
+  }
+
+
   changeSpeed() {
-    // clear the existing interval
 
-    console.log("SPEED CHANGED ================= ")
-    console.log(this.speed)
-
-    for (var id in this.lst_intervalId)
+    for (var id of this.lst_intervalId) {
       clearInterval( parseInt(id) );
-
+    }
     clearInterval( this.intervalId );
 
-    // just start a new one
     this.start();
+  }
+
+  setInitial(initial:number){
+    this.initial = initial;
   }
 
 }
