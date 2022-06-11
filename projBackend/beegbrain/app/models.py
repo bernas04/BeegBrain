@@ -70,8 +70,8 @@ class RevisionCenter(Institution):
 # EEG exams produced by the Providence are sent only to the RevisionCenter.
 class Contract(models.Model):
 
-    providence = models.OneToOneField(Providence,unique=True ,verbose_name=('providence'), on_delete=models.CASCADE, related_name='%(class)s_providence')
-    revision_center = models.OneToOneField(RevisionCenter, verbose_name=('revision_center'), on_delete=models.CASCADE, related_name='%(class)s_revision_center')
+    providence = models.ForeignKey(Providence, verbose_name=('providence'), on_delete=models.CASCADE, related_name='%(class)s_providence')
+    revision_center = models.ForeignKey(RevisionCenter, verbose_name=('revision_center'), on_delete=models.CASCADE, related_name='%(class)s_revision_center')
 
     def __str__(self) -> str:
         return f'Providence: ' + self.providence.name + ' RevisionCenter: ' + self.revision_center.name
@@ -147,7 +147,7 @@ class Report(models.Model):
 class EEG(models.Model):
 
     operator = models.ForeignKey(Operator, verbose_name=('operator'), on_delete=models.CASCADE, related_name='%(class)s_operator', null=False)
-    patient = models.ForeignKey(Patient, verbose_name=('patient'), on_delete=models.CASCADE, related_name='%(class)s_patient', null=True)
+    patient = models.ForeignKey(Patient, verbose_name=('patient'), on_delete=models.CASCADE, related_name='%(class)s_patient', null=True, blank=True)
     status = models.TextField(null=True, blank=True)                     
     timestamp = models.DateTimeField(null=True, blank=True)
     PRIORITIES = [("1","Very Low"),("2","Low"),("3","Medium"),("4","High"),("5","Very High")]

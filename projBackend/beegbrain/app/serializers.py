@@ -77,7 +77,7 @@ class RevisionCenterSerializer(serializers.ModelSerializer):
 class ContractSerializer(serializers.ModelSerializer):
     class Meta:
         model = Contract
-        fields = "__all__"
+        fields = '__all__'
 
 class PersonSerializer(serializers.ModelSerializer):
     class Meta:
