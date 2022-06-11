@@ -73,8 +73,6 @@ export class EegComponent implements OnInit {
     this.getAnnotations(eegId);
     this.checkReport(eegId);
 
-    
-    console.log("FODSASSSSSSSSSS",this.report_progress)
     this.dropdownSettings = {
       singleSelection: false,
       idField: "item_id",
@@ -387,7 +385,7 @@ export class EegComponent implements OnInit {
   getAnnotations(eeg_id: number) {
     this.EEGservices.getAnotations(eeg_id, this.token).subscribe((info) => {
       this.annotations = info;
-      console.log(info);
+      console.log("ANOTAÇÕES",info);
     });
   }
 

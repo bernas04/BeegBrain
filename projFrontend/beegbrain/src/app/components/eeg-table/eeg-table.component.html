@@ -23,7 +23,6 @@
 
                         <td>
                             <a *ngIf="map.get(eeg.id) != 'undefined'" routerLink="/patients/{{eeg.patient}}">
-                                <!-- <button type="button" class="btn btn-primary btn-sm" style="font-size: medium;"> {{map.get(eeg.id)}} </button> -->
                                 <button type="button" class="btn btn-primary"
                                         style="--bs-btn-padding-y: .25rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .75rem;">
                                 {{map.get(eeg.id)}}
@@ -32,13 +31,11 @@
                         </td>
 
                         <td>
-                            <!-- <h5 class="mb-0 font-medium">{{eeg.timestamp | date:'dd/MM/yyyy'}}</h5> -->
                             <span class="text-muted">{{eeg.timestamp | date:'dd/MM/yyyy'}}</span>
                         </td>
                         <td>
                         
                             <span class="text-muted">{{map_operator_institution.get(+eeg.operator) }}</span>
-                            <!-- <h5 class="mb-0 font-medium">{{eeg.timestamp | date:'dd/MM/yyyy'}}</h5> -->
                         </td>
 
                         <td>
@@ -46,12 +43,13 @@
                             <span *ngIf="eeg.priority == '2'" class="badge text-bg-info"> low </span>
                             <span *ngIf="eeg.priority == '3'" class="badge text-bg-secondary" style="font-size:medium;"> medium </span>
                             <span *ngIf="eeg.priority == '4'" class="badge text-bg-light"> high </span>
-                            <span *ngIf="eeg.priority == '5'" class="badge text-bg-dark"> urgent </span> 
+                            <span *ngIf="eeg.priority == '5'" class="badge text-bg-dark"> very high </span> 
                         </td>
 
                         <td>
-                            <span *ngIf="map_report.get(eeg.report) === 'done'" class="badge rounded-pill text-bg-success"> {{map_report.get(eeg.report)}} </span>
-                            <span *ngIf="map_report.get(eeg.report) === 'in progress'" class="badge rounded-pill text-bg-warning" id="inprogress"> {{map_report.get(eeg.report)}}</span>
+                            <span *ngIf="map_report.get(eeg.report) === 'done'" class="badge rounded-pill text-bg-success" style="font-size:medium;"> {{map_report.get(eeg.report)}} </span>
+                            <span *ngIf="map_report.get(eeg.report) === 'in progress'" class="badge rounded-pill text-bg-warning" id="inprogress" style="font-size:medium;"> {{map_report.get(eeg.report)}}</span>
+                            <span *ngIf="map_report.get(eeg.report) === 'to do'" class="badge rounded-pill text-bg-secondary" id="todo" style="font-size:medium;"> {{map_report.get(eeg.report)}}</span>
                         </td>
 
                         <td style="text-align: right; vertical-align: middle;">

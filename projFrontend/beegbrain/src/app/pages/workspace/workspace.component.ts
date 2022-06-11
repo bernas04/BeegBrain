@@ -2,7 +2,7 @@ import { subscribeOn } from 'rxjs';
 import { Institution } from 'src/app/classes/Institution';
 import { Operator } from 'src/app/classes/Operator';
 
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { EEG } from 'src/app/classes/EEG';
 import { Patient } from 'src/app/classes/Patient';
 import { PatientsService } from 'src/app/services/patients.service';
@@ -20,6 +20,8 @@ import { Report } from 'src/app/classes/Report';
   styleUrls: ['./workspace.component.css']
 })
 export class WorkspaceComponent implements OnInit {
+
+  @ViewChild('close') closebutton!: any;
 
   lst_eeg: EEG[] = [];  
   lst_error_eeg: EEG[] = [];  
@@ -136,15 +138,9 @@ export class WorkspaceComponent implements OnInit {
 
 
   submitEEG():void {
-
     const data = this.uploadForm.value
     this.priority = data["priority"]
     this.patient_id = data["patient_id"]
-    
-    console.log("Submitting EEG")
-    console.log("EEG_ID",this.id)
-    console.log("patient",this.patient_id)
-    console.log("priority",this.priority)
 
     const formData = new FormData();
     formData.append('operatorID', this.health_number);
@@ -158,10 +154,28 @@ export class WorkspaceComponent implements OnInit {
 
     this.eegService.submitEEG(formData, this.token).subscribe({
       next: (eeg) => {
-        console.log(eeg)
+        console.log("UPLOAD EEG", eeg)
         let json = { "type": "EEG uploaded", "person": this.id, "eeg_id": ''+eeg.id}
         let jsonObject = <JSON><unknown>json;
         this.eventService.addEvent(jsonObject, this.token).subscribe();
+
+        this.eegService.getPatientbyID(+eeg.patient, this.token).subscribe((info) => {
+          this.lst_patient.push(info)
+        });
+
+        if (eeg.status == null) {
+
+          this.lst_eeg.push(eeg);
+
+          this.eegService.getReportbyID(+eeg.report, this.token).subscribe((info) => {
+            this.lst_report.push(info)
+          });
+
+        } else this.lst_error_eeg.push(eeg);
+        
+
+        // window.location.reload()
+        this.closebutton.nativeElement.click();
 
       },
       error: (error) => {

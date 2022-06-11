@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { EEG } from '../classes/EEG';
 import '../../assets/js/smtp.js'; 
 import { Annotation } from '../classes/Annotation';
+import { Patient } from '../classes/Patient';
+import { Report } from '../classes/Report';
 
 declare let Email : any;
 
@@ -59,6 +61,25 @@ export class EEGService {
 
   getAnotations(id: number, token: string) : Observable<Annotation[]>{
     return this.http.get<Annotation[]>(this.BASE_URL+'eegAnnotations?id='+id,{ 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    });
+  }
+
+  getReportbyID(id: number, token: string) : Observable<Report> {
+    return this.http.get<Report>(this.BASE_URL+'report?id='+id, { 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    });
+
+  }
+
+  getPatientbyID(id: number, token: string) : Observable<Patient>{
+    return this.http.get<Patient>(this.BASE_URL+'patient/'+id,{ 
       headers: new HttpHeaders({
         'Authorization': 'Token ' + token,
         'Content-Type': 'application/json',

@@ -21,6 +21,8 @@ export class EegTableComponent implements OnInit {
   @Input("allEEG") lst_EEG!: EEG[];
   @Input("allPatients") lst_Patients!: Patient[];
   @Input("allReports") lst_report!: Report[];
+  @Input("allInstitutions") lst_inst!: Institution[];
+  @Input("allOperators") lst_op!: Operator[]
 
   @Output() eeg_deleted = new EventEmitter<any>();
   private eeg2delete! : EEG;
@@ -37,9 +39,6 @@ export class EegTableComponent implements OnInit {
   person_id = ''+localStorage.getItem('id');
 
   config: any;
-
-  @Input("allInstitutions") lst_inst!: Institution[];
-  @Input("allOperators") lst_op!: Operator[]
   
 
 
@@ -51,6 +50,9 @@ export class EegTableComponent implements OnInit {
   }
 
   ngOnChanges(model: any) {
+
+
+    console.log("ENTREI ", model)
 
     // criar o map com key = id do EEG, e value = nome do paciente
     this.lst_EEG.forEach((eeg) => {
@@ -71,7 +73,7 @@ export class EegTableComponent implements OnInit {
     this.lst_EEG.forEach((eeg) => {
       let rep = this.lst_report.find((x) => x.id == eeg.id);
       if (rep) this.map_report.set(eeg.report, rep.progress);
-      else this.map_report.set(eeg.report, "undefined");
+      else this.map_report.set(eeg.report, "to do");
 
     });
 
