@@ -45,6 +45,10 @@ export class WorkspaceComponent implements OnInit {
   patient_id: string =''
   priority: string = ''
 
+  prioritySelected: string = '';
+
+
+
   constructor(private fb: FormBuilder, private service: WorkspaceService, private patient_service: PatientsService, 
     private eegService: EEGService, private eventService: EventService ) { }
 
@@ -156,7 +160,7 @@ export class WorkspaceComponent implements OnInit {
         let jsonObject = <JSON><unknown>json;
         this.eventService.addEvent(jsonObject, this.token).subscribe();
 
-        /* 
+        
         this.eegService.getPatientbyID(+eeg.patient, this.token).subscribe((info) => {
           this.lst_patient.push(info)
 
@@ -171,11 +175,11 @@ export class WorkspaceComponent implements OnInit {
         });
 
         this.lst_eeg.reverse();
-        this.lst_error_eeg.reverse(); */
+        this.lst_error_eeg.reverse();
 
         
         this.closebutton.nativeElement.click();
-        window.location.reload()
+        // window.location.reload()
 
       },
       error: (error) => {

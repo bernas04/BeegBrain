@@ -50,7 +50,6 @@ export class EEGViewerComponent implements OnChanges {
      
     let indicesArr = Array.from(Array(this.tmp).keys());
     this.xData = indicesArr.map((el) => new Date((el / this.signalsInSecond) * 1000).toISOString().substr(11, 8));
-    console.log("dados do x " ,this.xData)
     
     setTimeout(() => {
       this.chartDom = document.getElementById('chart')!;

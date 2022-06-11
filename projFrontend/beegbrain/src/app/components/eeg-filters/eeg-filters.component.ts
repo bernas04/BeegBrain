@@ -2,15 +2,9 @@ import { RevisionCenter } from './../../classes/RevisionCenter';
 import { Operator } from './../../classes/Operator';
 import { FiltersService } from './../../services/filters.service';
 import { EEG } from './../../classes/EEG';
-import { EEGService } from 'src/app/services/eeg.service';
-import { PatientsService } from './../../services/patients.service';
 import { Patient } from 'src/app/classes/Patient';
 import { Component, Output, EventEmitter, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { MatSelectModule } from '@angular/material/select';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Observable } from 'rxjs';
-import { send } from 'process';
 import { RegistrationService } from 'src/app/services/registration.service';
 import { Institution } from 'src/app/classes/Institution';
 
@@ -39,8 +33,6 @@ export class EegFiltersComponent implements OnInit {
   priority: string = ''
   report_status: string = ''
   date: string = ''
-
-
 
   constructor(private fb: FormBuilder, private reg:RegistrationService, private filterService:FiltersService) { }
   
@@ -198,8 +190,31 @@ export class EegFiltersComponent implements OnInit {
 
   }
 
+  operatorSelected: string = '';
+  patientSelected: string = '';
+  revisionSelected: string = '';
+  prioritySelected: string = '';
+  reportSelected: string = '';
+
   refresh() {
-    window.location.reload();
+
+    this.operatorSelected = ''
+    this.patientSelected = ''
+    this.revisionSelected = ''
+    this.prioritySelected = ''
+    this.reportSelected = ''
+
+    this.filterService.getEEGfiltered('', '', '', '', '', '', '', this.token).subscribe((lst) => {
+      this.eegs_filtered = [];
+
+      // radicionar só os eegs sem erro
+      lst.forEach((eeg) => {
+        if (eeg.status == null) this.eegs_filtered.push(eeg)
+      });
+      
+      this.sendFilters(this.eegs_filtered)
+
+    });
   }
 
 

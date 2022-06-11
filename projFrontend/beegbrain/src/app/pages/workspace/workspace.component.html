@@ -26,8 +26,10 @@
       </li>
 
       <div class="ml-auto d-flex" >
+
         <input *ngIf="activeTab === 'allexams'" type="text" class="form-control" value="Total: {{lst_eeg.length}}" 
         style="width: 6em; text-align: center; margin-right: 1em; font-size: medium" disabled/>
+
         <button *ngIf="type === 'operator'" type="button"  data-toggle="modal" data-target="#upload-modal"  class="btn btn-primary" style="font-size: medium;">
           <i class="bi bi-file-earmark-arrow-up"></i> <strong> Upload </strong> 
         </button>
@@ -47,11 +49,13 @@
         
       </div>
       <div class="tab-pane fade" id="errorarea" role="tabpanel" aria-labelledby="errorarea-tab">
+
         <app-errorarea *ngIf="lst_error_eeg.length != 0" [allEEG]="lst_error_eeg" [allPatients]="lst_patient" (eeg_deleted)="onDelete($event)"></app-errorarea>
 
         <div *ngIf="lst_error_eeg.length == 0">
           <img src="../../../assets/no-data-found.png" alt="no data found :("/>
         </div>
+        
       </div>
     </div> 
   </div> 
@@ -59,27 +63,32 @@
 
 </div>
 
-
 <!-- ------------------------------------------- UPLOAD MODAL ------------------------------------------- -->
 <div id="upload-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content border-0" >
-          <div class="modal-body p-0">
+          <div class="modal-body p-0 ">
               <div class="card border-0 p-sm-3 p-2">
 
                 <h3 style="text-align: center;"> <strong> Upload an EEG </strong></h3>
+                <hr style="width: 80%; right:0; margin:auto; margin-top: 1em;">
 
-                <div class="card-body">
+                <div class="card-body" style="margin-top: 1em;">
                     <form [formGroup] = "uploadForm">
         
-                      <div class="col-10">
+                      <!-- <div class="col-10">
                         <input formControlName="patient_id" #patient_id class="effect-1" type="text" id="health_number" placeholder="Patient Health Number">
                           <span class="focus-border"></span>
+                      </div> -->
+
+                      <div class="col-lg-8">
+                        <input placeholder="Patient Health Number" class="form-control" />
+                        <label class="form-label" for="formControlDefault"></label>
                       </div>
 
-                      <div class="col-lg-12">
-                        <select class="form-control"  id="priority" #priority formControlName="priority" style="width: 50%" >
-                          <option value="" disabled>Select the priority</option>
+                      <div class="col-lg-8">
+                        <select class="form-control"  [(ngModel)]='prioritySelected' id="priority" #priority formControlName="priority">
+                          <option value="" disabled>Select the EEG priority...</option>
                           <option value="Very High">Very High</option>
                           <option value="High">High</option>
                           <option value="Medium">Medium</option>
@@ -89,7 +98,7 @@
                         <label class="form-label" for="formControlDefault"></label>
                       </div>
         
-                      <div class="col-lg-12  justify-content-center">
+                      <div class="col-lg-12">
                           <app-uploading (newFileEvent)="getFiles($event)"></app-uploading>
                       </div>
         
