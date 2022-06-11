@@ -2,6 +2,7 @@ import * as echarts from 'echarts';
 import { ChangeDetectionStrategy, Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 import { Router } from '@angular/router';
 import { EEG } from 'src/app/classes/EEG';
+import { Annotation } from 'src/app/classes/Annotation';
 
 @Component({
     selector: 'app-eeg-viewer',
@@ -19,6 +20,8 @@ export class EEGViewerComponent implements OnChanges {
   yData: any[] = [];
   xData: any[] = [];
   tmp!: number;
+  annotationsInGraphic:Annotation[] = [];
+
   
   @Input('speed') speed! : number;
   @Input('interval') interval! : number;
@@ -29,6 +32,7 @@ export class EEGViewerComponent implements OnChanges {
   @Input('signalsInSecond') signalsInSecond! : number;
   @Input('initial') initial! : number;
   @Input('indices') indices! : number;
+  @Input('annotations') annotations!: Annotation[];
 
   @Output() currentInitial = new EventEmitter<any>();
 
@@ -46,6 +50,7 @@ export class EEGViewerComponent implements OnChanges {
      
     let indicesArr = Array.from(Array(this.tmp).keys());
     this.xData = indicesArr.map((el) => new Date((el / this.signalsInSecond) * 1000).toISOString().substr(11, 8));
+    console.log("dados do x " ,this.xData)
     
     setTimeout(() => {
       this.chartDom = document.getElementById('chart')!;
@@ -156,7 +161,6 @@ export class EEGViewerComponent implements OnChanges {
     this.start();
     this.changeSpeed(); // This line is to adjust data
     this.option;
-
   }
 
   /* Esta é a função que vai estar sempre a ser chamada */
@@ -173,10 +177,14 @@ export class EEGViewerComponent implements OnChanges {
     this.lst_intervalId.push(this.intervalId);
 
   }
-  
+  toDateTime(secs:number) {
+    var t = new Date(1970, 1, 0); // Epoch
+    t.setSeconds(secs);
+    t.setHours(-23);
+    return t;
+  }
   // Altera o intervalo de tempo | Clicar para frente/trás
   updateData() {
-
     let series: any = [];
 
     // var xData: any = [...Array(this.indices).keys()]
@@ -204,6 +212,8 @@ export class EEGViewerComponent implements OnChanges {
 
     }
 
+    
+
     for (const [label, valuesMap] of signalsMap) {
       
       const keys = Array.from(valuesMap.keys());
@@ -220,10 +230,54 @@ export class EEGViewerComponent implements OnChanges {
       let arr : Number[] = keys.slice(this.initial, end);
       xData = arr.map((el) => new Date((<number> el / this.signalsInSecond) * 1000).toISOString().substr(11, 8));
 
-      series.push({name: label, type: "line", showSymbol: false, data: channelBuffer})
+      let marLineData:any=[];
+      this.annotationsInGraphic.forEach((annotation) =>{
+        let tmp = this.toDateTime(annotation.start).toISOString().substr(11,8);
+        console.log("TMP " , tmp)
+        marLineData.push ({name: annotation.description, xAxis:tmp})
+      })
+      if (marLineData.length>0){
+        let marLine={symbol: ['none', 'none'],label: { show: false }, lineStyle: {color:'#000000', type:'solid', width:1.5} ,data:marLineData}
+        series.push({
+          name: label, 
+          type: "line", 
+          showSymbol: false, 
+          data: channelBuffer,
+          markLine: marLine
+        });
+        console.log("Series " ,series)
+      }
+      else{
+        series.push({
+          name: label, 
+          type: "line", 
+          showSymbol: false, 
+          data: channelBuffer,
+        });
+      }
+
+
+      
 
     }
     
+    this.annotations.forEach((annotation) => {
+      
+      let start = new Date(annotation.start*1000).toISOString().substr(11,8);
+      
+      if (xData.includes(start) && !this.annotationsInGraphic.includes(annotation)){
+        this.annotationsInGraphic.push(annotation)
+        console.log("Anotação no gráfico")
+      }
+      if (!xData.includes(start) && this.annotationsInGraphic.includes(annotation)){
+        const remove = this.annotationsInGraphic.indexOf(annotation);
+        if (remove>-1){
+          this.annotationsInGraphic.splice(remove,1);
+        }
+      }
+    });
+
+
     this.myChart.setOption<echarts.EChartsOption>({
 
       yAxis: { 

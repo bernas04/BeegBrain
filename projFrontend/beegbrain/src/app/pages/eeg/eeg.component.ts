@@ -141,8 +141,6 @@ export class EegComponent implements OnInit {
     let newChannels : String[] = [];
     let indexesToRemove : number[] = [];
 
-    console.log("LABEL DATA CHAMADO")
-    console.log("INITIAL -> " + this.initial + "  " + new Date((this.initial / this.signalsInSecond) * 1000).toISOString().substr(11, 8) + " | END " + end + "  " + new Date((end / this.signalsInSecond) * 1000).toISOString().substr(11, 8))
 
     // Ver se há novos canais adicionados e pedir informação sobre os mesmos
     for (const channel of channels) {
@@ -172,11 +170,9 @@ export class EegComponent implements OnInit {
         //   for (let idx = maxCacheIndex; idx <= this.indices; idx++) indexesToRemove.push(idx);
         // }
 
-        console.log(map);
 
         if (map.has(this.initial+1) && map.has(end)) {
 
-          console.log("HAS DATA :))))))))")
 
           for (let i = this.initial+1; i <= end; i++) {
             if (!map.has(i)) console.log("MAPA NÃO TEM O " + i)
@@ -191,7 +187,6 @@ export class EegComponent implements OnInit {
 
           if (bufferInitial > this.endLimit) {
 
-            console.log("É PRECISO PEDIR AO BUFFER")
 
             this.endLimit = bufferEnd;
   
@@ -200,7 +195,6 @@ export class EegComponent implements OnInit {
           }
         } else {
 
-          console.log("NAHHHH")
 
 
           end += (channels.length > 25) ? Math.floor(this.window_size * this.signalsInSecond) : 2 * Math.floor(this.window_size * this.signalsInSecond);
@@ -223,7 +217,6 @@ export class EegComponent implements OnInit {
       this.getBackendData(0, end, newChannels);
     }
 
-    console.log("eegViewer.updateData() ---> ", this.initial)
     this.eeg_viewer.setInitial(this.initial);
     this.eeg_viewer.updateData();
 
@@ -316,16 +309,12 @@ export class EegComponent implements OnInit {
     if (this.initial < 1) this.initial = 1
     this.removeSpeedInterval()
     this.getLabelData(this.labels)
-    console.log("left")
-    console.log("INITIAL -> " + this.initial + "  " + new Date((this.initial / this.signalsInSecond) * 1000).toISOString().substr(11, 8) )
 
   }
 
   right() {
-    console.log("right")
     this.initial = this.initial +  Math.floor(this.window_size * this.signalsInSecond)
     if (this.initial > this.indices - Math.floor(this.window_size * this.signalsInSecond)) {
-      console.log("chegou ao final, deve ter o ultimo bloco do eeg e parar o gráfico")
       this.initial = this.indices -  Math.floor(this.window_size * this.signalsInSecond);
       //this.getLabelData(this.labels)
       this.pause()
@@ -387,7 +376,6 @@ export class EegComponent implements OnInit {
   getAnnotations(eeg_id: number) {
     this.EEGservices.getAnotations(eeg_id, this.token).subscribe((info) => {
       this.annotations = info;
-      console.log(info);
     });
   }
 
@@ -396,7 +384,6 @@ export class EegComponent implements OnInit {
   checkReport(eeg_id: number) {
     this.reportService.getReport(eeg_id, this.token).subscribe((info) => {
       this.report_progress = info.progress;
-      console.log("RELATORIO", this.report.progress);
       this.report_progress = this.report.progress
     });
   }
