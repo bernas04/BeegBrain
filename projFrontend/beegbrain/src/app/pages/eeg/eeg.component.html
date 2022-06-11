@@ -37,13 +37,12 @@
         <button (click)="updateView()" type="button" class="btn btn-dark">Alter view</button>
 
     </div>
-    
+
     <div class="col-lg-1">
         <select class="form-select" aria-label="Annotations">
             <option selected>Select an annotation</option>
             <option *ngFor="let opt of annotations">{{opt.description}}</option>
           </select>
-    </div>
     </div>
 
 </div>
