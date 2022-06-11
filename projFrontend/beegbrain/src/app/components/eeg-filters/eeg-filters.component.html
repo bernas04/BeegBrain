@@ -6,7 +6,10 @@
   
   <form method="GET" [formGroup]="filtersForm" >
 
-      <div class="card-body">
+
+    <!-- PESQUISA POR EEG ID -->
+    
+     <!--  <div class="card-body">
         <div class="col-lg-12">
           <strong> EEG ID </strong>
         </div>
@@ -25,7 +28,7 @@
           />
           <label class="form-label" for="formControlDefault"></label>
         </div>
-      </div>
+      </div> -->
 
       <div class="card-body">
         <div class="col-lg-12">
@@ -148,7 +151,7 @@
           formControlName="priority"
           (change)="getFiltersFormData()"
         >
-          <option value="5">Urgent</option>
+          <option value="5">Very High</option>
           <option value="4">High</option>
           <option value="3">Medium</option>
           <option value="2">Low</option>

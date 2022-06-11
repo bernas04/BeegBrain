@@ -44,18 +44,25 @@ export class PatientsComponent implements OnInit {
 
   getPatient(){
     let text = (<HTMLInputElement>document.getElementById("patient_search")).value;
-    if (+text == NaN) {
-      this.services.getPatientsbySSN(text, this.token).subscribe((info) => {
-        this.patient = info;
-        this.getEEGbyPatient(this.patient.id);   // para lista os exames EEG da respetiva pessoa
-      });
 
-    } else {
-      this.services.getPatientsbyName(text, this.token).subscribe(data => this.listOfPatients = data);
+    if (text) {
+
+      if (this.isNumeric(+text)) {
+        this.services.getPatientsbySSN(text, this.token).subscribe((info) => {
+          this.patient = info;
+          this.getEEGbyPatient(this.patient.id);   // para lista os exames EEG da respetiva pessoa
+        });
+
+      } else {
+        this.services.getPatientsbyName(text, this.token).subscribe(data => this.listOfPatients = data);
+      }
     }
-
     
   } 
+
+  isNumeric(num: number){
+    return !isNaN(num)
+  }
 
   getPatientbyId(id: number){
     this.services.getPatientbyId(id, this.token).subscribe((info) => {
@@ -67,7 +74,6 @@ export class PatientsComponent implements OnInit {
     this.services.getEEGbySharedFolder(+this.id, this.type, this.token).subscribe((info) => {
       this.listOfEEG = [];
 
-      console.log(info)
       info.forEach((eeg) => {
         if (eeg.status == null && eeg.patient == id) this.listOfEEG.push(eeg);
       });
@@ -100,14 +106,12 @@ export class PatientsComponent implements OnInit {
   getInstitutions() {
     this.service.getAllInstitutions(this.token).subscribe((info) => {
       this.lst_institutions = info;
-      console.log("INSTITUTIONS",this.lst_institutions)
     })
   }
 
   getOperators() {
     this.service.getOperators(this.token).subscribe((info) => {
       this.lst_operators = info;
-      console.log("OPERATORS",this.lst_operators)
     });
 
   }
@@ -115,7 +119,6 @@ export class PatientsComponent implements OnInit {
   getReports() {
     this.service.getReports(this.token).subscribe((info) => {
       this.lst_report = info;
-      console.log("OPERATORS",this.lst_report)
     });
   }
 

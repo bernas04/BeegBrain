@@ -55,7 +55,7 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
       if (this.report.progress == "done") {
         this.form = new FormGroup({
           editorContent: new FormControl(
-            { value: this.report.content , disabled: false },
+            { value: this.report.content , disabled: true },
             Validators.required()
           ),
         });
@@ -63,12 +63,11 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
       } else {
         this.form = new FormGroup({
           editorContent: new FormControl(
-            { value: this.report.content , disabled: true },
+            { value: this.report.content , disabled: false },
             Validators.required()
           ),
         });
       }
-      
 
       this.progress = this.report.progress
       this.show = true;
@@ -92,11 +91,10 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
 
   save() {
     // de vez em quando esta cena buga, quando isso acontece, é meter toHTML( )
-    console.log("Changes: ", this.form.value["editorContent"] )
     this.report.content = this.form.value["editorContent"];
     this.report.progress = "in progress";
 
-    this.service.setReport( this.report, this.token).subscribe();
+    this.service.setReport( this.report, this.token ).subscribe();
 
     let json = { "type": "Report changed", "person": this.id, "eeg_id": ''+this.eeg_id}
     let jsonObject = <JSON><unknown>json;
@@ -130,26 +128,25 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
   }  
 
   reportDone() {
-      let json = { "type": "Report marked as done", "person": this.id, "eeg_id": ''+this.eeg_id}
-      let jsonObject = <JSON><unknown>json;
-      this.eventService.addEvent(jsonObject, this.token).subscribe();
-      this.progress="done"
+    let json = { "type": "Report marked as done", "person": this.id, "eeg_id": ''+this.eeg_id}
+    let jsonObject = <JSON><unknown>json;
+    this.eventService.addEvent(jsonObject, this.token).subscribe();
+    this.progress="done"
 
-      this.report.progress = "done"; //o que vai para editar o report
-      this.service.setReport( this.report, this.token).subscribe();
- 
-    }
+    this.report.progress = "done"; //o que vai para editar o report
+    this.service.setReport( this.report, this.token).subscribe();
 
-    reportUndo (){  
-        let json = { "type": "Report marked as done", "person": this.id, "eeg_id": ''+this.eeg_id}
-        let jsonObject = <JSON><unknown>json;
-        this.eventService.addEvent(jsonObject, this.token).subscribe();
+  }
 
-        this.report.progress = "in progress"; //o que vai para editar o report
-        this.progress = "in progress"
-        this.service.setReport( this.report, this.token).subscribe();
-      
-    }
+  reportUndo (){  
+    let json = { "type": "Report marked as done", "person": this.id, "eeg_id": ''+this.eeg_id}
+    let jsonObject = <JSON><unknown>json;
+    this.eventService.addEvent(jsonObject, this.token).subscribe();
+
+    this.report.progress = "in progress"; //o que vai para editar o report
+    this.progress = "in progress"
+    this.service.setReport( this.report, this.token).subscribe();  
+  }
 
    
 

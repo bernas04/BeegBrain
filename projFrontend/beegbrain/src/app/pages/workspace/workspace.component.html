@@ -2,30 +2,32 @@
 
 <div class="row mt-100" style="margin-top: 2em;">
 
-  <div class="col-lg-1 col-sm-12 col-md-4" ></div>
+  <div class="col-lg-1 " ></div>
 
-  <div class="col-lg-2 col-sm-12 col-md-4" >
+  <div class="col-lg-2 col-sm-3 col-md-4" >
     <app-eeg-filters (sendFiltersEvent)="sendFilters($event)" > </app-eeg-filters>
   </div>
 
 
-  <div class="col-lg-8 col-sm-12 col-md-7" style="margin-top: 2em;">
+  <div class="col-lg-8 col-sm-8 col-md-7" style="margin-top: 2em;">
       
     <ul class="nav nav-tabs" id="myTab" role="tablist">
 
       <li class="nav-item">
-        <a class="nav-link active" id="allexams-tab" data-toggle="tab" href="#allexams" role="tab"
+        <a class="nav-link active" id="allexams-tab" data-toggle="tab" (click)="changeTab('allexams')" href="#allexams" role="tab"
           aria-controls="allexams" aria-selected="true"><strong> Transfered Area </strong></a>
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" *ngIf="type === 'operator'" id="errorarea-tab" data-toggle="tab" href="#errorarea" role="tab" aria-controls="errorarea" aria-selected="false">
+        <a class="nav-link" *ngIf="type === 'operator'" id="errorarea-tab" data-toggle="tab" (click)="changeTab('errorarea')"  href="#errorarea" role="tab" aria-controls="errorarea" aria-selected="false">
           Error Area 
           <span *ngIf="lst_error_eeg.length != 0" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="color:white;"> {{lst_error_eeg.length}}</span>
         </a>
       </li>
 
-      <div class="ml-auto">
+      <div class="ml-auto d-flex" >
+        <input *ngIf="activeTab === 'allexams'" type="text" class="form-control" value="Total: {{lst_eeg.length}}" 
+        style="width: 6em; text-align: center; margin-right: 1em; font-size: medium" disabled/>
         <button *ngIf="type === 'operator'" type="button"  data-toggle="modal" data-target="#upload-modal"  class="btn btn-primary" style="font-size: medium;">
           <i class="bi bi-file-earmark-arrow-up"></i> <strong> Upload </strong> 
         </button>
@@ -76,14 +78,6 @@
                       </div>
 
                       <div class="col-lg-12">
-                        <!-- <select id="priority" #priority formControlName="priority">
-                            <option value="Very High">Very High</option>
-                            <option value="High">High</option>
-                            <option value="Medium" selected="selected">Medium</option>
-                            <option value="Low">Low</option>
-                            <option value="Very Low">Very Low</option>
-                        </select> --> 
-
                         <select class="form-control"  id="priority" #priority formControlName="priority" style="width: 50%" >
                           <option value="" disabled>Select the priority</option>
                           <option value="Very High">Very High</option>
@@ -101,9 +95,7 @@
         
                     </form>
 
-                  
               </div>
-              
 
                   <div class="card-body px-sm-4 mb-2 pt-1 pb-0"> 
                       <div class="row justify-content-end no-gutters">

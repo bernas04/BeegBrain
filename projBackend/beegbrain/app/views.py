@@ -1084,14 +1084,8 @@ def getPatientsEEG(request):
 
 
     for p in list(eegs_shared):
-
-        try:
-            ret = Patient.objects.get(id=p.patient_id)
-        except Patient.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        if ret not in patient_list:
-            patient_list.append(ret)
+        if p.patient and p.patient not in patient_list:
+            patient_list.append(p.patient)
     
     serializer = serializers.PatientSerializer(patient_list, many=True)
     return Response(serializer.data)
