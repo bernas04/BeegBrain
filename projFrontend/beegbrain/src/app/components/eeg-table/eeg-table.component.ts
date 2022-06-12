@@ -26,7 +26,6 @@ export class EegTableComponent implements OnInit {
 
   @Output() eeg_deleted = new EventEmitter<any>();
   private eeg2delete! : EEG;
-  private id!: number;
   public map = new Map<number, string>();
   public map_operator_institution = new Map<number, string>();
   public map_report = new Map<Report, string>();
@@ -40,14 +39,15 @@ export class EegTableComponent implements OnInit {
 
   config: any;
   
-
-
+  
   constructor(private router: Router, private tableService: TableService,  private eventService: EventService) {}
 
   ngOnInit(): void {
   }
 
-  ngOnChanges(model: any) {
+  ngOnChanges(changes: any) {
+
+    console.log("CHANGES", changes)
 
     // criar o map com key = id do EEG, e value = nome do paciente
     this.lst_EEG.forEach((eeg) => {

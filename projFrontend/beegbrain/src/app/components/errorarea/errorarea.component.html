@@ -13,7 +13,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor='let eeg of lst_EEG'>
+                    <tr *ngFor='let eeg of lst_EEG  | paginate: config'>
 
                         <td class="fs-4">{{eeg.id}}</td>
 
@@ -56,6 +56,9 @@
                     </tr>              
                 </tbody>
             </table>
+            
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+
         </div>
 <!--     </div>
     
