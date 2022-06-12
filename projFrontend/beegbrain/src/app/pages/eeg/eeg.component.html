@@ -33,16 +33,12 @@
         </ng-multiselect-dropdown>
     </div>
 
-    <div class="col-lg-3">
-        <button (click)="updateView()" type="button" class="btn btn-dark">Alter view</button>
-
-    </div>
 
     <div class="col-lg-1">
-        <select class="form-select" aria-label="Annotations">
+        <select class="form-select" [(ngModel)]="selectedOption" (change)="goToAnnotation()">
             <option selected>Select an annotation</option>
-            <option *ngFor="let opt of annotations">{{opt.description}}</option>
-          </select>
+            <option *ngFor="let opt of annotations" [ngValue]="opt" >{{opt.description}}</option>
+        </select>
     </div>
 
 </div>

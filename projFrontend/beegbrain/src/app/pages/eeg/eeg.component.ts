@@ -39,6 +39,7 @@ export class EegComponent implements OnInit {
   endLimit!: number;
   updateViewControl: boolean = false;
   annotations!: Annotation[];
+  selectedOption!: Annotation;
   
   normalizedLabelsSignal : Map<String,Map<Number,Number>> = new Map();
   playing: boolean = true;
@@ -64,14 +65,17 @@ export class EegComponent implements OnInit {
   ) {}
 
   ngOnInit() {
+
+    console.log("NG ON INIT")
+
     const url_array = this.router.url.split("/");
     let eegId = +url_array[url_array.length - 1];
     this.id = eegId;
 
     this.getLabelsFromEEG(eegId);
     this.getInformation(eegId);
-    this.getAnnotations(eegId);
     this.checkReport(eegId);
+    this.getAnnotations(eegId);
 
     this.dropdownSettings = {
       singleSelection: false,
@@ -110,6 +114,19 @@ export class EegComponent implements OnInit {
 
   onDropDownClose(item: any) {
     this.control = true;
+
+    // Get dos blocos das anotações:
+    for (let annotation of this.annotations) {
+      let start = Math.floor(annotation.start*this.signalsInSecond)-Math.floor((this.window_size*this.signalsInSecond)/2);
+      if (start < 0) start = 0;
+      let end = start + Math.floor(this.window_size*this.signalsInSecond) * 2;
+      console.log(start + " | " + end)
+      this.getBackendData(start,end,this.labels);
+      //console.log("Deu get da anotação " + annotation.description + " que começa no " + start + " | " + end)
+    }
+
+    console.log("PORTO")
+
   }
 
   onItemDeselect(item : any){
@@ -188,6 +205,8 @@ export class EegComponent implements OnInit {
 
             this.endLimit = bufferEnd;
   
+            console.log("GET LABEL DATA -> GET BACKEND DATA")
+
             this.getBackendData(this.endLimit,bufferEnd,channels);
   
           }
@@ -198,7 +217,6 @@ export class EegComponent implements OnInit {
           end += (channels.length > 25) ? Math.floor(this.window_size * this.signalsInSecond) : 2 * Math.floor(this.window_size * this.signalsInSecond);
           this.getBackendData(this.initial,end,channels);
 
-          this.getBackendData(this.initial, end, channels);
         }
 
         break;
@@ -215,6 +233,8 @@ export class EegComponent implements OnInit {
       this.getBackendData(0, end, newChannels);
     }
 
+    console.log("this initial >>>>>>>>>>>> ", this.initial);
+    console.log("this eeg viewer >>>>>>>>>>> ", this.eeg_viewer)
     this.eeg_viewer.setInitial(this.initial);
     this.eeg_viewer.updateData();
 
@@ -238,6 +258,8 @@ export class EegComponent implements OnInit {
     if (end > this.indices) {
       end = this.indices - 1;
     }
+
+    console.log("[API] Pediu entre o " + initial + " | " + end);
 
     this.services.getDataAboutLabel(this.id, channels, this.token, initial, end).subscribe((channelsMap) => {
 
@@ -376,6 +398,7 @@ export class EegComponent implements OnInit {
       this.annotations = info;
       console.log("ANOTAÇÕES",info);
     });
+
   }
 
   checkEeg(eeg_id: number) {}
@@ -386,4 +409,12 @@ export class EegComponent implements OnInit {
       this.report_progress = this.report.progress
     });
   }
+
+  goToAnnotation() {
+    //this.eeg_viewer.jumpToAnnotation(this.selectedOption.start);
+    this.initial=Math.floor(this.selectedOption.start*this.signalsInSecond)-Math.floor((this.window_size*this.signalsInSecond)/2);
+    console.log(this.selectedOption.description + " >>>>>>>>>>" + this.initial)
+    this.eeg_viewer.updateData();
+  }
+
 }
