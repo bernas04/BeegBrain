@@ -37,7 +37,7 @@ export class EegTableComponent implements OnInit {
   type = ''+localStorage.getItem('type');
   person_id = ''+localStorage.getItem('id');
 
-  config: any;
+  config!: any;
   
   
   constructor(private router: Router, private tableService: TableService,  private eventService: EventService) {}
@@ -48,6 +48,15 @@ export class EegTableComponent implements OnInit {
   ngOnChanges(changes: any) {
 
     console.log("CHANGES", changes)
+    console.log("LIST OF EEGs", this.lst_EEG)
+
+    this.config = {
+      itemsPerPage: 10,
+      currentPage: 1,
+      totalItems: this.lst_EEG.length
+    };
+
+    console.log("CONFIG", this.config)
 
     // criar o map com key = id do EEG, e value = nome do paciente
     this.lst_EEG.forEach((eeg) => {
@@ -69,14 +78,6 @@ export class EegTableComponent implements OnInit {
       if (rep) this.map_report.set(eeg.report, rep.progress);
       else this.map_report.set(eeg.report, "to do");
     });
-
-
-    this.config = {
-      itemsPerPage: 10,
-      currentPage: 1,
-      totalItems: this.lst_EEG.length
-    };
-
   }
 
   delete() {

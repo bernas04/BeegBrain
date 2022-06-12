@@ -114,11 +114,13 @@ export class WorkspaceComponent implements OnInit {
     const index = this.lst_eeg.indexOf(eeg, 0);
     if (index > -1) {
       this.lst_eeg.splice(index, 1);
+      this.lst_eeg = this.lst_eeg.slice();
     }
 
     const index1 = this.lst_error_eeg.indexOf(eeg, 0);
     if (index1 > -1) {
       this.lst_error_eeg.splice(index1, 1);
+      this.lst_error_eeg = this.lst_error_eeg.slice();
     }
 
     this.service.deleteEEG(eeg.id, this.token).subscribe();
@@ -159,7 +161,7 @@ export class WorkspaceComponent implements OnInit {
       next: (eeg) => {
         
 
-        this.eegService.getPatientbyID(+eeg.patient, this.token).subscribe((info) => {
+        /* this.eegService.getPatientbyID(+eeg.patient, this.token).subscribe((info) => {
           console.log("Adicionar à tabela") // não está a dar update à tabela porque está a dar erro de autorização :)
 
           this.lst_patient.push(info);
@@ -186,16 +188,20 @@ export class WorkspaceComponent implements OnInit {
             this.lst_error_eeg = this.lst_error_eeg.slice();
           }
           
-        });
+        }); */
 
         let json = { "type": "EEG uploaded", "person": this.id, "eeg_id": ''+eeg.id}
         let jsonObject = <JSON><unknown>json;
-        this.eventService.addEvent(jsonObject, this.token).subscribe();
+        this.eventService.addEvent(jsonObject, this.token).subscribe((info) => {
+          // quando acabar de criar o evento
+          this.closebutton.nativeElement.click();
+          window.location.reload()
+        });
 
-        this.closebutton.nativeElement.click();
-        // window.location.reload()
+        
 
-        this.toast.nativeElement.show()
+        //this.toast.nativeElement.show()
+
         /* if (eeg.status == null) this.toast.open("EEG uploaded with success!");
         else this.toast.open("EEG uploaded with errors :(");
  */
