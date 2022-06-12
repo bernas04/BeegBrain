@@ -100,12 +100,6 @@ export class EEGViewerComponent implements OnChanges {
           xAxisIndex: [0],
           filterMode: 'empty'
         },
-        {
-          id: 'dataZoomY',
-          type: 'slider',
-          yAxisIndex: [0],
-          filterMode: 'empty'
-        },
         //mexer com o rato dentro do grafico
         {
           type: 'inside'
@@ -184,6 +178,7 @@ export class EEGViewerComponent implements OnChanges {
   }
   // Altera o intervalo de tempo | Clicar para frente/trás
   updateData() {
+
     let series: any = [];
 
     // var xData: any = [...Array(this.indices).keys()]
@@ -230,13 +225,13 @@ export class EEGViewerComponent implements OnChanges {
       xData = arr.map((el) => new Date((<number> el / this.signalsInSecond) * 1000).toISOString().substr(11, 8));
 
       let marLineData:any=[];
+      
       this.annotationsInGraphic.forEach((annotation) =>{
         let tmp = this.toDateTime(annotation.start).toISOString().substr(11,8);
-        console.log("TMP " , tmp)
         marLineData.push ({name: annotation.description, xAxis:tmp})
       })
       if (marLineData.length>0){
-        let marLine={symbol: ['none', 'none'],label: { show: false }, lineStyle: {color:'#000000', type:'solid', width:1.5} ,data:marLineData}
+        let marLine = {symbol: ['none', 'none'],label: { show: true , position:"insideEndTop", formatter:"{b}"} ,lineStyle: {color:'#000000', type:'solid', width:1.5} ,data:marLineData}
         series.push({
           name: label, 
           type: "line", 
@@ -244,7 +239,7 @@ export class EEGViewerComponent implements OnChanges {
           data: channelBuffer,
           markLine: marLine
         });
-        console.log("Series " ,series)
+        //console.log("Series " ,series)
       }
       else{
         series.push({
@@ -260,21 +255,23 @@ export class EEGViewerComponent implements OnChanges {
 
     }
     
-    this.annotations.forEach((annotation) => {
-      
-      let start = new Date(annotation.start*1000).toISOString().substr(11,8);
-      
-      if (xData.includes(start) && !this.annotationsInGraphic.includes(annotation)){
-        this.annotationsInGraphic.push(annotation)
-        console.log("Anotação no gráfico")
-      }
-      if (!xData.includes(start) && this.annotationsInGraphic.includes(annotation)){
-        const remove = this.annotationsInGraphic.indexOf(annotation);
-        if (remove>-1){
-          this.annotationsInGraphic.splice(remove,1);
+    if (this.annotations.length>0){
+      this.annotations.forEach((annotation) => {
+        
+        let start = new Date(annotation.start*1000).toISOString().substr(11,8);
+        
+        if (xData.includes(start) && !this.annotationsInGraphic.includes(annotation)){
+          this.annotationsInGraphic.push(annotation)
+          console.log("Anotação no gráfico")
         }
-      }
-    });
+        if (!xData.includes(start) && this.annotationsInGraphic.includes(annotation)){
+          const remove = this.annotationsInGraphic.indexOf(annotation);
+          if (remove>-1){
+            this.annotationsInGraphic.splice(remove,1);
+          }
+        }
+      });
+    }
 
 
     this.myChart.setOption<echarts.EChartsOption>({
