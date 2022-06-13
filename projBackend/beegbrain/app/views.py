@@ -998,6 +998,7 @@ def doctorSharedFolder(id):
 @permission_classes([IsAuthenticated])
 def getOperatorSharedFolder(request):
     """GET de todas as pastas partilhadas"""
+    print(">> getOperatorSharedFolder")
 
     eegs = operatorSharedFolder(int(request.GET['id']))
     serializer = serializers.EEGSerializer(eegs, many=True)
@@ -1005,9 +1006,9 @@ def getOperatorSharedFolder(request):
 
 
 def operatorSharedFolder(id):
-    operator_id = id
+
     try:
-        operator = Operator.objects.get(id=operator_id)
+        operator = Operator.objects.get(id=id)
     except Operator.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -1016,15 +1017,8 @@ def operatorSharedFolder(id):
     except Contract.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
 
-
-    print(contract)
-    print(SharedFolder.objects.all())
-    print(SharedFolder.objects.filter(contract=contract))
-
     eegs = [shared_folder.eeg for shared_folder in SharedFolder.objects.filter(contract=contract) if notExpired(shared_folder)]
-    print(eegs)
-    serializer = serializers.EEGSerializer(eegs, many=True)
-    return Response(serializer.data)
+    return eegs
 
 
 def notExpired(shared_folder):
@@ -1072,13 +1066,18 @@ def getPatientsEEG(request):
 
     if type == 'doctor':
         eegs_shared = doctorSharedFolder(health_profession_id)
-    else:
+
+    if type == 'operator':
         eegs_shared = operatorSharedFolder(health_profession_id)
 
-    patient_eeg_list = list(eegs_shared)
 
-    for p in patient_eeg_list:
-        ret = Patient.objects.get(id=p.patient_id)
+    for p in list(eegs_shared):
+
+        try:
+            ret = Patient.objects.get(id=p.patient_id)
+        except Patient.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
         if ret not in patient_list:
             patient_list.append(ret)
     
@@ -1091,25 +1090,28 @@ def getPatientsEEG(request):
 @permission_classes([IsAuthenticated])
 def getOperatorsInSharedFolder(request):
     operator_list = []
-    health_profession_id = (request.GET['id'])
+    health_profession_id = ((request.GET['id']))
     
     type = (request.GET['type']) # passar no frontend
 
     if type == 'doctor':
         eegs_shared = doctorSharedFolder(health_profession_id)
-    else:
+
+    if type=='operator':
         eegs_shared = operatorSharedFolder(health_profession_id)
 
     operator_eeg_list = list(eegs_shared)
-
     for o in operator_eeg_list:
-        ret = Operator.objects.get(id=o.operator_id)
+
+        try:
+            ret = Operator.objects.get(id=o.id)
+        except Operator.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
         if ret not in operator_list:
             operator_list.append(ret)
     
     serializer = serializers.OperatorSerializer(operator_list, many=True)
-    print("serializer operators", serializer.data)
     return Response(serializer.data)
 
 @api_view(['GET'])

@@ -147,7 +147,7 @@ class Report(models.Model):
 class EEG(models.Model):
 
     operator = models.ForeignKey(Operator, verbose_name=('operator'), on_delete=models.CASCADE, related_name='%(class)s_operator', null=False)
-    patient = models.ForeignKey(Patient, verbose_name=('patient'), on_delete=models.CASCADE, related_name='%(class)s_patient', null=False)
+    patient = models.ForeignKey(Patient, verbose_name=('patient'), on_delete=models.CASCADE, related_name='%(class)s_patient', null=True)
     status = models.TextField(null=True, blank=True)                     
     timestamp = models.DateTimeField(null=True, blank=True)
     PRIORITIES = [("1","Very Low"),("2","Low"),("3","Medium"),("4","High"),("5","Very High")]
