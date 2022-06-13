@@ -11,7 +11,7 @@ def run():
         telephone="961234567",
         birthday="2001-01-01",
         gender="M",
-        medical_info="This patient has no health diseases."
+        medical_info=" - "
     )
     p2 = Patient(
         health_number="987654321",
@@ -21,7 +21,7 @@ def run():
         telephone="963291872",
         birthday="2001-01-01",
         gender="F",
-        medical_info="This patient has no health diseases."
+        medical_info=" - "
     )
     p3 = Patient(
         health_number="543216789",
@@ -31,7 +31,7 @@ def run():
         telephone="965746712",
         birthday="2001-01-01",
         gender="M",
-        medical_info="This patient has no health diseases."
+        medical_info=" - "
     )
     p4 = Patient(
         health_number="678912345",
@@ -41,7 +41,7 @@ def run():
         telephone="918273645",
         birthday="2001-01-01",
         gender="M",
-        medical_info="This patient has no health diseases."
+        medical_info=" - "
     )
     p5 = Patient(
         health_number="678912847",
@@ -51,7 +51,7 @@ def run():
         telephone="931123321",
         birthday="2001-01-01",
         gender="M",
-        medical_info="This patient has no health diseases."
+        medical_info=" - "
     )
 
     lst = [p1,p2,p3,p4,p5]
