@@ -11,6 +11,7 @@ import { EEGService } from 'src/app/services/eeg.service';
 import { EventService } from 'src/app/services/event.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Report } from 'src/app/classes/Report';
+import { IgxToastComponent } from 'igniteui-angular';
 
 
 @Component({
@@ -21,6 +22,7 @@ import { Report } from 'src/app/classes/Report';
 export class WorkspaceComponent implements OnInit {
 
   @ViewChild('close') closebutton!: any;
+  @ViewChild('toast') toast!: any;
 
   lst_eeg: EEG[] = [];  
   lst_error_eeg: EEG[] = [];  
@@ -112,11 +114,13 @@ export class WorkspaceComponent implements OnInit {
     const index = this.lst_eeg.indexOf(eeg, 0);
     if (index > -1) {
       this.lst_eeg.splice(index, 1);
+      this.lst_eeg = this.lst_eeg.slice();
     }
 
     const index1 = this.lst_error_eeg.indexOf(eeg, 0);
     if (index1 > -1) {
-      this.lst_eeg.splice(index1, 1);
+      this.lst_error_eeg.splice(index1, 1);
+      this.lst_error_eeg = this.lst_error_eeg.slice();
     }
 
     this.service.deleteEEG(eeg.id, this.token).subscribe();
@@ -158,31 +162,51 @@ export class WorkspaceComponent implements OnInit {
     this.eegService.submitEEG(formData, this.token).subscribe({
       next: (eeg) => {
         
-        let json = { "type": "EEG uploaded", "person": this.id, "eeg_id": ''+eeg.id}
-        let jsonObject = <JSON><unknown>json;
-        this.eventService.addEvent(jsonObject, this.token).subscribe();
 
-        
-        this.eegService.getPatientbyID(+eeg.patient, this.token).subscribe((info) => {
-          this.lst_patient.push(info)
+        /* this.eegService.getPatientbyID(+eeg.patient, this.token).subscribe((info) => {
+          console.log("Adicionar à tabela") // não está a dar update à tabela porque está a dar erro de autorização :)
+
+          this.lst_patient.push(info);
+          this.lst_patient = this.lst_patient.slice();
+
+          this.lst_eeg.reverse();
+          this.lst_error_eeg.reverse();
 
           if (eeg.status == null) {  
             this.eegService.getReportbyID(+eeg.report, this.token).subscribe((info) => {
               this.lst_report.push(info)
               this.lst_eeg.push(eeg);
+
+              this.lst_eeg.reverse();
+
+              this.lst_eeg = this.lst_eeg.slice();
+              this.lst_report = this.lst_report.slice();
             });
   
-          } else this.lst_error_eeg.push(eeg);
+          } else {
+            this.lst_error_eeg.push(eeg);
+            this.lst_error_eeg.reverse();
+
+            this.lst_error_eeg = this.lst_error_eeg.slice();
+          }
           
+        }); */
+
+        let json = { "type": "EEG uploaded", "person": this.id, "eeg_id": ''+eeg.id}
+        let jsonObject = <JSON><unknown>json;
+        this.eventService.addEvent(jsonObject, this.token).subscribe((info) => {
+          // quando acabar de criar o evento
+          this.closebutton.nativeElement.click();
+          window.location.reload()
         });
 
-        this.lst_eeg.reverse();
-        this.lst_error_eeg.reverse();
-
         
-        this.closebutton.nativeElement.click();
-        // window.location.reload()
 
+        //this.toast.nativeElement.show()
+
+        /* if (eeg.status == null) this.toast.open("EEG uploaded with success!");
+        else this.toast.open("EEG uploaded with errors :(");
+ */
       },
       error: (error) => {
         console.log(error);
@@ -204,7 +228,6 @@ export class WorkspaceComponent implements OnInit {
 
   changeTab(activeTab: string){
     this.activeTab = activeTab;
-    console.log(this.activeTab)
   }
 
 }

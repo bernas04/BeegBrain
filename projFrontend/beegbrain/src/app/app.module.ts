@@ -37,6 +37,7 @@ import { EventTableComponent } from './components/event-table/event-table.compon
 
 import { NgxPaginationModule } from 'ngx-pagination';
 import { IgxComboModule } from "igniteui-angular";
+import { IgxToastModule } from 'igniteui-angular';
 
 @NgModule({
   declarations: [
@@ -80,6 +81,7 @@ import { IgxComboModule } from "igniteui-angular";
     NgxEditorModule,
     NgxPaginationModule,
     IgxComboModule,
+    IgxToastModule
   ],
   providers: [],
   bootstrap: [AppComponent]

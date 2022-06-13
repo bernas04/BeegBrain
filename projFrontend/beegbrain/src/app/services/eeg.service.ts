@@ -79,6 +79,7 @@ export class EEGService {
   }
 
   getPatientbyID(id: number, token: string) : Observable<Patient>{
+    console.log(">> PEDIDO À API -  paciente ", id)
     return this.http.get<Patient>(this.BASE_URL+'patient/'+id,{ 
       headers: new HttpHeaders({
         'Authorization': 'Token ' + token,

@@ -17,6 +17,8 @@ export class ErrorareaComponent implements OnInit {
   public map = new Map<number, string>();
   private eeg2delete! : EEG;
 
+  config: any;
+
   constructor(private service: EEGService) { }
 
   ngOnInit(): void {
@@ -34,6 +36,17 @@ export class ErrorareaComponent implements OnInit {
         this.map.set(eeg.id,'undefined')
       }
     });
+
+    this.config = {
+      itemsPerPage: 10,
+      currentPage: 1,
+      totalItems: this.lst_EEG.length
+    };
+  }
+
+
+  pageChanged(event: any){
+    this.config.currentPage = event;
   }
 
   sendMail() {

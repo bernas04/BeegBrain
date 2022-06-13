@@ -628,6 +628,7 @@ def createEEG(request):
 
         else:
             print(serializer_eeg.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
         if stat is not None:
             print("RETURN DO EEG COM ERRO")
