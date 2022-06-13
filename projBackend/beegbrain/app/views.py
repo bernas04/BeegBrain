@@ -45,7 +45,6 @@ def getUserByEmail(request):
     email = request.GET['email']
     try:
         user = Person.objects.get(email=email)
-        print(user)
     except Person.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     try:
@@ -129,16 +128,12 @@ def getProvidenceById(request):
 @permission_classes([IsAuthenticated])
 def getProvidenceByOperatorId(request):
     prov_id=request.GET['id']
-    print("im here")
     try:
         query_operators = Operator.objects.filter(person_ptr_id=prov_id)
         providence_id = query_operators.values('providence_id').get()['providence_id']
         providence =  Institution.objects.get(id=providence_id)
-        
-        print("PROVIDENCE",providence)
-
+    
     except Institution.DoesNotExist:
-        print("cant find nothing")
         return Response(status=status.HTTP_404_NOT_FOUND)
     
     serializer = serializers.InstitutionSerializer(providence)
@@ -305,14 +300,13 @@ def getPatientById(request, id):
     return Response(serializer.data)
 
 
-# ############################### Operators ###############################
+# ############################### OPERATORS ###############################
 
 @api_view(['GET'])
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def getOperators(request):
     """GET de todos os Operators"""
-    print("all operators...")
     operators = Operator.objects.all()
     serializer = serializers.OperatorSerializer(operators, many=True)
     return Response(serializer.data)
@@ -335,7 +329,6 @@ def createOperator(request):
 def getOperatorById(request):
     """GET de um operator pelo seu id"""
     op_id = int(request.GET['operator'])
-    print("tenho este id" ,op_id)
     try:
         ret = Operator.objects.get(id=op_id)
     except Operator.DoesNotExist:
@@ -370,7 +363,6 @@ def getDoctors(request):
 def createDoctor(request):
     serializer = serializers.UserSerializer(data=request.data)
     if serializer.is_valid():
-        print("CRIEIEIEIEIEIw")
         resp = serializer.createDoctor(request.data)
         token = serializers.TokenSerializer(
             data={'key': resp['token'].key, 'id': resp['id'], 'type': 'doctor', 'health_number': request.data['health_number']})
@@ -449,9 +441,7 @@ def getDoctorRevisionCenters(doctor_id):
     """GET de todos os doctor_revision_center"""
     try:
         doctor = Doctor.objects.get(id=doctor_id)
-        print(doctor)
     except Doctor.DoesNotExist:
-        print("doutor n existe")
         return None
     doctor_revision_centers = DoctorRevisionCenter.objects.filter(
         doctor=doctor)
@@ -461,12 +451,9 @@ def getDoctorRevisionCenters(doctor_id):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def getRevisionCentersByDoctor(request):
-    print("im getting revision centers...")
     id = request.GET['id']
-
     revision = getDoctorRevisionCenters(id)
     serializer = serializers.RevisionCenterSerializer(revision, many=True)        
-    print("serializer", serializer.data)
     return Response(serializer.data)
 
 @api_view(['POST'])
@@ -529,13 +516,20 @@ def getReportById(request):
         try:
             rep_id = int(request.data["id"])
             report = Report.objects.get(id=rep_id)
-            report.content = request.data["content"]
+            if request.data["content"]:
+                report.content = request.data["content"]
+                report.progress = request.data["progress"]
+                
+            if request.data["progress"]:
+                report.progress = request.data["progress"]
             report.save()
             
         except Report.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
         
         return Response(True)
+    
+
 
 
 # ############################### EEG ###############################
@@ -584,7 +578,7 @@ def createEEG(request):
         patient = Patient.objects.get(health_number=request.data['patientID'])
     except Patient.DoesNotExist:
         patient = None
-
+    
     for memoryFile in request.FILES.getlist('file'):
 
         file = memoryFile.file
@@ -610,8 +604,8 @@ def createEEG(request):
             duration = None
 
         if (not patient): stat = 'patient undefined'
-        empty_report = Report.objects.create(content="", timestamp=datetime.now())
 
+        empty_report = Report.objects.create(content="", timestamp=datetime.now(), progress="to do")
         eeg = {
             "operator": operator,
             "patient": patient,
@@ -634,10 +628,27 @@ def createEEG(request):
 
         else:
             print(serializer_eeg.errors)
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
         if stat is not None:
             print("RETURN DO EEG COM ERRO")
-            return Response(serializer_eeg.data, status=status.HTTP_201_CREATED)
+            eegObject = EEG.objects.get(id=idEEG)
+            print("creating shared folder...")
+
+            try:
+                print("getting contract...")
+                print(" - operator: ", operator)
+                providence = operator.providence
+                print(" - providence: ", providence.id)
+                print(" - all contracts: ", Contract.objects.all())
+                contract = Contract.objects.get(providence__id=providence.id)
+                print(" - contract: ", contract)
+            except Contract.DoesNotExist:
+                print(">> CONTRACT NOT FOUND 🤬")
+                return Response(status=status.HTTP_404_NOT_FOUND)
+
+            SharedFolder.objects.create(contract=contract,eeg=eegObject)
+            continue
 
         eegObject = EEG.objects.get(id=idEEG)
 
@@ -649,6 +660,24 @@ def createEEG(request):
             Annotation.objects.create(
                 start=start, duration=duration, description=description, eeg=eegObject)
 
+
+        # Shared Folder
+        try:
+            print("getting contract...")
+            print(" - operator: ", operator)
+            providence = operator.providence
+            print(" - providence: ", providence.id)
+            print(" - all contracts: ",  Contract.objects.all())
+            contract = Contract.objects.get(providence__id=providence.id)
+            print(" - contract: ", contract)
+        except Contract.DoesNotExist:
+            print(">> CONTRACT NOT FOUND 🤬")
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        print("creating shared folder...")
+        SharedFolder.objects.create(contract=contract,eeg=eegObject)
+
+
         # Split EEG by channels
         poolSize = multiprocessing.cpu_count()
         pool = multiprocessing.Pool(poolSize)
@@ -657,23 +686,13 @@ def createEEG(request):
             channelLabel = re.sub('[^0-9a-zA-Z]+', '', signal_labels[i])
             pool.apply_async(worker, (channelLabel, eegObject, signal,))
 
-        # Shared Folder
-        try:
-            providence = operator.providence
-            print("getting contract...")
-            print(" - operator: ", operator)
-            print(" - providence: ", providence.id)
-            print(" - all contracts: ", Contract.objects.all())
-            contract = Contract.objects.get(providence=providence.id)
-        except Contract.DoesNotExist:
-            print("------------------------------------------------------------------- CONTRACT NOT FOUND")
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-
-        print("creating shared folder...")
-        SharedFolder.objects.create(contract=contract,eeg=eegObject)
 
     return Response(serializer_eeg.data, status=status.HTTP_201_CREATED)
+
+
+def get_queryset(id):
+    """  prov_id = self.kwargs.get('providence') """
+    return Contract.objects.get(providence__id=id)
 
 
 def saveChannel(label, eeg, array):
@@ -682,6 +701,7 @@ def saveChannel(label, eeg, array):
     chn = Channel.objects.create(label=label, eeg=eeg)
     chn.file.name = filename + ".npy"
     chn.save()
+    chn.close()
 
 
 def worker(label, eeg, signal):
@@ -756,7 +776,7 @@ def getChannelLabels(request):
     eeg_id = int(request.GET['eeg'])
     channels = Channel.objects.filter(eeg_id=eeg_id)
     channelsLabels = list(set([chn.label for chn in channels]))
-    channelLabels = sorted(channelsLabels, key=lambda x: (x[0],int(x[1:])))
+    channelLabels = sorted(channelsLabels, key=lambda x: (x[0],x[1:]))
     return Response(channelLabels)
 
 
@@ -800,7 +820,6 @@ def getChannelByLabel(request):
 def getChannelsByLabels(request):
     """GET de channels por um array de labels e id do EEG"""
     poolSize = multiprocessing.cpu_count()
-    print(poolSize)
     pool = multiprocessing.Pool(poolSize)
     start = int(request.GET['start'])
     end = int(request.GET['end'])
@@ -826,7 +845,6 @@ def bufferWorker(data,label,eeg,start,end):
     for idx in range(start,end):
         valuesMap[idx + 1] = round(array[idx], 5)
     data[label] = valuesMap
-    print("label done --> " + label)
 
 
 @api_view(['GET'])
@@ -872,7 +890,7 @@ def createAccessEeg(request):
 @permission_classes([IsAuthenticated])
 def getEegAnnotations(request):
     """GET de todas as annotations de um EEG"""
-    eeg_id = int(request.GET['eeg'])
+    eeg_id = int(request.GET['id'])
     try:
         eeg = EEG.objects.get(id=eeg_id)
     except EEG.DoesNotExist:
@@ -921,8 +939,6 @@ def getEegEvents(request):
 @permission_classes([IsAuthenticated])
 def createEvent(request):
     """POST de um evento"""
-
-    print(request.data)
     data = request.data
 
     try:
@@ -986,10 +1002,10 @@ def doctorSharedFolder(id):
     doctor_revision_centers = getDoctorRevisionCenters(id)
     contracts = getContractFromRevisionCenters(doctor_revision_centers)
     eegs = []
+
     for contract in contracts:
         shared_folders = SharedFolder.objects.filter(contract=contract)
         eegs.extend([shared_folder.eeg for shared_folder in shared_folders])
-    print(eegs)
     return eegs
 
 
@@ -998,8 +1014,6 @@ def doctorSharedFolder(id):
 @permission_classes([IsAuthenticated])
 def getOperatorSharedFolder(request):
     """GET de todas as pastas partilhadas"""
-    print(">> getOperatorSharedFolder")
-
     eegs = operatorSharedFolder(int(request.GET['id']))
     serializer = serializers.EEGSerializer(eegs, many=True)
     return Response(serializer.data)
@@ -1072,14 +1086,8 @@ def getPatientsEEG(request):
 
 
     for p in list(eegs_shared):
-
-        try:
-            ret = Patient.objects.get(id=p.patient_id)
-        except Patient.DoesNotExist:
-            return Response(status=status.HTTP_404_NOT_FOUND)
-
-        if ret not in patient_list:
-            patient_list.append(ret)
+        if p.patient and p.patient not in patient_list:
+            patient_list.append(p.patient)
     
     serializer = serializers.PatientSerializer(patient_list, many=True)
     return Response(serializer.data)
@@ -1090,9 +1098,8 @@ def getPatientsEEG(request):
 @permission_classes([IsAuthenticated])
 def getOperatorsInSharedFolder(request):
     operator_list = []
-    health_profession_id = ((request.GET['id']))
-    
-    type = (request.GET['type']) # passar no frontend
+    health_profession_id = int(request.GET['id'])
+    type = request.GET['type'] # passar no frontend
 
     if type == 'doctor':
         eegs_shared = doctorSharedFolder(health_profession_id)
@@ -1100,11 +1107,9 @@ def getOperatorsInSharedFolder(request):
     if type=='operator':
         eegs_shared = operatorSharedFolder(health_profession_id)
 
-    operator_eeg_list = list(eegs_shared)
-    for o in operator_eeg_list:
-
+    for o in list(eegs_shared):
         try:
-            ret = Operator.objects.get(id=o.id)
+            ret = Operator.objects.get(id= o.operator.id)
         except Operator.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
 
@@ -1158,15 +1163,12 @@ def getEEGfilter(request):
                 eegs_list.remove(eeg)
 
     if institution_id:
-        print("ID", institution_id)
-        #Contract
         contract = Contract.objects.filter(revision_center_id=institution_id)
         final_query=[]
 
         if contract:
             providence_id = contract.values('providence_id').get()['providence_id']
 
-            print("estou a analisar")
             query_operators = Operator.objects.select_related(
                 'providence').filter(providence__institution_ptr_id=providence_id)
             for o in query_operators:
@@ -1186,7 +1188,12 @@ def getEEGfilter(request):
                 eegs_list.remove(eeg)
 
     if report_status:
-        eegs = EEG.objects.filter(report__contains=report_status)
+        query_reports = EEG.objects.select_related(
+                'report').filter(report__progress=report_status)
+        
+        for eeg in temp_list:
+            if eeg not in query_reports and eeg in eegs_list:
+                eegs_list.remove(eeg)
 
     if priority:
         eegs = EEG.objects.filter(priority__contains=priority)

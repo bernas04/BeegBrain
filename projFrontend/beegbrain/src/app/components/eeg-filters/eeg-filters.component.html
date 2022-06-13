@@ -1,28 +1,40 @@
-<div class="filters" style="margin-left: 50px">
-  <form method="GET" [formGroup]="filtersForm">
-    <div class="card mb-4">
-      <h4 style="align-self: center"><strong> Search by</strong></h4>
 
-      <div class="card-body">
-        <div class="card-header"><strong> EEG ID </strong></div>
-        <div class="form-outline">
+
+<fieldset class="filters">
+
+  <hr class="hr-text" data-content="Filters">
+  
+  <form method="GET" [formGroup]="filtersForm" >
+
+
+    <!-- PESQUISA POR EEG ID -->
+    
+     <!--  <div class="card-body">
+        <div class="col-lg-12">
+          <strong> EEG ID </strong>
+        </div>
+        
+        <div class="col-lg-12 form-outline">
           <input
-            (keyup.enter)="getFiltersFormData()"
+            (keyup)="getFiltersFormData()"
             formControlName="eeg_id"
-            placeholder="ID"
+            placeholder="EEG id"
             type="search"
             id="eegId"
             autocomplete="on"
             class="form-control"
+            place
             #searchTerm
           />
           <label class="form-label" for="formControlDefault"></label>
         </div>
-      </div>
+      </div> -->
 
       <div class="card-body">
-        <div class="card-header"><strong> Date </strong></div>
-        <div class="form-outline">
+        <div class="col-lg-12">
+          <strong> Date </strong>
+        </div>
+        <div class="col-lg-12 form-outline">
           <input
             (change)="getFiltersFormData()"
             placeholder="ID"
@@ -36,30 +48,38 @@
         </div>
       </div>
 
-        <div class="card-body">
-        <div class="card-header"><strong> Operator </strong></div>
-          <div class="form-outline">
+      <div class="card-body">
+        <div class="col-lg-12">
+          <strong> Operator </strong>
+        </div>
+      
+        <div class="col-lg-12 form-outline">
           <select
+            [(ngModel)]='operatorSelected'
             class="form-control"
             id="operator"
             #operator
             formControlName="operator_id"
             style="width: 99%"
             (change)="getFiltersFormData()">
+            <option value="" disabled>choose the operator...</option>
             <option
               *ngFor="let ts of listOperators; let i = index"
               [value]="listOperators[i].health_number">
             {{ listOperators[i].name }} ({{ listOperators[i].health_number }})
             </option>
           </select>
-
+          <label class="form-label" for="formControlDefault"></label>
         </div>
-        </div>
+      </div>
 
       <div class="card-body">
-        <div class="card-header"><strong> Patient </strong></div>
-        <div class="form-outline">
+        <div class="col-lg-12">
+          <strong> Patient </strong>
+        </div>
+        <div class="col-lg-12 form-outline">
           <select
+            [(ngModel)]='patientSelected'
             id="patient"
             (change)="getFiltersFormData()"
             formControlName="patient_id"
@@ -67,30 +87,53 @@
             style="width: 99%"
             aria-label="Default select example"
           >
+            <option value="" disabled>choose the patient...</option>
             <option
               *ngFor="let ts of lst_patients; let i = index"
               [value]="lst_patients[i].health_number"
             >
-              Patient Name: {{ lst_patients[i].name }}
+            {{ lst_patients[i].name }}
             </option>
           </select>
+
+
+          <!-- <input
+          (keyup)="getFiltersFormData()"
+          (focusout)="clean()"
+          formControlName="patient_id"
+          placeholder="health number"
+          type="search"
+          class="form-control"
+          place
+          #searchTerm
+          />
+
+          <div style="position: absolute; max-height: 250px; overflow-y: scroll; background-color: white; box-shadow: 0px 0px 10px 1px;" >
+            <div *ngFor="let ts of lst_patients" class="op d-flex" >
+              <p style="padding-top: 20px; padding-left: 20px; font-size: medium;" > {{ ts.name }} </p>
+              <p class="text-muted" style="padding-top: 20px; margin-left: 1em; font-size: small;" > ( {{ ts.health_number }} )</p>
+            </div>
+          </div> -->
 
           <label class="form-label" for="formControlDefault"></label>
         </div>
       </div>
 
       <div class="card-body"  *ngIf="type == 'doctor'">
-        <div class="card-header"><strong> Institution </strong></div>
-        <div class="form-outline">
+        <div class="col-lg-12">
+          <strong> Revision Center </strong>
+        </div>
+        <div class="col-lg-12 form-outline">
           <select
             id="institution"
             (change)="getFiltersFormData()"
-
+            [(ngModel)]='revisionSelected'
             formControlName="institution_id"
             class="form-control"
             style="width: 99%"
             aria-label="Default select example"
           >
+            <option value="" disabled>choose the revision center...</option>
             <option
               *ngFor="let ts of listRevision; let i = index"
               [value]="listRevision[i].id"
@@ -102,48 +145,62 @@
         </div>
       </div>
 
-      <div class="card-body">
-        <div class="card-header"><strong> Priority </strong></div>
-        <div class="form-outline">
+      <div class="card-body" >
+        <div class="col-lg-12">
+          <strong> Priority </strong>
+        </div>
+        <div class="col-lg-12 form-outline">
         <select
           class="form-control"
           id="priority"
           #priority
+          [(ngModel)]='prioritySelected'
           formControlName="priority"
           (change)="getFiltersFormData()"
         >
-          <option value="5">Urgent</option>
+          <option value="" disabled>choose the EEG priority...</option>
+          <option value="5">Very High</option>
           <option value="4">High</option>
           <option value="3">Medium</option>
           <option value="2">Low</option>
           <option value="1">Very Low</option>
-          <option value="">None</option>
         </select>
+        <label class="form-label" for="formControlDefault"></label>
       </div>
+      
     </div>
 
       <div class="card-body">
-        <div class="card-header"><strong> Report Status </strong></div>
-        <select
-          class="form-control"
-          id="report"
-          #report
-          (change)="getFiltersFormData()">
-          <option value="3">Done</option>
-          <option value="2">Progress</option>
-          <option value="1">To do</option>
-          <option value="">None</option>
-        </select>
+        <div class="col-lg-12">
+          <strong> Report Progress </strong>
+        </div>
+        <div class="col-lg-12 form-outline">
+          <select class="form-control"
+            id="report"
+            [(ngModel)]='reportSelected'
+            formControlName="report_status"
+            #report
+            (change)="getFiltersFormData()">
+            <option value="" disabled>choose the report progress...</option>
+            <option value="done">Done</option>
+            <option value="in progress">In Progress</option>
+            <option value="to do">To do</option>
+          </select>
+          <label class="form-label" fo="formControlDefault"></label>
+        </div>
       </div>
       
-      <button
-        type="button"
-        class="btn btn-success mb-5 mt-5 ml-5 mr-5 text-center d-flex justify-content-center"
-        (click)="refresh()">
-        <i class="bi bi-arrow-clockwise"></i> Refresh filters
-      </button>
+      <div class="card-body">
+        <div class="col-lg-12">
+        <button
+          type="button"  style="float: right; margin:auto"
+          class="btn btn-primary"
+          (click)="refresh()">
+          Reset
+        </button>
+      </div>
     </div>
-  
-  </form>
 
-</div>
+
+  </form>
+</fieldset>

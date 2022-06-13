@@ -1,97 +1,95 @@
 <app-navbar> </app-navbar>
-<div class="container py-5">
+
+<div class="row justify-content-center">
+    <div class="col-lg-3">
 
 
-    <div class="row">
-        <div class="col-lg-4">
-            <div class="card mb-4">
-                <div class="card-body text-center">
-                    <img src="../../../assets/doctor1.png" alt="avatar"
-                        class="rounded-circle img-fluid" style="width: 150px;">
-                    <h5 class="my-3">{{name}}</h5>
-                    <p class="text-muted mb-1">{{type}}</p>
-                    <!-- <div class="d-flex justify-content-center mb-2">
-                        <button type="button" class="btn btn-primary" routerLink="/editprofile">Edit profile</button>
-                    </div> -->
-                </div>
+        <div class="row">
+            <div class="col-sm-6">
+                <p>Full Name</p>
             </div>
-          
+            <div class="col-sm-6">
+                <p class="text-muted mb-0">{{name}}</p>
+            </div>
         </div>
-        <div class="col-lg-8">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <p class="mb-0">Full Name</p>
-                        </div>
-                        <div class="col-sm-9">
-                            <p class="text-muted mb-0">{{name}}</p>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <p class="mb-0">Email</p>
-                        </div>
-                        <div class="col-sm-9">
-                            <p class="text-muted mb-0">{{email}}</p>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <p class="mb-0">Health Number</p>
-                        </div>
-                        <div class="col-sm-9">
-                            <p class="text-muted mb-0">{{health_number}}</p>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div *ngIf="!isOperator" class="col-sm-3">
-                            <p class="mb-0">Medical Number</p>
-                        </div>
-                        <div *ngIf="isOperator" class="col-sm-3">
-                            <p class="mb-0">Operator Number</p>
-                        </div>
-                        <div class="col-sm-9">
-                            <p class="text-muted mb-0">{{workerNumber}}</p>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <p class="mb-0">Phone</p>
-                        </div>
-                        <div class="col-sm-9">
-                            <p class="text-muted mb-0">{{telephone}}</p>
-                        </div>
-                    </div>
-                    <hr *ngIf="isOperator">
-                    <div *ngIf="isOperator" class="row">
-                        <div class="col-sm-3">
-                            <p class="mb-0">Institution</p>
-                        </div>
-                        <div class="col-sm-9">
-                            <p class="text-muted mb-0">{{nameInstitution}}</p>
-                        </div>
-                    </div>
-                    <hr>
-                    <div class="row">
-                        <div class="col-sm-3">
-                            <p class="mb-0">Address</p>
-                        </div>
-                        <div class="col-sm-9">
-                            <p class="text-muted mb-0">{{address}}</p>
-                        </div>
-                    </div>
-                    
-                    
-                </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <p>Profession</p>
             </div>
-            <div class="row">
-               
-              
+            <div class="col-sm-6">
+                <p class="text-muted mb-0">{{type}}</p>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <p >Email</p>
+            </div>
+            <div class="col-sm-6">
+                <p class="text-muted mb-0">{{email}}</p>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <p >Health Number</p>
+            </div>
+            <div class="col-sm-6">
+                <p class="text-muted mb-0">{{health_number}}</p>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div *ngIf="!isOperator" class="col-sm-6">
+                <p >Medical Number</p>
+            </div>
+            <div *ngIf="isOperator" class="col-sm-6">
+                <p >Operator Number</p>
+            </div>
+            <div class="col-sm-6">
+                <p class="text-muted mb-0">{{workerNumber}}</p>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <p >Phone</p>
+            </div>
+            <div class="col-sm-6">
+                <p class="text-muted mb-0">{{telephone}}</p>
+            </div>
+        </div>
+
+        <hr *ngIf="isOperator">
+
+        <div *ngIf="isOperator" class="row">
+            <div class="col-sm-6">
+                <p >Institution</p>
+            </div>
+            <div class="col-sm-6">
+                <p class="text-muted mb-0">{{nameInstitution}}</p>
+            </div>
+        </div>
+
+        <hr>
+
+        <div class="row">
+            <div class="col-sm-6">
+                <p >Address</p>
+            </div>
+            <div class="col-sm-6">
+                <p class="text-muted mb-0">{{address}}</p>
             </div>
         </div>
     </div>

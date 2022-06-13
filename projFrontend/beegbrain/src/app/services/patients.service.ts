@@ -54,11 +54,31 @@ export class PatientsService {
       headers: new HttpHeaders({
         'Authorization': 'Token ' + token,
         'Content-Type': 'application/json',
-      }),
+      })
     });
   }
+  
 
+  getEEGbySharedFolder(id : number, type: string, token: string) : Observable<EEG[]> {
 
+    if (type === 'operator') {
+      return this.http.get<EEG[]>(this.BASE_URL + 'operatorSharedFolders?id='+ id, { 
+        headers: new HttpHeaders({
+          'Authorization': 'Token ' + token,
+          'Content-Type': 'application/json',
+        })
+      });
+
+    } else {
+      return this.http.get<EEG[]>(this.BASE_URL + 'doctorSharedFolders?id='+ id, { 
+        headers: new HttpHeaders({
+          'Authorization': 'Token ' + token,
+          'Content-Type': 'application/json',
+        })
+      });
+
+    }
+  }
 
 
 }

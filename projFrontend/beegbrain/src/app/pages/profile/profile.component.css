@@ -1,4 +1,5 @@
-body{margin-top:20px;
+/* body{
+    margin-top:20px;
     color: #9b9ca1;
     }
     .bg-secondary-soft {
@@ -40,8 +41,7 @@ body{margin-top:20px;
         display: block;
         width: 100%;
         padding: 0.5rem 1rem;
-        font-size: 0.9375rem;
-        font-weight: 400;
+
         line-height: 1.6;
         color: #29292e;
         background-color: #fff;
@@ -55,4 +55,6 @@ body{margin-top:20px;
         transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
         transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
         transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
-    }
+    } */
+
+p{font-size: medium;}

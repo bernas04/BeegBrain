@@ -93,16 +93,14 @@ WSGI_APPLICATION = 'beegbrain.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'information_schema',
+        'NAME': 'beegbrain',
         'HOST': '127.0.0.1',
         'PORT': '3306',
         'USER': 'root',
         'PASSWORD': 'root',
         'CONN_MAX_AGE': 3600,
         'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1;\
-            create database if not exists beegbrain;\
-            use beegbrain;"
+            
             }
     }
 }
@@ -144,6 +142,7 @@ USE_TZ = True
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 MEDIA_URL = '/media/'
+
 
 
 # Static files (CSS, JavaScript, Images)

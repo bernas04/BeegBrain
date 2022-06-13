@@ -1,7 +1,11 @@
 
-.editor {
-    border: 2px solid rgba(0, 0, 0, 0.2);
-    border-radius: 4px;
+::ng-deep { /* to penetrate <ngx-editor> CSS styling */
+
+
+    .editor {
+        border: 2px solid rgba(0, 0, 0, 0.2);
+        border-radius: 4px;
+    }
 
     .NgxEditor__MenuBar {
         border-top-left-radius: 4px;
@@ -10,19 +14,19 @@
     }
 
     .NgxEditor {
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-        border: none;
-        
+      height: 30em;
+      overflow-y: scroll;
     }
-
-    .CodeMirror {
-        border: 1px solid #eee;
-        height: auto;
-        margin-bottom: 0.7rem;
-
-        pre {
-            white-space: pre !important;
-        }
+  
+    .NgxEditor__Content {
+      min-height: 30em; /* make all of the editor area clickable */
     }
+}
+
+.bottom {
+    margin-top: 0.5em;
+}
+
+.top {
+    margin-bottom: 0.5em;
 }

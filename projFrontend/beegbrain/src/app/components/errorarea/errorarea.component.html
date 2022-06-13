@@ -1,5 +1,5 @@
-<div class="card">
-    <div class="card-body">
+<!-- <div class="card">
+    <div class="card-body"> -->
 
         <div class="table-responsive" style="margin-top: 1em;">
             <table id="eeg_table" class="table align-middle table-striped ">
@@ -13,7 +13,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngFor='let eeg of lst_EEG'>
+                    <tr *ngFor='let eeg of lst_EEG  | paginate: config'>
 
                         <td class="fs-4">{{eeg.id}}</td>
 
@@ -49,18 +49,21 @@
                         </td>
 
                         <td style="text-align: right; vertical-align: middle;">
-                            <button type="button" class="btn btn-primary" style="margin-right: 1em;" data-toggle="modal" data-target="#form"> <i class="bi bi-envelope-plus-fill"></i> </button>
-                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#my-modal" style="margin-right: 1em;" (click)="save2delete( eeg )"> <i class="bi bi-trash-fill"></i> </button>
+                           <!--  <button type="button" class="btn btn-primary" style="margin-right: 1em;" data-toggle="modal" data-target="#form"> <i class="bi bi-envelope-plus-fill"></i> </button> -->
+                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete" style="margin-right: 1em;" (click)="save2delete( eeg )"> <i class="bi bi-trash-fill"></i> </button>
                         </td>
 
                     </tr>              
                 </tbody>
             </table>
+            
+            <pagination-controls (pageChange)="pageChanged($event)"></pagination-controls>
+
         </div>
-    </div>
+<!--     </div>
     
 </div>
-
+ -->
 <div class="d-flex align-items-center justify-content-center">
 
     <button type="button" style="border-radius: 3%" class="btn btn-danger" data-toggle="modal" data-target="#form"> Contact support team <i class="bi bi-envelope-fill" ></i></button>
@@ -69,7 +72,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
 
-                <div class="text-center mt-4 mb-4"> 
+                <div class="text-center mt-4 mb-4" > 
                     <h4>Contact Support Team</h4>
                 </div>
                 
@@ -100,7 +103,7 @@
 
 
 <!-- ------------------------------------------- ARE YOU SURE U WANNA DELETE THE EXAM ------------------------------------------- -->
-<div id="my-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+<div id="delete" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content border-0">
             <div class="modal-body p-0">

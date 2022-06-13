@@ -20,7 +20,6 @@ export class FiltersService {
   getTheirPatients(token:string){
     let type = ''+localStorage.getItem('type');
     let id = ''+localStorage.getItem('id');
-    console.log(id)
 
     return this.http.get<Patient[]>(this.BASE_URL+ 'filter/patients?' + 'id=' + id  + '&type=' + type ,{ 
       headers: new HttpHeaders({
@@ -33,7 +32,6 @@ export class FiltersService {
   getEEgOperators(token:string){
     let type = ''+localStorage.getItem('type');
     let id = ''+localStorage.getItem('id');
-    console.log(id)
 
     return this.http.get<Operator[]>(this.BASE_URL+ 'filter/operators?' + 'id=' + id  + '&type=' + type ,{ 
       headers: new HttpHeaders({
@@ -44,10 +42,6 @@ export class FiltersService {
   }
 
   getRevisionCentersByDoctor(id:string,token:string): Observable<RevisionCenter[]>{
-  
-    console.log("oi?")
-    console.log(id)
-
     return this.http.get<RevisionCenter[]>(this.BASE_URL+ 'filter/revcenter?' + 'id=' + id ,{ 
       headers: new HttpHeaders({
         'Authorization': 'Token ' + token,

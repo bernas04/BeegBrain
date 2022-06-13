@@ -49,12 +49,10 @@ input[type="text"]{font-size: 15px/24px ; color: #333; width: 100%; box-sizing: 
 
 :focus{outline: none;}
 
-.col-10{float: left; width: 100%; margin: 40px 3%; position: relative;} /* necessary to give position: relative to parent. */
+.col-10{float: left; width: 50%; margin: 30px 3%; position: relative;} /* necessary to give position: relative to parent. */
 input[type="text"]{font-size: 15px/24px ; color: #333; width: 100%; box-sizing: border-box; letter-spacing: 1px;}
 
-.effect-1, 
-.effect-2, 
-.effect-3{border: 0; padding: 7px 0; border-bottom: 1px solid #ccc;}
-
+.effect-1{border: 0; padding: 3px 0; border-bottom: 1px solid #ccc;}
 .effect-1 ~ .focus-border{position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background-color: #4caf50; transition: 0.4s;}
 .effect-1:focus ~ .focus-border{width: 100%; transition: 0.4s;}
+

@@ -6,51 +6,75 @@ import { Router } from '@angular/router';
 import { EEGService } from 'src/app/services/eeg.service';
 import { EEG } from 'src/app/classes/EEG';
 import { EEGViewerComponent } from 'src/app/components/eeg-viewer/eeg-viewer.component';
-import { buffer, map } from 'rxjs';
+import { buffer } from 'rxjs';
+import { Report } from 'src/app/classes/Report';
+import { Annotation } from 'src/app/classes/Annotation';
+import { ReportService } from 'src/app/services/report.service';
+import { PatientsService } from 'src/app/services/patients.service';
+import { Patient } from 'src/app/classes/Patient';
 
 
 @Component({
-  selector: 'app-eeg',
-  templateUrl: './eeg.component.html',
-  styleUrls: ['./eeg.component.css'],
+  selector: "app-eeg",
+  templateUrl: "./eeg.component.html",
+  styleUrls: ["./eeg.component.css"],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EegComponent implements OnInit {
-
   @ViewChild("child")
-  eeg_viewer! : EEGViewerComponent
+  eeg_viewer!: EEGViewerComponent;
 
-  dropdownSettings : IDropdownSettings = {};
-  dropdownList! : String[];
-  labels : String[] = [];
-  eegInfo! : EEG;
-  labelsSignal : Map<String,Map<Number,Number>> = new Map();
-  id! : number 
-  control : boolean = false;
-  token = '' + localStorage.getItem('token');
+  report!: Report;
+  report_progress!: String;
+  dropdownSettings: IDropdownSettings = {};
+  dropdownList!: String[];
+  labels: String[] = [];
+  eegInfo!: EEG;
+  labelsSignal: Map<String, Map<Number, Number>> = new Map();
+  id!: number;
+  control: boolean = false;
+  token = "" + localStorage.getItem("token");
   initial: number = 0;
   window_size: number = 30;
-  indices! : number;
-  signalsInSecond! : number;
-  endLimit! : number;
+  indices!: number;
+  signalsInSecond!: number;
+  endLimit!: number;
   updateViewControl: boolean = false;
+  annotations!: Annotation[];
+  selectedOption!: Annotation;
+  selected: string = '';
+  patient!: Patient;
+  age!:string
+
+  averageEachChannel: Map<string,number> = new Map();
+  normalizedLabelsSignal : Map<String,Map<Number,Number>> = new Map();
+  playing: boolean = true;
 
 
-  speed: number = 1; // default: 0.1 segundo
+  speed: number = 10; // default : 0.1 segundo
   options: Options = {
     floor: 1,
     ceil: 100,
-    step: 1,        
+    step: 1,
     rightToLeft: false,
     translate: (value: number): string => {
-      if (value == 1) return value + ' tick';
-      else return value + ' ticks';
+      if (value == 1) return "<img src='../../../assets/snail.svg' style='width:20px; background' alt='more speed'>";
+      if (value == 100) return "<img src='../../../assets/rabbit.svg' style='width:20px' alt='more speed'>";
+      return ''
     },
   };
-  
-  constructor(private services:ChannelService, private router: Router, private EEGservices:EEGService) { }
-  
+
+  constructor(
+    private services: ChannelService,
+    private router: Router,
+    private EEGservices: EEGService,
+    private reportService: ReportService,
+    private patientsService: PatientsService
+  ) {}
+
   ngOnInit() {
+
+    console.log("NG ON INIT")
 
     const url_array = this.router.url.split("/");
     let eegId = +url_array[url_array.length - 1];
@@ -58,227 +82,368 @@ export class EegComponent implements OnInit {
 
     this.getLabelsFromEEG(eegId);
     this.getInformation(eegId);
+    /* this.checkReport(eegId); */
+    this.getAnnotations(eegId);
 
     this.dropdownSettings = {
       singleSelection: false,
-      idField : 'item_id',
-      textField : 'item_text',
-      selectAllText : 'Select all',
-      unSelectAllText : 'Unselect all'
-    };    
+      idField: "item_id",
+      textField: "item_text",
+      selectAllText: "Select all",
+      unSelectAllText: "Unselect all",
+    };
 
     this.EEGservices.getEEGlength(this.id, this.token).subscribe((indices) => {
-      console.log("INDICES ::: ", indices)
+
       this.indices = <number> indices;
       this.signalsInSecond = <number> indices / this.eegInfo.duration;
     })
- 
+
   }
 
-  getInformation(eegId:number): any{
+  getInformation(eegId: number): any {
     this.EEGservices.getEEGinfo(eegId, this.token).subscribe((info) => {
       this.eegInfo = info;
-    })
+      this.getPatientInfo();
+    });
   }
 
-
-  getLabelsFromEEG(eegId:number){
+  getLabelsFromEEG(eegId: number) {
     this.services.getLabelsFromEEG(eegId, this.token).subscribe((info) => {
-      this.dropdownList=info;
-    })
+      this.dropdownList = info;
+    });
   }
-  
+
+
   onItemSelect(item : any) {
-    console.log("PEDI LABEL -----> ", item)
     this.labels.push(item);
     this.getLabelData(this.labels);
     this.control = false;
-
   }
 
-  onDropDownClose(item : any){
+  onDropDownClose(item: any) {
     this.control = true;
+
+    // Get dos blocos das anotações:
+    for (let annotation of this.annotations) {
+      let start = Math.floor(annotation.start*this.signalsInSecond)-Math.floor((this.window_size*this.signalsInSecond)/2);
+      if (start < 0) start = 0;
+      let end = start + Math.floor(this.window_size*this.signalsInSecond) * 2;
+      console.log(start + " | " + end)
+      this.getBackendData(start,end,this.labels);
+      //console.log("Deu get da anotação " + annotation.description + " que começa no " + start + " | " + end)
+    }
+
+
   }
 
   onItemDeselect(item : any){
-
     let indx = this.labels.indexOf(item);
-    if (this.labels.length==1){
-      this.labels=[];
+    if (this.labels.length == 1) {
+      this.labels = [];
+    } else {
+      this.labels.splice(indx, 1);
     }
-    else{
-      this.labels.splice(indx, 1)
-    }
-    this.labelsSignal.delete(item);
-    this.control=false;
-
+    this.normalizedLabelsSignal.delete(item);
+    this.control = false;
   }
 
   onSelectAll(items: any) {
     this.labels = items;
-    this.control=false;
+    this.control = false;
     this.getLabelData(this.labels);
   }
 
-  getInputValue(event:any){
+  getInputValue(event: any) {
     this.window_size = event.target.value;
     this.getLabelData(this.labels);
   }
 
-  newItem($event : any) {
-    this.updateViewControl=$event
-  }
-
   getLabelData(channels: String[]) {
-
     let end = this.initial + Math.floor(this.window_size * this.signalsInSecond)
-
     let newChannels : String[] = [];
+    let indexesToRemove : number[] = [];
+
 
     // Ver se há novos canais adicionados e pedir informação sobre os mesmos
     for (const channel of channels) {
 
-      if (!this.labelsSignal.has(channel)) {
+      if (!this.normalizedLabelsSignal.has(channel)) {
         newChannels.push(channel);
       }
-
     }
 
     if (newChannels.length == 0) {
-
       // Não há novos canais, verificar se os dados que vamos ver antes/seguir existem na cache
 
-      for (const [label, map] of this.labelsSignal.entries()) {
+      for (const [label, map] of this.normalizedLabelsSignal.entries()) {
+
+        // Remover dados mais "longínquos" da cache
+
+        const minCacheIndex : number = this.initial - this.window_size * this.signalsInSecond - 1;
+        // const maxCacheIndex : number = this.initial + 4 * this.window_size * this.signalsInSecond;
+
+        // if (map.has(minCacheIndex))  {
+        //   console.log("DÁ PARA REMOVER CACHE ANTERIOR!!!!!!!!")
+        //   const array = Array.from({ length: minCacheIndex }, (_, i) => i + 1);
+        //   for (let idx of array) indexesToRemove.push(idx);
+        // }
+      
+        // if (map.has(maxCacheIndex)) {
+        //   for (let idx = maxCacheIndex; idx <= this.indices; idx++) indexesToRemove.push(idx);
+        // }
+
 
         if (map.has(this.initial+1) && map.has(end)) {
+
+
+          for (let i = this.initial+1; i <= end; i++) {
+            if (!map.has(i)) console.log("MAPA NÃO TEM O " + i)
+          }
   
           // Já tem os dados entre o initial - end
   
-          let bufferInitial = this.initial;
-          let bufferEnd! : number;
-  
-          if (channels.length > 50) {
-            bufferInitial += Math.floor(this.window_size * this.signalsInSecond);
-            bufferEnd = bufferInitial + Math.floor(this.window_size * this.signalsInSecond);
-          } else if (channels.length > 25 && channels.length < 50 ) {
-            bufferInitial += 2 * Math.floor(this.window_size * this.signalsInSecond);
-            bufferEnd = bufferInitial + Math.floor(this.window_size * this.signalsInSecond) * 2;
-          } else if (channels.length <= 25 ) {
-            bufferInitial += 4 * Math.floor(this.window_size * this.signalsInSecond);
-            bufferEnd = bufferInitial + Math.floor(this.window_size * this.signalsInSecond) * 4;
-          }
-  
+          let bufferInitial = (channels.length > 25) ? this.initial + Math.floor(this.window_size * this.signalsInSecond) : this.initial + 2 * Math.floor(this.window_size * this.signalsInSecond);
+          let bufferEnd : number = (channels.length > 25) ? bufferInitial + Math.floor(this.window_size * this.signalsInSecond) : bufferInitial + 2 * Math.floor(this.window_size * this.signalsInSecond);
+
           // Se é preciso pedir dados para buffer:
 
           if (bufferInitial > this.endLimit) {
+
+
+            this.endLimit = bufferEnd;
   
+            console.log("GET LABEL DATA -> GET BACKEND DATA")
+
             this.getBackendData(this.endLimit,bufferEnd,channels);
   
           }
-  
         } else {
 
-          // Multiplicador consoante numero de canais que pedimos
-          if (channels.length > 50) {
-            end += Math.floor(this.window_size * this.signalsInSecond);
-          } else if (channels.length > 25 && channels.length < 50 ) {
-            end += 2 * Math.floor(this.window_size * this.signalsInSecond);
-          } else if (channels.length <= 25 ) {
-            end += 4 * Math.floor(this.window_size * this.signalsInSecond);
-          }
-    
+
+
+          end += (channels.length > 25) ? Math.floor(this.window_size * this.signalsInSecond) : 2 * Math.floor(this.window_size * this.signalsInSecond);
           this.getBackendData(this.initial,end,channels);
 
         }
+
+        break;
   
       }
-
     } else {
 
-      // Multiplicador consoante numero de canais que pedimos
-      if (channels.length > 50) {
-        end += Math.floor(this.window_size * this.signalsInSecond);
-      } else if (channels.length > 25 && channels.length < 50 ) {
-        end += 2 * Math.floor(this.window_size * this.signalsInSecond);
-      } else if (channels.length <= 25 ) {
-        end += 4 * Math.floor(this.window_size * this.signalsInSecond);
-      }
+      end += (channels.length > 25) ? Math.floor(this.window_size * this.signalsInSecond) : 2 * Math.floor(this.window_size * this.signalsInSecond);
 
       if (this.endLimit !== undefined) {
         end = this.endLimit;
       }
 
-      this.getBackendData(0,end,newChannels);
-
+      this.getBackendData(0, end, newChannels);
     }
 
+    this.eeg_viewer.setInitial(this.initial);
     this.eeg_viewer.updateData();
+
+
+    if (typeof Worker !== "undefined") {
+      const worker = new Worker(new URL('./web-worker.worker', import.meta.url));
+      worker.onmessage = ({data}) => {
+        const normalizedLabelsSignal = data.resp;
+        this.normalizedLabelsSignal = normalizedLabelsSignal;
+      };
+      worker.postMessage({
+        indexesToRemove: indexesToRemove,
+        normalizedLabelsSignal: this.normalizedLabelsSignal
+      });
+    }
 
   }
 
   getBackendData(initial: number, end: number, channels: any[]){
-    
+    if (end=== NaN){
+      return;
+    }
+
+    if (end > this.indices) {
+      end = this.indices - 1;
+    }
+
+    // console.log("[API] Pediu entre o " + initial + " | " + end);
+
     this.services.getDataAboutLabel(this.id, channels, this.token, initial, end).subscribe((channelsMap) => {
 
       this.endLimit = end;
 
+      // Mapa normalizado para o y = 0
+
       for (const [label, valuesMap] of Object.entries(channelsMap)) {
 
-        let mergedMap : Map<Number,Number> = new Map();
+        for (const [label, valuesMap] of Object.entries(channelsMap)) {
+          let mergedMap: Map<Number, Number> = new Map();
 
-        if (this.labelsSignal.has(label)) {
-          mergedMap = this.labelsSignal.get(label)!;
-
+        if (this.normalizedLabelsSignal.has(label)) {
+          mergedMap = this.normalizedLabelsSignal.get(label)!;
         }
+
+        const channelValues : number[]  = <number[]> Object.values(valuesMap).map(Number); 
+
+        const minValue : number = this.getMin(channelValues)
+        const maxValue : number = this.getMax(channelValues)
+        const average : number = (minValue + maxValue) / 2;
+
+        this.averageEachChannel.set(label, average);
 
         for (const [index, value] of Object.entries(valuesMap)) {
-
-          // Se canal existir
-          if (!mergedMap.has(Number.parseInt(index))) {
-            mergedMap.set(Number.parseInt(index),<Number>value);
-          }
+          mergedMap.set(Number.parseInt(index), (<number> value) - average);
         }
 
-        this.labelsSignal.set(label, mergedMap)
+        this.normalizedLabelsSignal.set(label, mergedMap);
 
-      }
-
+      }}
 
     });
   }
 
+  getMin(array : number[]) {
+    let len = array.length;
+    let currentMin = +Infinity;
+    while (len--) {
+        currentMin = array[len] < currentMin ? array[len] : currentMin;
+    }
+    return currentMin;
+  }
+
+
+  getMax(array : number[]) {
+    let len = array.length;
+    let currentMax = -Infinity;
+    while (len--) {
+        currentMax = array[len] > currentMax ? array[len] : currentMax;
+    }
+    return currentMax;
+  }
+
+
   left() {
+    this.initial =
+      this.initial - Math.floor(this.window_size * this.signalsInSecond);
+    if (this.initial < 1) this.initial = 1;
+    this.removeSpeedInterval();
+    this.getLabelData(this.labels);
+  }
+
+  // Dá update dos dados e guarda-os num mapa
+  // Passando-os depois para a componente
+  updateView() {
+    this.updateViewControl = !this.updateViewControl;
     this.initial = this.initial - Math.floor(this.window_size * this.signalsInSecond)
     if (this.initial < 1) this.initial = 1
     this.removeSpeedInterval()
     this.getLabelData(this.labels)
+
   }
 
   right() {
     this.initial = this.initial +  Math.floor(this.window_size * this.signalsInSecond)
     if (this.initial > this.indices - Math.floor(this.window_size * this.signalsInSecond)) {
       this.initial = this.indices -  Math.floor(this.window_size * this.signalsInSecond);
+      //this.getLabelData(this.labels)
+      this.pause()
+    } else {
+
+      let bufferInitial = (this.labels.length > 25) ? this.initial + Math.floor(this.window_size * this.signalsInSecond) : this.initial + 2 * Math.floor(this.window_size * this.signalsInSecond);
+      let bufferEnd : number = (this.labels.length > 25) ? bufferInitial + Math.floor(this.window_size * this.signalsInSecond) : bufferInitial + 2 * Math.floor(this.window_size * this.signalsInSecond);
+
+      if (bufferInitial > this.endLimit) {
+        this.endLimit = bufferEnd;
+        this.getBackendData(bufferInitial,bufferEnd,this.labels);
+      }
+      //this.getLabelData(this.labels)
     }
-    this.removeSpeedInterval()
-    this.getLabelData(this.labels)
   }
 
   removeSpeedInterval() {
 
-    for (var id in this.eeg_viewer.lst_intervalId) {
+    for (var id of this.eeg_viewer.lst_intervalId) {
       clearInterval( parseInt(id) );
     }
-    clearInterval( this.eeg_viewer.intervalId );
-    this.eeg_viewer.start();
+    if (this.playing) {
+      this.eeg_viewer.start();
+    }
 
   }
 
+  play() {
+    this.eeg_viewer.start();
+    this.playing = !this.playing;
+  }
 
+  pause() {
+    this.playing = !this.playing;
+    this.removeSpeedInterval();
+  }
 
-  // Dá update dos dados e guarda-os num mapa
-  // Passando-os depois para a componente
-  updateView() {
-    this.updateViewControl = !this.updateViewControl;
+  updateInitial(newInitial : number) {
+    this.initial = newInitial;
+
+    if (this.initial > this.indices - Math.floor(this.window_size * this.signalsInSecond)) {
+      this.initial = this.indices -  Math.floor(this.window_size * this.signalsInSecond);
+      this.pause();
+
+    } else {
+
+      let bufferInitial = (this.labels.length > 25) ? this.initial + Math.floor(this.window_size * this.signalsInSecond) : this.initial + 2 * Math.floor(this.window_size * this.signalsInSecond);
+      let bufferEnd : number = (this.labels.length > 25) ? bufferInitial + Math.floor(this.window_size * this.signalsInSecond) : bufferInitial + 2 * Math.floor(this.window_size * this.signalsInSecond);
+
+      if (bufferInitial > this.endLimit) {
+        this.endLimit = bufferEnd;
+        this.getBackendData(bufferInitial,bufferEnd,this.labels);
+      }
+
+    }
+
+  }
+
+  getAnnotations(eeg_id: number) {
+    this.EEGservices.getAnotations(eeg_id, this.token).subscribe((info) => {
+      this.annotations = info;
+      console.log("ANOTAÇÕES",info);
+    });
+
+  }
+
+  /* checkReport(eeg_id: number) {
+    this.reportService.getReport(eeg_id, this.token).subscribe((info) => {
+      this.report_progress = info.progress;
+      this.report_progress = this.report.progress
+    });
+  } */
+
+  goToAnnotation() {
+    //this.eeg_viewer.jumpToAnnotation(this.selectedOption.start);
+    this.initial = Math.floor(this.selectedOption.start*this.signalsInSecond)-Math.floor((this.window_size*this.signalsInSecond)/2);
+    console.log(this.selectedOption.description + " >>>>>>>>>>" + this.initial)
+    this.eeg_viewer.updateData();
+  }
+
+  getPatientInfo() {
+    console.log("Patient ", +this.eegInfo)
+    this.patientsService.getPatientbyId(+this.eegInfo.patient, this.token).subscribe((info) => {
+      this.patient = info;
+
+      console.log("type", typeof(this.patient.birthday))
+      console.log("birthday", this.patient.birthday)
+      this.age = this.getAge(''+this.patient.birthday)
+    });
+  }
+
+  getAge(bday: string) {
+    var today = new Date()
+    var birthday = new Date(bday)
+    var age = today.getFullYear() - birthday.getFullYear()
+    var m = today.getMonth() - birthday.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthday.getDate()) ) age--;
+    return ''+age
   }
 
 }

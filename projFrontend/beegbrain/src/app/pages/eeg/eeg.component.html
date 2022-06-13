@@ -1,61 +1,127 @@
 <app-navbar></app-navbar>
 
-<div class="speed">
 
-    <i class="bi bi-speedometer2" style="margin-left: 3px; margin-right: 3px; width: 2em; height: 2em"></i>
+<div class="col-lg-8 col-sm-12">
+    <div class="row">
 
-    <ngx-slider class="slider" invert [(value)]="speed" [options]="options" ></ngx-slider> <!-- add :(userChangeEnd)="update() -->
+        <div class="drop-container" style="margin-right: 1em; margin-left: 5em;">
+            <button class="btn btn-primary" *ngIf="!playing" (click)="play()"><i class="bi bi-play-fill"></i></button>
+            <button class="btn btn-primary" *ngIf="playing" (click)="pause()"><i class="bi bi-pause-fill"></i></button>
+        </div>
 
-    <button (click)="left()" type="button" class="btn btn-primary"><i class="bi bi-caret-left-fill"></i></button>
-    <!-- Dar update da view  -->
+        <div class="drop-container" style="margin-right: 1em;text-align: center;" *ngIf="eegInfo">
 
-    <label>
-        <input (keyup.enter)="getInputValue($event)" (click)="getInputValue($event)"  id="window_interval" 
-        type="number" max="{{eegInfo.duration}}" step="10" min="0" value="{{window_size}}" style="text-align: center;"><br>
-    </label>
+            <button (click)="left()" type="button" class="btn btn-primary" style="margin-right: 0.1em;"><i class="bi bi-caret-left-fill"></i></button>
+            <!-- Dar update da view  -->
+            <label>
+                <input (keyup.enter)="getInputValue($event)" (click)="getInputValue($event)"  id="window_interval" 
+                type="number" max="{{eegInfo.duration}}" step="10" min="0" value="{{window_size}}" style="text-align: center;"><br>
+            </label>
 
-    <button (click)="right()" type="button" class="btn btn-primary"><i class="bi bi-caret-right-fill"></i></button>
-    <!-- Carregar mais dados, se for preciso e dar update da view -->
+            <button (click)="right()" type="button" class="btn btn-primary" style="margin-left: 0.1em;"><i class="bi bi-caret-right-fill"></i></button>
 
-    <div class="drop-container col-lg-3">
-        <ng-multiselect-dropdown
-        [settings] = "dropdownSettings"
-        [data] = "dropdownList"
-        (onSelect)="onItemSelect($event)"
-        (onSelectAll)="onSelectAll($event)"
-        (onDeSelect)="onItemDeselect($event)"
-        (onDropDownClose)="onDropDownClose($event)"
-        >
-        </ng-multiselect-dropdown>
+        </div>
+
+        <!-- Carregar mais dados, se for preciso e dar update da view -->
+
+        <div class="drop-container col-lg-2">
+            <ng-multiselect-dropdown
+                [settings] = "dropdownSettings"
+                [data] = "dropdownList"
+                (onSelect)="onItemSelect($event)"
+                (onSelectAll)="onSelectAll($event)"
+                (onDeSelect)="onItemDeselect($event)"
+                (onDropDownClose)="onDropDownClose($event)"
+                [placeholder]="'Select channel(s)'">
+            </ng-multiselect-dropdown>
+        </div>
+
+
+        <div class="speed">
+
+            <!-- <i class="bi bi-speedometer2" style="margin-left: 3px; margin-right: 3px; width: 2em; height: 2em; "></i> -->
+            <!-- <button type="button" class="btn btn-primary btn-circle btn-lg" > <i class="bi bi-speedometer2" style="padding: 1em 1em 1em 1em; "></i></button> -->
+
+            <div class="col-lg-12">
+                <ngx-slider class="slider" invert [(value)]="speed" [options]="options" ></ngx-slider> <!-- add :(userChangeEnd)="update() -->
+            </div>
+
+        </div>
+
+
+        <div class="col-lg-2">
+            <select class="form-control" [(ngModel)]="selectedOption" [(ngModel)]="selected" (change)="goToAnnotation()">
+                <option value="" disabled>Select an annotation</option>
+                <option *ngFor="let opt of annotations" [ngValue]="opt" >{{opt.description}}</option>
+            </select>
+        </div>
     </div>
-    <div class="col-lg-3">
-        <button (click)="updateView()" type="button" class="btn btn-dark">Alter view</button>
-    </div>
 
-</div>
 
-<div class="row">
-    <div class="col-lg-9 col-sm-6">
-        <app-eeg-viewer 
+    <app-eeg-viewer 
+        class="col-lg-12"
         #child 
         *ngIf="control" 
         [initial]="initial"
         [control]="control"
         [speed]="speed" 
         [eegInfo]="eegInfo" 
-        [labelsSignal]="labelsSignal" 
+        [normalizedLabelsSignal]="normalizedLabelsSignal"
         [interval]="window_size"
         [indices]="indices"
         [labels]="labels"
         [signalsInSecond]="signalsInSecond"
-        [updateViewControl]="updateViewControl"
-        (newItemEvent)="newItem($event)"
-        ></app-eeg-viewer> 
-
-    </div>
-
-    <div class="col-lg-3 col-sm-6">
-        <app-report-editor [report]="eegInfo.report" [eeg_id]="eegInfo.id"></app-report-editor>
-    </div>
+        [annotations]="annotations"
+        [averageEachChannel]="averageEachChannel"
+        (currentInitial)="updateInitial($event)"
+    ></app-eeg-viewer> 
 
 </div>
+
+<div class="col-lg-3 col-sm-12">
+
+    <section *ngIf="patient && age" class="fieldset">
+        <h1>Patient information</h1>
+
+        <div class="row" style="margin-top: 1em;">
+            <div class="col-lg-6 d-flex align-items-center">
+                <div class="col-lg-3">
+                    <h6>Name</h6>
+                </div>
+                <!-- <h6 class="form-control" id="name" style="margin-left: 0.5em;"> {{patient.name}} </h6> -->
+                <div class="col-lg-9">
+                    <a routerLink="/patients/{{+eegInfo.patient}}">
+                        <button type="button" class="btn btn-primary">{{patient.name}}</button>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-lg-6 d-flex align-items-center">
+                <h6>Health Number</h6>
+                <h6 class="form-control" id="numberHealth" style="margin-left: 0.5em;"> {{patient.health_number}} </h6>
+            </div>
+        </div>
+
+        <div class="row" style="margin-top: 1em;">
+
+            <div class="col-lg-6 d-flex align-items-center">
+                <div class="col-lg-3">
+                    <h6>Age</h6>
+                </div>
+                <div class="col-lg-9">
+                    <h6 class="form-control" id="numberHealth" style="margin-left: 0.5em;"> {{age}} </h6>
+                </div>
+            </div>
+
+            <div class="col-lg-6 d-flex align-items-center">
+                <h6>Health diseases</h6>
+                <h6 class="form-control" id="name" style="margin-left: 0.5em;"> {{patient.medical_info}} </h6>
+            </div>
+        </div>
+
+    </section>
+
+    <app-report-editor *ngIf="eegInfo" [report]="eegInfo.report" [eeg_id]="eegInfo.id"> </app-report-editor>
+</div>
+
+
