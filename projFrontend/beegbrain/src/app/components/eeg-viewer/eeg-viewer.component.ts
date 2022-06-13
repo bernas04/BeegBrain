@@ -33,6 +33,7 @@ export class EEGViewerComponent implements OnChanges {
   @Input('initial') initial! : number;
   @Input('indices') indices! : number;
   @Input('annotations') annotations!: Annotation[];
+  @Input('averageEachChannel') averageEachChannel!:Map<string,number>;
 
   @Output() currentInitial = new EventEmitter<any>();
 
@@ -56,9 +57,23 @@ export class EEGViewerComponent implements OnChanges {
       this.myChart = echarts.init(this.chartDom);
     }, 100);
 
+    
     for (const [label, valuesMap] of this.normalizedLabelsSignal) {
-      const values = Array.from(valuesMap.values()).slice(this.initial, Math.floor(this.interval * this.signalsInSecond));
-      series.push({name:label, type:"line", showSymbol:false, data:values}) 
+      // Isto é para somar ao valor de cada ponto do sinal, de maneira
+      // a que o eixo dos y tenha o valor normalizado, mas quando passamos o 
+      // rato por cima, os valores reais serão mostrados
+      
+      this.averageEachChannel.get(<string>label);
+
+
+      const values = <number[]><unknown>Array.from(valuesMap.values()).slice(this.initial, Math.floor(this.interval * this.signalsInSecond));
+      
+      series.push(
+        {name:label, 
+          type:"line",
+          showSymbol:false, 
+          data:values}
+        ) 
     }
 
     this.option = {
@@ -68,16 +83,6 @@ export class EEGViewerComponent implements OnChanges {
         backgroundColor: "#f5f5f5",
         borderWidth: 1,
         borderColor:"#000000"
-      },
-      tooltip: {
-        show: true,
-        trigger: 'axis',
-        axisPointer: {
-          animation: false,
-          lineStyle: {
-            color: '#ff0000'
-          }
-        }
       },
       toolbox: {
         show: true,
@@ -93,11 +98,38 @@ export class EEGViewerComponent implements OnChanges {
           }
         }
       },
+      tooltip: {
+        show: true,
+        trigger: 'axis',
+        axisPointer: {
+          animation: false,
+          lineStyle: {
+            color: '#ff0000'
+          }
+        },
+        formatter: (params:any) => {
+          let tmp = '<strong style="font-size: 15px">'+params[0].axisValue+'</strong> </br>';
+          let colors = ['#5470C6','#97CF7D', '#FAC858', '#EE6666', '#73C0DE', '#3BA272', '#FC8452', '#9A60B4', '#EA7CCC']
+          let contador=0;
+          for (const [label, valuesMap] of this.normalizedLabelsSignal) {
+            let realSignal = params[0].value +Math.abs(<number>this.averageEachChannel.get(<string>label));
+            realSignal=realSignal.toFixed(5);
+            tmp=tmp+"<span style='font-size: 15px'><strong style='font-size: 15px; color:"+colors[contador++]+";'>"+label+"</strong> : " + realSignal + "</span></br>";
+          }
+          return tmp;
+        },
+      },
       dataZoom: [
         {
           id: 'dataZoomX',
           type: 'slider',
           xAxisIndex: [0],
+          filterMode: 'empty'
+        },
+        {
+          id: 'dataZoomY',
+          type: 'slider',
+          yAxisIndex: [0],
           filterMode: 'empty'
         },
         //mexer com o rato dentro do grafico
@@ -122,7 +154,8 @@ export class EEGViewerComponent implements OnChanges {
           lineStyle: {
             color: "#ddd"
           }
-        }
+        },
+        
       },
       yAxis: {
         name : 'Value',
@@ -155,6 +188,8 @@ export class EEGViewerComponent implements OnChanges {
     this.changeSpeed(); // This line is to adjust data
     this.option;
   }
+
+  
 
   /* Esta é a função que vai estar sempre a ser chamada */
   start() {

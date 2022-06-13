@@ -578,7 +578,7 @@ def createEEG(request):
         patient = Patient.objects.get(health_number=request.data['patientID'])
     except Patient.DoesNotExist:
         patient = None
-
+    
     for memoryFile in request.FILES.getlist('file'):
 
         file = memoryFile.file
@@ -701,6 +701,7 @@ def saveChannel(label, eeg, array):
     chn = Channel.objects.create(label=label, eeg=eeg)
     chn.file.name = filename + ".npy"
     chn.save()
+    chn.close()
 
 
 def worker(label, eeg, signal):
