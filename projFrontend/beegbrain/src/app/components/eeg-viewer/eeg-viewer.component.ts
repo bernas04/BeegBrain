@@ -274,20 +274,23 @@ export class EEGViewerComponent implements OnChanges {
     }
 
 
-    this.myChart.setOption<echarts.EChartsOption>({
 
-      yAxis: { 
-        min: Math.round(minY - 20), 
-        max: Math.round(maxY + 20),
-      },
+    if (this.myChart) {
+      this.myChart.setOption<echarts.EChartsOption>({
 
-      series: series,
-     
-      xAxis: {
-          data : xData,
-      },
-    
-    });
+        yAxis: { 
+          min: Math.round(minY - 20), 
+          max: Math.round(maxY + 20),
+        },
+
+        series: series,
+      
+        xAxis: {
+            data : xData,
+        },
+      
+      });
+    }
 
   }
 

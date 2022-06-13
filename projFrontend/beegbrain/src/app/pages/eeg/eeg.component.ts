@@ -10,6 +10,8 @@ import { buffer } from 'rxjs';
 import { Report } from 'src/app/classes/Report';
 import { Annotation } from 'src/app/classes/Annotation';
 import { ReportService } from 'src/app/services/report.service';
+import { PatientsService } from 'src/app/services/patients.service';
+import { Patient } from 'src/app/classes/Patient';
 
 
 @Component({
@@ -40,20 +42,24 @@ export class EegComponent implements OnInit {
   updateViewControl: boolean = false;
   annotations!: Annotation[];
   selectedOption!: Annotation;
-  
+  selected: string = '';
+  patient!: Patient;
+  age!:string
+
   normalizedLabelsSignal : Map<String,Map<Number,Number>> = new Map();
   playing: boolean = true;
 
 
-  speed: number = 10; // default: 0.1 segundo
+  speed: number = 10; // default : 0.1 segundo
   options: Options = {
     floor: 1,
     ceil: 100,
     step: 1,
     rightToLeft: false,
     translate: (value: number): string => {
-      if (value == 1) return value + " tick";
-      else return value + " ticks";
+      if (value == 1) return "<img src='../../../assets/snail.svg' style='width:20px; background' alt='more speed'>";
+      if (value == 100) return "<img src='../../../assets/rabbit.svg' style='width:20px' alt='more speed'>";
+      return ''
     },
   };
 
@@ -61,7 +67,8 @@ export class EegComponent implements OnInit {
     private services: ChannelService,
     private router: Router,
     private EEGservices: EEGService,
-    private reportService: ReportService
+    private reportService: ReportService,
+    private patientsService: PatientsService
   ) {}
 
   ngOnInit() {
@@ -74,7 +81,7 @@ export class EegComponent implements OnInit {
 
     this.getLabelsFromEEG(eegId);
     this.getInformation(eegId);
-    this.checkReport(eegId);
+    /* this.checkReport(eegId); */
     this.getAnnotations(eegId);
 
     this.dropdownSettings = {
@@ -96,6 +103,7 @@ export class EegComponent implements OnInit {
   getInformation(eegId: number): any {
     this.EEGservices.getEEGinfo(eegId, this.token).subscribe((info) => {
       this.eegInfo = info;
+      this.getPatientInfo();
     });
   }
 
@@ -259,7 +267,7 @@ export class EegComponent implements OnInit {
       end = this.indices - 1;
     }
 
-    console.log("[API] Pediu entre o " + initial + " | " + end);
+    // console.log("[API] Pediu entre o " + initial + " | " + end);
 
     this.services.getDataAboutLabel(this.id, channels, this.token, initial, end).subscribe((channelsMap) => {
 
@@ -401,20 +409,38 @@ export class EegComponent implements OnInit {
 
   }
 
-  checkEeg(eeg_id: number) {}
-
-  checkReport(eeg_id: number) {
+  /* checkReport(eeg_id: number) {
     this.reportService.getReport(eeg_id, this.token).subscribe((info) => {
       this.report_progress = info.progress;
       this.report_progress = this.report.progress
     });
-  }
+  } */
 
   goToAnnotation() {
     //this.eeg_viewer.jumpToAnnotation(this.selectedOption.start);
-    this.initial=Math.floor(this.selectedOption.start*this.signalsInSecond)-Math.floor((this.window_size*this.signalsInSecond)/2);
+    this.initial = Math.floor(this.selectedOption.start*this.signalsInSecond)-Math.floor((this.window_size*this.signalsInSecond)/2);
     console.log(this.selectedOption.description + " >>>>>>>>>>" + this.initial)
     this.eeg_viewer.updateData();
+  }
+
+  getPatientInfo() {
+    console.log("Patient ", +this.eegInfo)
+    this.patientsService.getPatientbyId(+this.eegInfo.patient, this.token).subscribe((info) => {
+      this.patient = info;
+
+      console.log("type", typeof(this.patient.birthday))
+      console.log("birthday", this.patient.birthday)
+      this.age = this.getAge(''+this.patient.birthday)
+    });
+  }
+
+  getAge(bday: string) {
+    var today = new Date()
+    var birthday = new Date(bday)
+    var age = today.getFullYear() - birthday.getFullYear()
+    var m = today.getMonth() - birthday.getMonth();
+    if (m < 0 || (m === 0 && today.getDate() < birthday.getDate()) ) age--;
+    return ''+age
   }
 
 }

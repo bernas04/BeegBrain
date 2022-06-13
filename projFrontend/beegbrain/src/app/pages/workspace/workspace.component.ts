@@ -143,6 +143,8 @@ export class WorkspaceComponent implements OnInit {
 
 
   submitEEG():void {
+    console.log("submitting eeg...")
+
     const data = this.uploadForm.value
     this.priority = data["priority"]
     this.patient_id = data["patient_id"]
@@ -153,7 +155,6 @@ export class WorkspaceComponent implements OnInit {
     formData.append('priority', this.priority);
 
     for (let file of this.files) {
-      console.log(file.name)
       formData.append('file', file, file.name);
     }
 
@@ -204,7 +205,7 @@ export class WorkspaceComponent implements OnInit {
 
         /* if (eeg.status == null) this.toast.open("EEG uploaded with success!");
         else this.toast.open("EEG uploaded with errors :(");
- */
+        */
       },
       error: (error) => {
         console.log(error);

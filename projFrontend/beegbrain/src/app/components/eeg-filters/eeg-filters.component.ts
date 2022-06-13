@@ -212,7 +212,7 @@ export class EegFiltersComponent implements OnInit {
         if (eeg.status == null) this.eegs_filtered.push(eeg)
       });
       
-      this.sendFilters(this.eegs_filtered)
+      this.sendFilters(this.eegs_filtered.reverse())
 
     });
   }
