@@ -40,7 +40,7 @@ export class EegComponent implements OnInit {
   updateViewControl: boolean = false;
   annotations!: Annotation[];
   selectedOption!: Annotation;
-  
+  averageEachChannel: Map<string,number> = new Map();
   normalizedLabelsSignal : Map<String,Map<Number,Number>> = new Map();
   playing: boolean = true;
 
@@ -125,7 +125,6 @@ export class EegComponent implements OnInit {
       //console.log("Deu get da anotação " + annotation.description + " que começa no " + start + " | " + end)
     }
 
-    console.log("PORTO")
 
   }
 
@@ -233,8 +232,6 @@ export class EegComponent implements OnInit {
       this.getBackendData(0, end, newChannels);
     }
 
-    console.log("this initial >>>>>>>>>>>> ", this.initial);
-    console.log("this eeg viewer >>>>>>>>>>> ", this.eeg_viewer)
     this.eeg_viewer.setInitial(this.initial);
     this.eeg_viewer.updateData();
 
@@ -254,6 +251,9 @@ export class EegComponent implements OnInit {
   }
 
   getBackendData(initial: number, end: number, channels: any[]){
+    if (end=== NaN){
+      return;
+    }
 
     if (end > this.indices) {
       end = this.indices - 1;
@@ -281,6 +281,8 @@ export class EegComponent implements OnInit {
         const minValue : number = this.getMin(channelValues)
         const maxValue : number = this.getMax(channelValues)
         const average : number = (minValue + maxValue) / 2;
+
+        this.averageEachChannel.set(label, average);
 
         for (const [index, value] of Object.entries(valuesMap)) {
           mergedMap.set(Number.parseInt(index), (<number> value) - average);

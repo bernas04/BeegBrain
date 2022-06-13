@@ -139,10 +139,12 @@ export class WorkspaceComponent implements OnInit {
 
 
   submitEEG():void {
+
     const data = this.uploadForm.value
     this.priority = data["priority"]
     this.patient_id = data["patient_id"]
 
+    console.log(this.patient_id)
     const formData = new FormData();
     formData.append('operatorID', this.health_number);
     formData.append('patientID', this.patient_id);
