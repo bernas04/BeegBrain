@@ -38,6 +38,8 @@ export class EegTableComponent implements OnInit {
   person_id = ''+localStorage.getItem('id');
 
   config!: any;
+
+  length_lst_eeg: number = -1;
   
   
   constructor(private router: Router, private tableService: TableService,  private eventService: EventService) {}
@@ -48,7 +50,24 @@ export class EegTableComponent implements OnInit {
   ngOnChanges(changes: any) {
 
     console.log("CHANGES", changes)
-    console.log("LIST OF EEGs", this.lst_EEG)
+
+    // se length == -1 é porque é a primeira vez 
+    // ATENÇÃO: isto pode dar problemas na escalabilidade
+    if (this.length_lst_eeg == -1 && changes["lst_EEG"]) {
+      this.length_lst_eeg = changes["lst_EEG"].currentValue.length
+    }
+
+    if(this.length_lst_eeg != 0 && changes["lst_EEG"]) {
+
+      if (this.length_lst_eeg < changes["lst_EEG"].currentValue.length) {
+        let id = changes["lst_EEG"].currentValue[0]["id"]
+        console.log("UPLOAD EVENT", id)
+        let json = { "type": "EEG uploaded", "person": this.person_id, "eeg_id": ''+id}
+        let jsonObject = <JSON><unknown>json;
+        this.eventService.addEvent(jsonObject, this.token).subscribe();
+      }
+      
+    }
 
     this.config = {
       itemsPerPage: 10,
@@ -56,7 +75,6 @@ export class EegTableComponent implements OnInit {
       totalItems: this.lst_EEG.length
     };
 
-    console.log("CONFIG", this.config)
 
     // criar o map com key = id do EEG, e value = nome do paciente
     this.lst_EEG.forEach((eeg) => {

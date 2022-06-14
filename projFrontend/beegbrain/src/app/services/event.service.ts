@@ -29,7 +29,6 @@ export class EventService {
   }
 
   addEvent(event: JSON, token: string) {
-    console.log("TOKEN", token)
     return this.http.post<any>(this.BASE_URL + 'createEvent', event, { 
         headers: new HttpHeaders({
           'Authorization': 'Token ' + token,

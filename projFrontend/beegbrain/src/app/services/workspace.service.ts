@@ -21,7 +21,6 @@ export class WorkspaceService {
 
   getAllEEG(token : string, type : string, id : string) : Observable<EEG[]> {
 
-    console.log("TOKEN", token)
     if (type === 'doctor') {
 
       return this.http.get<EEG[]>(this.BASE_URL + 'doctorSharedFolders?id=' + id , { 
@@ -45,7 +44,6 @@ export class WorkspaceService {
   }
 
   deleteEEG(id : number, token : string) {
-    console.log("removing EEG<"+ id +">...")
     return this.http.delete<any>(this.BASE_URL + 'eeg?id='+id, { 
       headers: new HttpHeaders({
         'Authorization': 'Token ' + token,

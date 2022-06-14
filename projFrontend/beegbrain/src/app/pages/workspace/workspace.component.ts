@@ -162,43 +162,32 @@ export class WorkspaceComponent implements OnInit {
     this.eegService.submitEEG(formData, this.token).subscribe({
       next: (eeg) => {
         
+        let pat = this.lst_patient.find(x => x.id == +eeg.patient);
+        let rep = this.lst_report.find(x => x.id == +eeg.report);
 
-        /* this.eegService.getPatientbyID(+eeg.patient, this.token).subscribe((info) => {
-          console.log("Adicionar à tabela") // não está a dar update à tabela porque está a dar erro de autorização :)
+        this.lst_eeg.reverse();
+        this.lst_error_eeg.reverse();
 
-          this.lst_patient.push(info);
-          this.lst_patient = this.lst_patient.slice();
+        if (eeg.status == null) {  
+          if(rep) this.lst_report.push(rep)
+          if(pat) this.lst_patient.push(pat)
+          this.lst_eeg.push(eeg);
 
           this.lst_eeg.reverse();
+
+          this.lst_eeg = this.lst_eeg.slice();
+          this.lst_report = this.lst_report.slice();
+          this.lst_patient = this.lst_patient.slice();
+
+        } else {
+          this.lst_error_eeg.push(eeg);
           this.lst_error_eeg.reverse();
 
-          if (eeg.status == null) {  
-            this.eegService.getReportbyID(+eeg.report, this.token).subscribe((info) => {
-              this.lst_report.push(info)
-              this.lst_eeg.push(eeg);
+          this.lst_error_eeg = this.lst_error_eeg.slice();
+        }
 
-              this.lst_eeg.reverse();
 
-              this.lst_eeg = this.lst_eeg.slice();
-              this.lst_report = this.lst_report.slice();
-            });
-  
-          } else {
-            this.lst_error_eeg.push(eeg);
-            this.lst_error_eeg.reverse();
-
-            this.lst_error_eeg = this.lst_error_eeg.slice();
-          }
-          
-        }); */
-
-        let json = { "type": "EEG uploaded", "person": this.id, "eeg_id": ''+eeg.id}
-        let jsonObject = <JSON><unknown>json;
-        this.eventService.addEvent(jsonObject, this.token).subscribe((info) => {
-          // quando acabar de criar o evento
-          this.closebutton.nativeElement.click();
-          window.location.reload()
-        });
+        this.closebutton.nativeElement.click();
 
         
 
@@ -212,6 +201,8 @@ export class WorkspaceComponent implements OnInit {
         console.log(error);
       }
     });
+
+
     
 
     //window.location.href="/workspace";
