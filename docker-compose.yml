@@ -7,12 +7,10 @@ services:
     container_name: database-mysql
     restart: unless-stopped
     ports:
-      - '3306:3306'
-    expose:
-      - 3306
+      - '3307:3306'
     environment:
       MYSQL_DATABASE: 'beegbrain'
-      MYSQL_PORT: '3306'
+      MYSQL_PORT: '3307'
       MYSQL_PASSWORD: 'root'
       MYSQL_ROOT_PASSWORD: 'root'
     healthcheck:
@@ -20,13 +18,12 @@ services:
       timeout: 5s
       retries: 30
     volumes:
-      - /mysql:/var/lib/mysql
-      - /tmp/mysqld:/var/run/mysqld
+      - ~/mysql:/var/lib/mysql
 
   django:
     build: ./projBackend/beegbrain
     ports:
-      - "8080:8080"
+      - "8000:8000"
     image: django
     container_name: backend-django
     command: python manage.py runserver 0.0.0.0:8000
@@ -42,6 +39,8 @@ services:
   angular:
     build: ./projFrontend/beegbrain
     image: angular
+    ports:
+      - "4200:80"
     container_name: frontend-angular
     restart: unless-stopped
     depends_on:

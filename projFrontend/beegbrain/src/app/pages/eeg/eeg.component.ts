@@ -162,7 +162,8 @@ export class EegComponent implements OnInit {
   getLabelData(channels: String[]) {
     let end = this.initial + Math.floor(this.window_size * this.signalsInSecond)
     let newChannels : String[] = [];
-    let indexesToRemove : number[] = [];
+    
+    //let indexesToRemove : number[] = [];
 
 
     // Ver se há novos canais adicionados e pedir informação sobre os mesmos
@@ -178,28 +179,7 @@ export class EegComponent implements OnInit {
 
       for (const [label, map] of this.normalizedLabelsSignal.entries()) {
 
-        // Remover dados mais "longínquos" da cache
-
-        const minCacheIndex : number = this.initial - this.window_size * this.signalsInSecond - 1;
-        // const maxCacheIndex : number = this.initial + 4 * this.window_size * this.signalsInSecond;
-
-        // if (map.has(minCacheIndex))  {
-        //   console.log("DÁ PARA REMOVER CACHE ANTERIOR!!!!!!!!")
-        //   const array = Array.from({ length: minCacheIndex }, (_, i) => i + 1);
-        //   for (let idx of array) indexesToRemove.push(idx);
-        // }
-      
-        // if (map.has(maxCacheIndex)) {
-        //   for (let idx = maxCacheIndex; idx <= this.indices; idx++) indexesToRemove.push(idx);
-        // }
-
-
         if (map.has(this.initial+1) && map.has(end)) {
-
-
-          for (let i = this.initial+1; i <= end; i++) {
-            if (!map.has(i)) console.log("MAPA NÃO TEM O " + i)
-          }
   
           // Já tem os dados entre o initial - end
   
@@ -218,9 +198,8 @@ export class EegComponent implements OnInit {
             this.getBackendData(this.endLimit,bufferEnd,channels);
   
           }
+
         } else {
-
-
 
           end += (channels.length > 25) ? Math.floor(this.window_size * this.signalsInSecond) : 2 * Math.floor(this.window_size * this.signalsInSecond);
           this.getBackendData(this.initial,end,channels);
@@ -244,19 +223,6 @@ export class EegComponent implements OnInit {
     this.eeg_viewer.setInitial(this.initial);
     this.eeg_viewer.updateData();
 
-
-    if (typeof Worker !== "undefined") {
-      const worker = new Worker(new URL('./web-worker.worker', import.meta.url));
-      worker.onmessage = ({data}) => {
-        const normalizedLabelsSignal = data.resp;
-        this.normalizedLabelsSignal = normalizedLabelsSignal;
-      };
-      worker.postMessage({
-        indexesToRemove: indexesToRemove,
-        normalizedLabelsSignal: this.normalizedLabelsSignal
-      });
-    }
-
   }
 
   getBackendData(initial: number, end: number, channels: any[]){
@@ -268,7 +234,7 @@ export class EegComponent implements OnInit {
       end = this.indices - 1;
     }
 
-    // console.log("[API] Pediu entre o " + initial + " | " + end);
+    console.log("[API] Pediu entre o " + initial + " | " + end);
 
     this.services.getDataAboutLabel(this.id, channels, this.token, initial, end).subscribe((channelsMap) => {
 

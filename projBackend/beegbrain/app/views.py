@@ -776,7 +776,7 @@ def getChannelLabels(request):
     eeg_id = int(request.GET['eeg'])
     channels = Channel.objects.filter(eeg_id=eeg_id)
     channelsLabels = list(set([chn.label for chn in channels]))
-    channelLabels = sorted(channelsLabels, key=lambda x: (x[0],x[1:]))
+    channelLabels = sorted(channelsLabels, key=lambda x: int("".join([i for i in x if i.isdigit()])))
     return Response(channelLabels)
 
 
