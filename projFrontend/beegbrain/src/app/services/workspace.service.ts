@@ -5,6 +5,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { EEG } from '../classes/EEG';
+import { Report } from '../classes/Report';
 
 @Injectable({
   providedIn: 'root'
@@ -43,7 +44,6 @@ export class WorkspaceService {
   }
 
   deleteEEG(id : number, token : string) {
-    console.log("removing EEG<"+ id +">...")
     return this.http.delete<any>(this.BASE_URL + 'eeg?id='+id, { 
       headers: new HttpHeaders({
         'Authorization': 'Token ' + token,
@@ -69,5 +69,17 @@ export class WorkspaceService {
       }),
     });
   }
+
+  getReports(token: string) : Observable<Report[]>{
+
+    return this.http.get<Report[]>(this.BASE_URL+'reports', { 
+      headers: new HttpHeaders({
+        'Authorization': 'Token ' + token,
+        'Content-Type': 'application/json',
+      }),
+    });
+  }
+
+
 
 }

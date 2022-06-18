@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { Operator } from 'src/app/classes/Operator';
-import { Person } from 'src/app/classes/Person';
 import { PersonService } from 'src/app/services/person.services';
 
 @Component({
@@ -13,6 +12,7 @@ export class NavbarComponent implements OnInit {
   public infoPerson!: Operator
 
   token = ''+localStorage.getItem('token');
+  name = <string>localStorage.getItem('name');
 
 
   constructor(private router : Router, private personService: PersonService) { }

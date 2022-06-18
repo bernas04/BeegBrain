@@ -1,8 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { EEG } from 'src/app/classes/EEG';
+import { Institution } from 'src/app/classes/Institution';
+import { Operator } from 'src/app/classes/Operator';
 import { Patient } from 'src/app/classes/Patient';
+import { Report } from 'src/app/classes/Report';
 import { PatientsService } from 'src/app/services/patients.service';
+import { WorkspaceService } from 'src/app/services/workspace.service';
 
 @Component({
   selector: 'app-patients',
@@ -11,12 +15,17 @@ import { PatientsService } from 'src/app/services/patients.service';
 })
 export class PatientsComponent implements OnInit {
 
-  constructor(private services:PatientsService, private router: Router) { }
+  constructor(private services:PatientsService, private router: Router, private service: WorkspaceService) { }
   
+  lst_institutions: Institution[] = []
+  lst_operators: Operator[] = []
   public listOfPatients: Patient[] = []
   public listOfEEG: EEG[] = []
+  public lst_report: Report[] = []
   public patient!: Patient
   token = ''+localStorage.getItem('token');
+  type = ''+localStorage.getItem('type');
+  id = ''+localStorage.getItem('id');
 
   ngOnInit(): void {
 
@@ -27,24 +36,33 @@ export class PatientsComponent implements OnInit {
       this.getPatientbyId(pat_id);
       this.getEEGbyPatient(pat_id);    // para lista os exames EEG da respetiva pessoa
     }
+
+    this.getInstitutions();
+    this.getOperators();
+    this.getReports();
   }
 
   getPatient(){
     let text = (<HTMLInputElement>document.getElementById("patient_search")).value;
-    if (+text == NaN) {
-      console.log("PESQUISA POR SSN")
-      this.services.getPatientsbySSN(text, this.token).subscribe((info) => {
-        this.patient = info;
-        this.getEEGbyPatient(this.patient.id);   // para lista os exames EEG da respetiva pessoa
-      });
 
-    } else {
-      console.log("PESQUISA POR NOME")
-      this.services.getPatientsbyName(text, this.token).subscribe(data => this.listOfPatients = data);
+    if (text) {
+
+      if (this.isNumeric(+text)) {
+        this.services.getPatientsbySSN(text, this.token).subscribe((info) => {
+          this.patient = info;
+          this.getEEGbyPatient(this.patient.id);   // para lista os exames EEG da respetiva pessoa
+        });
+
+      } else {
+        this.services.getPatientsbyName(text, this.token).subscribe(data => this.listOfPatients = data);
+      }
     }
-
     
   } 
+
+  isNumeric(num: number){
+    return !isNaN(num)
+  }
 
   getPatientbyId(id: number){
     this.services.getPatientbyId(id, this.token).subscribe((info) => {
@@ -53,9 +71,13 @@ export class PatientsComponent implements OnInit {
   } 
 
   getEEGbyPatient(id: number) {
-    this.services.getEEGbyPatient(id, this.token).subscribe((info) => {
-      this.listOfEEG = info;
-    });
+    this.services.getEEGbySharedFolder(+this.id, this.type, this.token).subscribe((info) => {
+      this.listOfEEG = [];
+
+      info.forEach((eeg) => {
+        if (eeg.status == null && eeg.patient == id) this.listOfEEG.push(eeg);
+      });
+    })
   }
 
   clean() {
@@ -70,6 +92,34 @@ export class PatientsComponent implements OnInit {
     let text = (<HTMLInputElement>document.getElementById("patient_search")).value;
     if (text == "") return false
     return true
+  }
+
+  onDelete(eeg : EEG) {
+    const index = this.listOfEEG.indexOf(eeg, 0);
+    if (index > -1) {
+      this.listOfEEG.splice(index, 1);
+    }
+
+    this.service.deleteEEG(eeg.id, this.token).subscribe();
+  }
+
+  getInstitutions() {
+    this.service.getAllInstitutions(this.token).subscribe((info) => {
+      this.lst_institutions = info;
+    })
+  }
+
+  getOperators() {
+    this.service.getOperators(this.token).subscribe((info) => {
+      this.lst_operators = info;
+    });
+
+  }
+
+  getReports() {
+    this.service.getReports(this.token).subscribe((info) => {
+      this.lst_report = info;
+    });
   }
 
 }

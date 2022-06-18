@@ -10,6 +10,7 @@ import { IDropdownSettings } from 'ng-multiselect-dropdown';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { subscribeOn } from 'rxjs';
+import { PersonService } from 'src/app/services/person.services';
 
 
 @Component({
@@ -36,7 +37,7 @@ export class RegisterComponent implements OnInit {
   error_medicalNumber: Boolean = false;
   error_institutions: Boolean = false;
 
-  constructor(private fb: FormBuilder, private service: RegistrationService, private router : Router) { 
+  constructor(private fb: FormBuilder, private service: RegistrationService,private personService: PersonService,private router : Router) { 
 
     this.registerForm = this.fb.group({
       name: [null],
@@ -154,22 +155,28 @@ export class RegisterComponent implements OnInit {
       this.error_institutions= true;
     }
 
-
     if (!error){
+      
+      
+
       if (this.registerForm.value["profession"] == "doctor") {
         this.service.createDoctor(this.registerForm.value["name"],this.registerForm.value["email"],this.registerForm.value["password"],this.registerForm.value["birthday"],this.registerForm.value["gender"],this.registerForm.value["health_number"],this.registerForm.value["telephone"],this.registerForm.value["address"],this.registerForm.value["medicalNumber"], this.registerForm.value["institutions"]).
         subscribe({
           next: (data) => {
-
             let data_user_json = JSON.parse(JSON.stringify(data))
-
-            console.log(data_user_json);
-  
+            
             localStorage.setItem('token', data_user_json['token']);
             localStorage.setItem('id', data_user_json['id']);
             localStorage.setItem('type', data_user_json['type']);
             localStorage.setItem('email',this.registerForm.value["email"]);
             localStorage.setItem('health_number', data_user_json.health_number);
+            
+            localStorage.setItem('address', this.registerForm.value['address']);
+            localStorage.setItem('birthday', this.registerForm.value['birthday']);
+            localStorage.setItem('gender', this.registerForm.value['gender']);
+            localStorage.setItem('name', this.registerForm.value['name']);
+            localStorage.setItem('medical_number', this.registerForm.value['medicalNumber']);
+            localStorage.setItem('telephone', this.registerForm.value['telephone']);
             this.router.navigate(['/dashboard']);
             
           },
@@ -193,6 +200,19 @@ export class RegisterComponent implements OnInit {
             localStorage.setItem('type', data_user_json['type']);
             localStorage.setItem('email',this.registerForm.value["email"]);
             localStorage.setItem('health_number', data_user_json.health_number);
+
+            localStorage.setItem('address', this.registerForm.value['address']);
+            localStorage.setItem('birthday', this.registerForm.value['birthday']);
+            localStorage.setItem('gender', this.registerForm.value['gender']);
+            localStorage.setItem('name', this.registerForm.value['name']);
+            localStorage.setItem('operator_number', this.registerForm.value['medicalNumber']);
+            localStorage.setItem('telephone', this.registerForm.value['telephone']);
+
+            this.personService.getProvidence(this.registerForm.value["institutions"], data_user_json['key']).subscribe((info) =>{
+              localStorage.setItem('providenceName', info.name);
+            })
+            
+            
             this.router.navigate(['/dashboard']);
             
           },
@@ -200,6 +220,7 @@ export class RegisterComponent implements OnInit {
             console.log("deu erro")
           }
         })
+
       }
     }
   }
@@ -221,7 +242,6 @@ export class RegisterComponent implements OnInit {
     this.operator_check = false;
 
   }
-
   getProvidence() {
     this.service.getInstituitions().subscribe((info) => {
       this.listProvidences = info;
@@ -241,7 +261,6 @@ export class RegisterComponent implements OnInit {
     this.service.getRevisionCenter().subscribe((info) => {
       this.listRevisions = info;
       this.getListRevisionCenter()
-
     });
 
   }

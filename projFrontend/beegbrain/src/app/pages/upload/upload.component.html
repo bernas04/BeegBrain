@@ -5,30 +5,20 @@
 
     <div class="card">
         <div class="card-header">
-            <h3> <strong> Upload an EEG </strong></h3>
+            <h3> <strong> Upload an EEG </strong> </h3>
         </div>
 
         <div class="card-body">
             <form (ngSubmit)="submitEEG()">
 
-                <div class="patient row">
-                    <div class="col-4">
-                        <label for="patient">Patient ID:</label>
-
+                <div class="col-lg-6">
+                    <div class="patient row">
+                        <input [(ngModel)]="patientID" type="text" id="patient" name="patient" placeholder="Patient Health Number" required>
                     </div>
 
-                    <div class="col-8">
-                        <input [(ngModel)]="patientID" type="text" id="patient" name="patient" required>
-                    </div>
-                </div>
-
-                <div class="priority row">
-                    <div class="col-4">
-                        <label for="priority">Priority</label>
-                    </div>
-
-                    <div class="col-8">
+                    <div class="priority row">
                         <select [(ngModel)]="priority" id="priority" name="priority" required>
+                            <option value="null"> --- Priority --- </option>
                             <option value="Very High">Very High</option>
                             <option value="High">High</option>
                             <option value="Medium">Medium</option>
@@ -39,10 +29,8 @@
                 </div>
 
 
-                <div class="upload">
-                    <div class="col-12 ">
-                        <app-uploading (newFileEvent)="getFiles($event)"></app-uploading>
-                    </div>
+                <div class="col-lg-6">
+                    <app-uploading (newFileEvent)="getFiles($event)"></app-uploading>
                 </div>
 
             </form>
