@@ -1,14 +1,6 @@
-from ast import operator
-from http import HTTPStatus
 import multiprocessing
-from queue import Empty
-from webbrowser import Opera
-# from attr import assoc
-import pytz
 from rest_framework.decorators import api_view
 from datetime import date, datetime, timedelta, timezone
-from django.db.models import Q
-from django.shortcuts import render
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -27,6 +19,7 @@ from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 import pyedflib
 import re
+from natsort import natsorted
 from django.db import connection
 
 
@@ -715,6 +708,7 @@ def compressChannel(filename, channelArray):
 
 
 def decompress(filename):
+    print('./media/' + filename + '.gz')
     file = gzip.GzipFile('./media/' + filename + '.gz', "rb")
     return np.load(file)
 
@@ -737,11 +731,9 @@ def getEegById(request):
     elif request.method == 'DELETE':
         eeg_id = int(request.GET['id'])
         try:
-            
             ret = EEG.objects.get(id=eeg_id)
         except EEG.DoesNotExist:
             return Response(status=status.HTTP_404_NOT_FOUND)
-
         ret.delete()
         return  Response(True)
 
@@ -757,11 +749,18 @@ def getEegChannelLenght(request):
         return Response(status=status.HTTP_404_NOT_FOUND) 
 
     try:
+        print(Channel.objects.filter(eeg=eeg))
+        print("FILENAMES")
+        print([channel.file.name for channel in Channel.objects.filter(eeg=eeg)])
         channel = Channel.objects.filter(eeg=eeg).first()
+        print("CHANNEL --------------------------------")
+        print(channel)
     except Channel.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND) 
 
     length = len(decompress(channel.file.name))
+    print(channel.file.name)
+    print(length)
     return Response(length)
 
 
@@ -776,7 +775,9 @@ def getChannelLabels(request):
     eeg_id = int(request.GET['eeg'])
     channels = Channel.objects.filter(eeg_id=eeg_id)
     channelsLabels = list(set([chn.label for chn in channels]))
-    channelLabels = sorted(channelsLabels, key=lambda x: int("".join([i for i in x if i.isdigit()])))
+    print("=============================================")
+    print(list(set([chn.file.name for chn in channels])))
+    channelLabels = natsorted(channelsLabels)
     return Response(channelLabels)
 
 
@@ -857,12 +858,16 @@ def getAllEegChannels(request):
     eeg_id = int(request.GET['eeg'])
     manager = multiprocessing.Manager()
     data = manager.dict()
+    print("================= EEG CHANNELS ==================")
+    print(Channel.objects.filter(eeg_id=eeg_id))
     for channel in Channel.objects.filter(eeg_id=eeg_id):
-        pool.apply_async(workerDecompress(
-            data, channel.label, channel.file.name),)
-    pool.close()
-    pool.join()
-    connection.close()
+        print(channel.file.name)
+
+        # pool.apply_async(workerDecompress(
+        #     data, channel.label, channel.file.name),)
+    # pool.close()
+    # pool.join()
+    # connection.close()
     return Response(data, status=status.HTTP_200_OK)
 
 

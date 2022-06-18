@@ -10,3 +10,4 @@ pyedflib==0.1.23
 numpy
 PyMySQL
 cryptography
+natsort
