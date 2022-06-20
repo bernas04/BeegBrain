@@ -52,7 +52,8 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
     this.service.getReport( id, this.token).subscribe((info) => {
       this.report = info;
 
-      if (this.report.progress == "done") {
+
+      if (this.type == 'operator') {
         this.form = new FormGroup({
           editorContent: new FormControl(
             { value: this.report.content , disabled: true },
@@ -61,12 +62,23 @@ export class ReportEditorComponent implements OnInit, OnDestroy {
         });
 
       } else {
-        this.form = new FormGroup({
-          editorContent: new FormControl(
-            { value: this.report.content , disabled: false },
-            Validators.required()
-          ),
-        });
+        if (this.report.progress == "done") {
+          this.form = new FormGroup({
+            editorContent: new FormControl(
+              { value: this.report.content , disabled: true },
+              Validators.required()
+            ),
+          });
+  
+        } else {
+          this.form = new FormGroup({
+            editorContent: new FormControl(
+              { value: this.report.content , disabled: false },
+              Validators.required()
+            ),
+          });
+        }
+
       }
 
       this.progress = this.report.progress

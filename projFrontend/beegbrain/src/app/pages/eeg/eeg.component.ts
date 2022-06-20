@@ -260,13 +260,17 @@ export class EegComponent implements OnInit {
   }
 
   getBackendData(initial: number, end: number, channels: any[]){
-    if (end=== NaN){
+
+    console.log("END", end)
+    if (end === NaN){
       return;
     }
 
     if (end > this.indices) {
       end = this.indices - 1;
     }
+    
+    console.log("END", end)
 
     // console.log("[API] Pediu entre o " + initial + " | " + end);
 

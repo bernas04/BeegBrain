@@ -1,7 +1,7 @@
 <div *ngIf="form">	
 	<form [formGroup]="form">
 
-		<div class="top d-flex">
+		<div class="top d-flex" *ngIf="type != 'operator'">
 			<button type="button" class="btn btn-success btn-md ml-auto " *ngIf="report.progress != 'done'" (click)="reportDone()" style="font-weight: bold;"> <i class="bi bi-check-circle-fill"></i> Done </button>
 			<button type="button" class="btn btn-warning btn-md ml-auto" *ngIf="report.progress == 'done'" (click)="reportUndo()" style="font-weight: bold;"> <i class="bi bi-file-earmark-text"></i> Keep editing  </button>
 		</div>
@@ -11,7 +11,7 @@
 			<ngx-editor [editor]="editor" formControlName="editorContent" [placeholder]="'Write here your report...'" ></ngx-editor>
 		</div>
 
-		<div class="bottom d-flex">
+		<div class="bottom d-flex" *ngIf="type != 'operator'">
 			<button type="button" class="btn btn-warning btn-md" *ngIf="report.progress != 'done'" (click)="save()" style="font-weight: bold;"><i class="bi bi-file-earmark-check-fill"></i> Save </button>
 
 			<button type="button" class="btn btn-secondary btn-md ml-auto " (click)="generatePDF(1)" style="font-weight: bold; margin-right: 0.5em;"> <i class="bi bi-eye-fill"></i> Preview </button>

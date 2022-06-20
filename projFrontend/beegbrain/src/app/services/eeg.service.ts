@@ -14,7 +14,8 @@ declare let Email : any;
   providedIn: 'root'
 })
 export class EEGService {
-
+  
+  // http://20.214.248.142:8000
   private BASE_URL = 'http://localhost:8000/api/';
 
   constructor(private http: HttpClient) { }
