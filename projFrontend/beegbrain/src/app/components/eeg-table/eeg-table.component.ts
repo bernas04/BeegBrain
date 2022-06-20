@@ -18,6 +18,7 @@ import { Report } from 'src/app/classes/Report';
   styleUrls: ["./eeg-table.component.css"],
 })
 export class EegTableComponent implements OnInit {
+
   @Input("allEEG") lst_EEG!: EEG[];
   @Input("allPatients") lst_Patients!: Patient[];
   @Input("allReports") lst_report!: Report[];
@@ -32,8 +33,8 @@ export class EegTableComponent implements OnInit {
 
 
   institution!: Institution;
-  token = "" + localStorage.getItem("token");
   operator!: Operator;
+  token = '' + localStorage.getItem('token');
   type = ''+localStorage.getItem('type');
   person_id = ''+localStorage.getItem('id');
 

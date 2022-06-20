@@ -101,7 +101,6 @@ export class WorkspaceComponent implements OnInit {
     this.service.getAllInstitutions(this.token).subscribe((info) => {
       this.lst_institutions = info;
     })
-
   }
   
   getPatients() {

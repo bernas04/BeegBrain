@@ -8,3 +8,6 @@ mysqlclient==1.4.6
 django_extensions
 pyedflib==0.1.23
 numpy
+PyMySQL
+cryptography
+natsort

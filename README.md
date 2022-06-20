@@ -19,12 +19,6 @@
 
 ## DataBase Model
 
-### DER Diagram
-
-![Der](schemas/DER.jpg)
-
-### ER Diagram
-![ER](schemas/ER.png)
 
 ### Domain Model Diagram
 ![DomainModel](schemas/Domain_Model.png)
@@ -33,19 +27,5 @@
 ![UseCases](schemas/beeg_brain_use_cases.png)
 
 ### Deployment Diagram 
-![UseCases](schemas/deployment_diagram.png)
+![UseCases](schemas/deploy.png)
 
-This diagram is a draft.
-### Frontend
-
-Our frontend will be developed using Angular.
-
-### Backend
-
-#### REST API
-
-The service layer of our web-app is a **Django** based REST API.
-
-### Database
-
-We store all our data on a **mySQL** database.

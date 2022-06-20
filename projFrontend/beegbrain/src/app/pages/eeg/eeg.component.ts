@@ -6,7 +6,6 @@ import { Router } from '@angular/router';
 import { EEGService } from 'src/app/services/eeg.service';
 import { EEG } from 'src/app/classes/EEG';
 import { EEGViewerComponent } from 'src/app/components/eeg-viewer/eeg-viewer.component';
-import { buffer } from 'rxjs';
 import { Report } from 'src/app/classes/Report';
 import { Annotation } from 'src/app/classes/Annotation';
 import { ReportService } from 'src/app/services/report.service';
@@ -21,9 +20,10 @@ import { Patient } from 'src/app/classes/Patient';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class EegComponent implements OnInit {
-  @ViewChild("child")
-  eeg_viewer!: EEGViewerComponent;
 
+  @ViewChild("child")
+
+  eeg_viewer!: EEGViewerComponent;
   report!: Report;
   report_progress!: String;
   dropdownSettings: IDropdownSettings = {};
@@ -45,10 +45,10 @@ export class EegComponent implements OnInit {
   selected: string = '';
   patient!: Patient;
   age!:string
-
   averageEachChannel: Map<string,number> = new Map();
   normalizedLabelsSignal : Map<String,Map<Number,Number>> = new Map();
   playing: boolean = true;
+  dropdownSelect : boolean = false;
 
 
   speed: number = 10; // default : 0.1 segundo
@@ -68,13 +68,10 @@ export class EegComponent implements OnInit {
     private services: ChannelService,
     private router: Router,
     private EEGservices: EEGService,
-    private reportService: ReportService,
     private patientsService: PatientsService
   ) {}
 
   ngOnInit() {
-
-    console.log("NG ON INIT")
 
     const url_array = this.router.url.split("/");
     let eegId = +url_array[url_array.length - 1];
@@ -82,7 +79,6 @@ export class EegComponent implements OnInit {
 
     this.getLabelsFromEEG(eegId);
     this.getInformation(eegId);
-    /* this.checkReport(eegId); */
     this.getAnnotations(eegId);
 
     this.dropdownSettings = {
@@ -90,14 +86,7 @@ export class EegComponent implements OnInit {
       idField: "item_id",
       textField: "item_text",
       selectAllText: "Select all",
-      unSelectAllText: "Unselect all",
     };
-
-    this.EEGservices.getEEGlength(this.id, this.token).subscribe((indices) => {
-
-      this.indices = <number> indices;
-      this.signalsInSecond = <number> indices / this.eegInfo.duration;
-    })
 
   }
 
@@ -105,6 +94,10 @@ export class EegComponent implements OnInit {
     this.EEGservices.getEEGinfo(eegId, this.token).subscribe((info) => {
       this.eegInfo = info;
       this.getPatientInfo();
+      this.EEGservices.getEEGlength(this.id, this.token).subscribe((indices) => {
+        this.indices = <number> indices;
+        this.signalsInSecond = <number> indices / this.eegInfo.duration;
+      })
     });
   }
 
@@ -116,28 +109,23 @@ export class EegComponent implements OnInit {
 
 
   onItemSelect(item : any) {
+    this.dropdownSelect = true;
     this.labels.push(item);
     this.getLabelData(this.labels);
     this.control = false;
   }
 
   onDropDownClose(item: any) {
-    this.control = true;
 
-    // Get dos blocos das anotações:
-    for (let annotation of this.annotations) {
-      let start = Math.floor(annotation.start*this.signalsInSecond)-Math.floor((this.window_size*this.signalsInSecond)/2);
-      if (start < 0) start = 0;
-      let end = start + Math.floor(this.window_size*this.signalsInSecond) * 2;
-      console.log(start + " | " + end)
-      this.getBackendData(start,end,this.labels);
-      //console.log("Deu get da anotação " + annotation.description + " que começa no " + start + " | " + end)
+    if (this.dropdownSelect) {
+      this.control = true;
+      this.dropdownSelect = false;
     }
-
 
   }
 
   onItemDeselect(item : any){
+    this.dropdownSelect = true;
     let indx = this.labels.indexOf(item);
     if (this.labels.length == 1) {
       this.labels = [];
@@ -148,12 +136,6 @@ export class EegComponent implements OnInit {
     this.control = false;
   }
 
-  onSelectAll(items: any) {
-    this.labels = items;
-    this.control = false;
-    this.getLabelData(this.labels);
-  }
-
   getInputValue(event: any) {
     this.window_size = event.target.value;
     this.getLabelData(this.labels);
@@ -162,7 +144,8 @@ export class EegComponent implements OnInit {
   getLabelData(channels: String[]) {
     let end = this.initial + Math.floor(this.window_size * this.signalsInSecond)
     let newChannels : String[] = [];
-    let indexesToRemove : number[] = [];
+    
+    //let indexesToRemove : number[] = [];
 
 
     // Ver se há novos canais adicionados e pedir informação sobre os mesmos
@@ -178,28 +161,7 @@ export class EegComponent implements OnInit {
 
       for (const [label, map] of this.normalizedLabelsSignal.entries()) {
 
-        // Remover dados mais "longínquos" da cache
-
-        const minCacheIndex : number = this.initial - this.window_size * this.signalsInSecond - 1;
-        // const maxCacheIndex : number = this.initial + 4 * this.window_size * this.signalsInSecond;
-
-        // if (map.has(minCacheIndex))  {
-        //   console.log("DÁ PARA REMOVER CACHE ANTERIOR!!!!!!!!")
-        //   const array = Array.from({ length: minCacheIndex }, (_, i) => i + 1);
-        //   for (let idx of array) indexesToRemove.push(idx);
-        // }
-      
-        // if (map.has(maxCacheIndex)) {
-        //   for (let idx = maxCacheIndex; idx <= this.indices; idx++) indexesToRemove.push(idx);
-        // }
-
-
         if (map.has(this.initial+1) && map.has(end)) {
-
-
-          for (let i = this.initial+1; i <= end; i++) {
-            if (!map.has(i)) console.log("MAPA NÃO TEM O " + i)
-          }
   
           // Já tem os dados entre o initial - end
   
@@ -218,11 +180,11 @@ export class EegComponent implements OnInit {
             this.getBackendData(this.endLimit,bufferEnd,channels);
   
           }
+
         } else {
 
-
-
           end += (channels.length > 25) ? Math.floor(this.window_size * this.signalsInSecond) : 2 * Math.floor(this.window_size * this.signalsInSecond);
+          console.log("drrrrrr pow")
           this.getBackendData(this.initial,end,channels);
 
         }
@@ -238,24 +200,12 @@ export class EegComponent implements OnInit {
         end = this.endLimit;
       }
 
+      console.log("asjiajsiwjdijwidjwd")
       this.getBackendData(0, end, newChannels);
     }
 
     this.eeg_viewer.setInitial(this.initial);
     this.eeg_viewer.updateData();
-
-
-    if (typeof Worker !== "undefined") {
-      const worker = new Worker(new URL('./web-worker.worker', import.meta.url));
-      worker.onmessage = ({data}) => {
-        const normalizedLabelsSignal = data.resp;
-        this.normalizedLabelsSignal = normalizedLabelsSignal;
-      };
-      worker.postMessage({
-        indexesToRemove: indexesToRemove,
-        normalizedLabelsSignal: this.normalizedLabelsSignal
-      });
-    }
 
   }
 
@@ -272,7 +222,7 @@ export class EegComponent implements OnInit {
     
     console.log("END", end)
 
-    // console.log("[API] Pediu entre o " + initial + " | " + end);
+    console.log("[API] Pediu entre o " + initial + " | " + end);
 
     this.services.getDataAboutLabel(this.id, channels, this.token, initial, end).subscribe((channelsMap) => {
 
@@ -359,6 +309,7 @@ export class EegComponent implements OnInit {
       let bufferEnd : number = (this.labels.length > 25) ? bufferInitial + Math.floor(this.window_size * this.signalsInSecond) : bufferInitial + 2 * Math.floor(this.window_size * this.signalsInSecond);
 
       if (bufferInitial > this.endLimit) {
+        console.log("bufferInitial > this.endLimit")
         this.endLimit = bufferEnd;
         this.getBackendData(bufferInitial,bufferEnd,this.labels);
       }
@@ -399,7 +350,7 @@ export class EegComponent implements OnInit {
       let bufferInitial = (this.labels.length > 25) ? this.initial + Math.floor(this.window_size * this.signalsInSecond) : this.initial + 2 * Math.floor(this.window_size * this.signalsInSecond);
       let bufferEnd : number = (this.labels.length > 25) ? bufferInitial + Math.floor(this.window_size * this.signalsInSecond) : bufferInitial + 2 * Math.floor(this.window_size * this.signalsInSecond);
 
-      if (bufferInitial > this.endLimit) {
+      if (bufferInitial > this.endLimit && bufferInitial < this.indices) {
         this.endLimit = bufferEnd;
         this.getBackendData(bufferInitial,bufferEnd,this.labels);
       }
@@ -414,20 +365,6 @@ export class EegComponent implements OnInit {
       console.log("ANOTAÇÕES",info);
     });
 
-  }
-
-  /* checkReport(eeg_id: number) {
-    this.reportService.getReport(eeg_id, this.token).subscribe((info) => {
-      this.report_progress = info.progress;
-      this.report_progress = this.report.progress
-    });
-  } */
-
-  goToAnnotation() {
-    //this.eeg_viewer.jumpToAnnotation(this.selectedOption.start);
-    this.initial = Math.floor(this.selectedOption.start*this.signalsInSecond)-Math.floor((this.window_size*this.signalsInSecond)/2);
-    console.log(this.selectedOption.description + " >>>>>>>>>>" + this.initial)
-    this.eeg_viewer.updateData();
   }
 
   getPatientInfo() {

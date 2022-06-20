@@ -29,7 +29,6 @@
                 [settings] = "dropdownSettings"
                 [data] = "dropdownList"
                 (onSelect)="onItemSelect($event)"
-                (onSelectAll)="onSelectAll($event)"
                 (onDeSelect)="onItemDeselect($event)"
                 (onDropDownClose)="onDropDownClose($event)"
                 [placeholder]="'Select channel(s)'">
@@ -48,13 +47,6 @@
 
         </div>
 
-
-        <div class="col-lg-2">
-            <select class="form-control" [(ngModel)]="selectedOption" [(ngModel)]="selected" (change)="goToAnnotation()">
-                <option value="" disabled>Select an annotation</option>
-                <option *ngFor="let opt of annotations" [ngValue]="opt" >{{opt.description}}</option>
-            </select>
-        </div>
     </div>
 
 
@@ -123,5 +115,3 @@
 
     <app-report-editor *ngIf="eegInfo" [report]="eegInfo.report" [eeg_id]="eegInfo.id"> </app-report-editor>
 </div>
-
-
